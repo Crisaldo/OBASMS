@@ -1,0 +1,353 @@
+doctype html
+html(lang='en')
+  head
+    meta(charset='utf-8')
+    link(rel='apple-touch-icon', sizes='76x76', href='../paperDashboardPro/img/apple-icon.png')
+    link(rel='icon', type='image/png', sizes='96x96', href=`/upload/${reqSession.utilities[0].company_logo}`)
+    meta(http-equiv='X-UA-Compatible', content='IE=edge,chrome=1')
+    title #{reqSession.utilities[0].company_name}
+   
+    // Bootstrap core CSS
+    link(href='/assets/paperDashboardPro/css/bootstrap.min.css', rel='stylesheet')
+    // Paper Dashboard core CSS
+    link(href='/assets/paperDashboardPro/css/paper-dashboard.css', rel='stylesheet')
+    // CSS for Demo Purpose, don't include it in your project
+    link(href='/assets/paperDashboardPro/css/demo.css', rel='stylesheet')
+    // Fonts and icons
+    link(href='http://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css', rel='stylesheet')
+    link(href='https://fonts.googleapis.com/css?family=Muli:400,300', rel='stylesheet', type='text/css')
+    link(href='/assets/paperDashboardPro/css/themify-icons.css', rel='stylesheet')
+  body.sidebar-mini
+    .wrapper
+      .sidebar(data-active-color='spa', style='color: white')
+        //
+          Tip 1: you can change the color of the sidebar's background using: data-background-color="white | brown"
+          Tip 2: you can change the color of the active button using the data-active-color="primary | info | success | warning | danger"
+        .logo
+          a.simple-text.logo-mini(href='')
+            | 
+          a.simple-text.logo-normal(href='./home')
+            | #{reqSession.utilities[0].company_name}
+        .sidebar-wrapper
+          .user
+            .info
+              .photo
+                img(src='/assets/paperDashboardPro/img/icon.jpg')
+              a.collapsed(data-toggle='collapse', href='#collapseExample')
+                span
+                  | Staff
+              .clearfix
+          ul.nav
+            li
+              a(href='./home')
+                i.ti-user
+                p
+                  | Queue
+            li
+              a(href='./reservationList')
+                i.ti-calendar
+                p
+                  | Reservation
+            li.active
+              a(href='./ongoing')
+                i.ti-reload
+                p
+                  | Ongoing Service
+      .main-panel
+        nav.navbar.navbar-default
+          .container-fluid
+            .navbar-minimize
+              button#minimizeSidebar.btn.btn-fill.btn-icon
+                i.ti-more-alt
+            .navbar-header
+              button.navbar-toggle(type='button')
+                span.sr-only Toggle navigation
+                span.icon-bar.bar1
+                span.icon-bar.bar2
+                span.icon-bar.bar3
+              a.navbar-brand(href='#Dashboard')
+                | Ongoing
+            .collapse.navbar-collapse
+              ul.nav.navbar-nav.navbar-right
+                li
+                  a#date-part(style="color: black")
+                li
+                  a#time-part(style="color: black") 
+                li
+                  a.logout(style="cursor: pointer; color: black") Log Out
+        .content
+          .container-fluid
+            .row
+              .col-md-12
+                .card
+                  .row
+                    div
+                      .card-content
+                        center
+                          h2 Ongoing Service
+                  .content
+                    .container-fluid
+                      .row
+                        .col-md-12
+                          p.category  
+                          br
+                          .card
+                            .card-content
+                              .toolbar
+                                // Here you can write extra buttons/actions for the toolbar
+                              .fresh-datatables
+                                table#datatables.table.table-no-bordered.table-hover(cellspacing='0', width='100%', style='width:100%')
+                                  thead
+                                    tr
+                                      th.disabled-sorting Name
+                                      th.disabled-sorting Gender
+                                      th.disabled-sorting Membership Type
+                                      th.disabled-sorting Reservation Details
+                                      th.disabled-sorting End Time
+                                      th.disabled-sorting Action
+                                  
+                                  tbody
+                                    each ongoing in ongoings
+                                      tr
+                                        td=ongoing.cust_fname+" "+ongoing.cust_mname+" "+ongoing.cust_lname
+                                        td=ongoing.cust_gender
+                                        if(ongoing.cust_type==0)
+                                          td Common
+                                        else
+                                          td Loyalty
+                                        td
+                                          button.btn.btn-info.btn-fill.btn-wd.viewServices(type='button' value=`${ongoing.walkin_id}`)
+                                            span.btn-label
+                                              i.fa.fa-eye
+                                            |  View  Reservation Details
+                                        td= ongoing.walkin_end_time
+                                        input.startTime(type='hidden' id=`${ongoing.walkin_id}` value=`${ongoing.walkin_start_time}`)
+                                        input.endTime(type='hidden' id=`${ongoing.walkin_id}` value=`${ongoing.walkin_end_time}`)
+                                        input.dateRes(type='hidden' id=`${ongoing.walkin_id}` value=`${ongoing.walkin_date}`)
+                                        td
+                                          button.btn.btn-info.btn-fill.btn-wd.buttonFinish(type='button' value=`${ongoing.walkin_id}`)
+                                            span.btn-label
+                                            | Finish
+                                            i.fa.fa-check
+                                    
+                              #viewServices.modal.fade(tabindex='-1', role='dialog', aria-labelledby='exampleModalLabel', aria-hidden='true')
+                                .modal-dialog(role='document')
+                                  .modal-content
+                                    .modal-header
+                                      button.close(type='button', data-dismiss='modal', aria-label='Close')
+                                        span(aria-hidden='true') ×
+                                      center
+                                        h4.modal-title#title
+                                        h5#time
+                                    .modal-body 
+                                      .row
+                                        .col-md-12
+                                          .card-content
+                                            .toolbar
+                                            .fresh-datatables
+                                            table#datatables.table.table-no-bordered.table-hover(cellspacing='0', width='100%', style='width:100%')
+                                              thead
+                                                tr
+                                                  th
+                                                    strong  Services 
+                                                  th
+                                                    strong  Quantity
+                                                  th
+                                                    strong Duration
+                                                  th
+                                                    strong Total Price 
+                                              tbody#viewServicesAvailed
+                              .row
+                                .col-md-6
+                                  .card-header
+                                  .card-content
+                                .col-md-6
+                                  .card-header
+                                  .card-content
+                              .row
+                                .col-md-6
+                                  .card-header
+                                    h4.card-title
+                                  .card-content
+                                .col-md-6
+                                  .card-header
+                                  .card-content
+                              .card-header
+                                h4.card-title
+                              .card-content
+                                .row
+                                  .col-md-12
+                                .row
+                                  .col-md-12
+                                .row
+                  footer.footer
+                    .container-fluid
+                      .copyright.pull-right
+                        | © 
+                        script.
+                          document.write(new Date().getFullYear())
+                        | , made with 
+                        i.fa.fa-heart.heart
+                        |  by 
+                        a(href='') TEAM MBAY
+  .fixed-plugin
+  // Core JS Files. Extra: TouchPunch for touch library inside jquery-ui.min.js
+  script(src='/assets/paperDashboardPro/js/jquery-3.1.1.min.js', type='text/javascript')
+  script(src='/assets/paperDashboardPro/js/jquery-ui.min.js', type='text/javascript')
+  script(src='/assets/paperDashboardPro/js/perfect-scrollbar.min.js', type='text/javascript')
+  script(src='/assets/paperDashboardPro/js/bootstrap.min.js', type='text/javascript')
+  // Forms Validations Plugin
+  script(src='/assets/paperDashboardPro/js/jquery.validate.min.js')
+  // Promise Library for SweetAlert2 working on IE
+  script(src='/assets/paperDashboardPro/js/es6-promise-auto.min.js')
+  // Plugin for Date Time Picker and Full Calendar Plugin
+  script(src='/assets/paperDashboardPro/js/moment.min.js')
+  // Date Time Picker Plugin is included in this js file
+  script(src='/assets/paperDashboardPro/js/bootstrap-datetimepicker.js')
+  // Select Picker Plugin
+  script(src='/assets/paperDashboardPro/js/bootstrap-selectpicker.js')
+  // Switch and Tags Input Plugins
+  script(src='/assets/paperDashboardPro/js/bootstrap-switch-tags.js')
+  // Circle Percentage-chart
+  script(src='/assets/paperDashboardPro/js/jquery.easypiechart.min.js')
+  // Charts Plugin
+  script(src='/assets/paperDashboardPro/js/chartist.min.js')
+  // Notifications Plugin
+  script(src='/assets/paperDashboardPro/js/bootstrap-notify.js')
+  // Sweet Alert 2 plugin
+  script(src='/assets/paperDashboardPro/js/sweetalert.js')
+  // Wizard Plugin
+  script(src='/assets/paperDashboardPro/js/jquery.bootstrap.wizard.min.js')
+  // Bootstrap Table Plugin
+  script(src='/assets/paperDashboardPro/js/bootstrap-table.js')
+  // Plugin for DataTables.net
+  script(src='/assets/paperDashboardPro/js/jquery.datatables.js')
+  // Full Calendar Plugin
+  script(src='/assets/paperDashboardPro/js/fullcalendar.min.js')
+  // Paper Dashboard PRO Core javascript and methods for Demo purpose
+  script(src='/assets/paperDashboardPro/js/paper-dashboard.js')
+  // Sharrre Library
+  script(src='/assets/paperDashboardPro/js/jquery.sharrre.js')
+  // Paper Dashboard PRO DEMO methods, don't include it in your project!
+  script(src='/assets/paperDashboardPro/js/demo.js')
+  script.
+    $(document).ready(function(){
+        $('.viewServices').click(function(){
+          var table =$('#datatables').DataTable()
+          var id = $(this).val()
+          $.post('/receptionist/ongoing/viewServices',{id:id})
+            .done(data=>{
+              console.log(data.out2)
+              console.log("NAME^")
+                $('#time').append(`Start: ${data.out2.walkin_start_time} End: ${data.out2.walkin_end_time}`)
+                $('#title').append(`<h5> ${data.out2.cust_fname} ${data.out2.cust_mname} ${data.out2.cust_lname}`)
+              for(var i=0; i<data.out1.length;i++){
+                  $('#viewServicesAvailed').append(` 
+                  <tr>
+                  <td>${data.out1[i].service_name}</td>
+                  <td>${data.out1[i].service_total_quantity}</td>
+                  <td>${data.out1[i].service_total_duration}</td>
+                  <td>${data.out1[i].service_total_price}</td>`)
+                }
+          $('#viewServices').modal('show')
+          $('#viewServices').on('hidden.bs.modal', function (){
+            $('#viewServicesAvailed').empty()
+            $('#title').empty()
+            $('#time').empty()
+          })
+          }) 
+      })
+      $('.buttonFinish').click(function(){
+        var id = $(this).val()
+        var dateRes = $(`.dateRes[id='${id}']`).val()
+        var startTime = $(`.startTime[id='${id}']`).val()
+        var endTime = $(`.endTime[id='${id}']`).val()
+        swal({
+          title: "Are you sure?",
+          text: "",
+          icon: "warning",
+          buttons: true,
+          dangerMode: true,
+        })
+        .then((finish) => {
+          if (finish) {
+            $.post('/receptionist/ongoing/Finish',{id:id,
+            walkin_date:dateRes,
+            startTime:startTime,
+            endTime:endTime})
+            .done(data=>{
+              if(data.alertSuccess==0)
+              {
+                swal({
+                  title: "Success",
+                  icon: "success"
+                }).then(function(){
+                  location.reload()
+                })
+              }
+              else
+              {
+                swal({
+                  title: "ERROR",
+                  icon: "error"
+                })
+              }
+            })
+          } 
+        });
+        })
+    })
+  script.
+      $(document).ready(function(){
+        $('.logout').click(function(){
+              swal({
+          title: "Are you sure?",
+          text: "Do you want to log out?",
+          icon: "warning",
+          buttons: true,
+          dangerMode: true,
+        })
+        .then((willDelete) => {
+          if (willDelete) {
+            $.post('/frontdesk/logout')
+            location.reload()
+          } 
+        });
+        })
+      })
+  script(type='text/javascript').
+    $(document).ready(function(){
+    demo.initOverviewDashboard();
+    demo.initCirclePercentage();
+    });
+  script(type='text/javascript').
+    $(document).ready(function() {
+    $('#datatables').DataTable({
+    "pagingType": "full_numbers",
+    "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+    responsive: true,
+    language: {
+    search: "_INPUT_",
+    searchPlaceholder: "Search records",
+    }
+    });
+    });
+  script(type='text/javascript').
+    $(document).ready(function(){
+    demo.initWizard();
+    });
+  script.
+    $(document).ready(function() {
+      var interval = setInterval(function() {
+          var momentNow = moment();
+          $('#date-part').html(momentNow.format('YYYY MMMM DD') + ' '
+                              + momentNow.format('dddd')
+                              .substring(0,3).toUpperCase());
+          $('#time-part').html(momentNow.format('A hh:mm:ss'));
+      }, 100);
+      
+      $('#stop-interval').on('click', function() {
+          clearInterval(interval);
+      });
+      $('#calendar').val('')
+      });

@@ -1,0 +1,1654 @@
+doctype html
+html(lang='en')
+  head
+    meta(charset='utf-8')
+    link(rel='apple-touch-icon', sizes='76x76', href='../paperDashboardPro/img/apple-icon.png')
+    link(rel='icon', type='image/png', sizes='96x96', href=`/upload/${reqSession.utilities[0].company_logo}`)
+    meta(http-equiv='X-UA-Compatible', content='IE=edge,chrome=1')
+    title #{reqSession.utilities[0].company_name}
+   
+    // Bootstrap core CSS
+    link(href='/assets/paperDashboardPro/css/bootstrap.min.css', rel='stylesheet')
+    // Paper Dashboard core CSS
+    link(href='/assets/paperDashboardPro/css/paper-dashboard.css', rel='stylesheet')
+    // CSS for Demo Purpose, don't include it in your project
+    link(href='/assets/paperDashboardPro/css/demo.css', rel='stylesheet')
+    // Fonts and icons
+    link(href='http://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css', rel='stylesheet')
+    link(href='https://fonts.googleapis.com/css?family=Muli:400,300', rel='stylesheet', type='text/css')
+    link(href='/assets/paperDashboardPro/css/themify-icons.css', rel='stylesheet')
+    style.
+      .dropdown-menu {
+        margin-left: -148px !important;
+      }
+  body.sidebar-mini
+    .wrapper
+      .sidebar(data-active-color='spa', style='color: white')
+        //
+          Tip 1: you can change the color of the sidebar's background using: data-background-color="white | brown"
+          Tip 2: you can change the color of the active button using the data-active-color="primary | info | success | warning | danger"
+        .logo
+          a.simple-text.logo-mini(href='#')
+          a.simple-text.logo-normal(href='./home')
+            | #{reqSession.utilities[0].company_name}
+        .sidebar-wrapper
+          .user
+            .info
+              .photo
+                img(src='/assets/paperDashboardPro/img/icon.jpg')
+              
+              a.collapsed(data-toggle='collapse', href='#collapseExample')
+                span
+                  | Front Desk
+              .clearfix
+          ul.nav
+            li.active
+              a(href='./home')
+                i.ti-pencil
+                p
+                  | Registration
+            li
+              a(href='/fdReservation')
+                i.ti-calendar
+                p
+                  | Reservation
+            li
+              a(href='./payment')
+                i.ti-credit-card
+                p
+                  | Payment  
+            li
+              a(href='./therapist')
+                i.ti-user
+                p
+                  | Therapist Attendance    
+            li
+              a(href='./giftcert')
+                i.ti-gift
+                p
+                  | Gift Certification  
+      .main-panel
+        nav.navbar.navbar-default
+          .container-fluid
+            .navbar-minimize
+              button#minimizeSidebar.btn.btn-fill.btn-icon
+                i.ti-more-alt
+            .navbar-header
+              button.navbar-toggle(type='button')
+                span.sr-only Toggle navigation
+                span.icon-bar.bar1
+                span.icon-bar.bar2
+                span.icon-bar.bar3
+              a.navbar-brand(href='#Dashboard')
+                | Registration
+            .collapse.navbar-collapse
+              ul.nav.navbar-nav.navbar-right
+                li
+                  a#date-part(style="color: black")
+                li
+                  a#time-part(style="color: black") 
+                li
+                  a.logout(style="cursor: pointer; color: black") Log Out
+        .content
+          .container-fluid
+            .row
+              .col-md-12
+                .card
+                  .row
+                    div
+                      .card-content
+                        center
+                          h2 Registered Guests
+                        button.btn.btn-info.btn-fill.btn-wd(data-toggle='modal', data-target='#addNewService', style='margin-left: 20px')
+                          span.btn-label
+                            i.fa.fa-plus
+                          |                                                 New Guest
+                  #addNewService.modal.fade(tabindex='-1', role='dialog')
+                    .modal-dialog.modal-lg(role='document')
+                      .modal-content
+                        .modal-header
+                          h3.modal-title
+                            center New Guest
+                          button.close(type='button', data-dismiss='modal', aria-label='Close') X
+                        .modal-body
+                          #wizardCard.card-wizard
+                            form#wizardForm(method='POST', action='')
+                              .card-content
+                                ul.nav
+                                  li
+                                    a(href='#tab1', data-toggle='tab') Personal Information
+                                  li
+                                    a(href='#tab2', data-toggle='tab') Account Information
+                                .tab-content
+                                  #tab1.tab-pane
+                                    .row
+                                      .col-md-4
+                                        .form-group
+                                          p.control-label
+                                            strong
+                                              | First Name
+                                              star *
+                                          input.form-control(type='text', name='firstname', id='firstname'  placeholder='ex: Mike')
+                                      .col-md-4
+                                        .form-group
+                                          p.control-label
+                                            strong
+                                              | Middle Name
+                                          input.form-control(type='text', name='middlename', id='middlename' placeholder='ex: Espinosa')
+                                      .col-md-4
+                                        .form-group
+                                          p.control-label
+                                            strong
+                                              | Last Name
+                                              star *
+                                          input.form-control(type='text', name='lastname', id='lastname', required='true', placeholder='ex: Dela Cruz')
+                                    .row
+                                      .col-md-4
+                                        .form-group
+                                          p.control-label
+                                            strong
+                                              | Sex
+                                              star *
+                                      .col-md-5
+                                        .form-group
+                                          p.control-label
+                                            strong
+                                              | Birthday
+                                              star *
+                                            
+                                    .row
+                                      .col-md-1
+                                        .form-group
+                                          .radio
+                                            input(type='radio', name='gender', value='Male')
+                                            label(for='radio20')
+                                              | Male
+                                      .col-md-3
+                                        .form-group
+                                          .radio
+                                            input(type='radio', name='gender', value='Female')
+                                            label(for='radio20')
+                                              | Female
+                                      .col-md-4
+                                        input.form-control.datepicker(type='text' name='birthday' id="calendar")
+                                    br
+                                    .row
+                                      .col-md-7
+                                        .form-group
+                                          h3.control-label
+                                            strong
+                                              | Contact Details
+                                    .row
+                                      .col-md-8
+                                        .form-group
+                                          p.control-label
+                                            strong
+                                              | Address
+                                              star *
+                                          input.form-control(type='text', name='address', id='address' placeholder='Address')
+                                      .col-md-4
+                                        .form-group
+                                          p.control-label
+                                            strong
+                                              | Contact Number
+                                              star *
+                                          input.form-control(type='number', name='contact_no', id="contact_no" placeholder='e.g 09xxxxxxxxxx')
+                                    .row
+                                      .col-md-12
+                                        .form-group
+                                          p.control-label
+                                            strong
+                                              | Medical History
+                                          input.form-control(type='textfield', name='medical_history', id="medical_history" placeholder='ex: asthma')
+                                  #tab2.tab-pane
+                                    
+                                    .form-group
+                                      .checkbox
+                                        input#checkbox1(type='checkbox')
+                                        label(for='checkbox1')
+                                          | Loyalty Member
+                                    .row
+                                      .col-md-4
+                                        .form-group
+                                          label.control-label Username
+                                          star *
+                                          input.form-control(type='text', name='username', id="username" placeholder='username\
+                                          ' disabled)
+                                      .col-md-4
+                                        .form-group
+                                          label.control-label Password
+                                          star *
+                                          input.form-control(type='password', name='username', id="password" placeholder='password\
+                                          ' disabled)
+                                      .col-md-4
+                                        .form-group
+                                          label.control-label Re-enter Password
+                                          star *
+                                          input.form-control(type='password', name='username', id="password2" placeholder='confim password\
+                                          ' disabled)
+                                    .row
+                                    .row
+                                      .col-md-5
+                                        .form-group
+                                          h3.control-label
+                                            | Fee: ₱#{reqSession.utilities[0].membership_fee}.00
+                                    //- .row
+                                    //-   .col-md-5
+                                    //-     .form-group
+                                    //-       h3.control-label
+                                    //-         | Perks: freebies
+                              .card-footer
+                                button.btn.btn-default.btn-fill.btn-wd.btn-back.pull-left(type='button') Back
+                                button.btn.btn-info.btn-fill.btn-wd.btn-next.pull-right(type='button') Next
+                                button.btn.btn-info.btn-fill.btn-wd.btn-finish.pull-right.submitButton(type='button') Finish
+                                .clearfix
+                  .content
+                    .container-fluid
+                      .row
+                        .col-md-12
+                          p.category  
+                          br
+                          .card
+                            .card-content
+                              .nav-tabs-navigation
+                                .nav-tabs-wrapper
+                                  ul#tabs.nav.nav-tabs(data-tabs='tabs')
+                                    li.active
+                                      a(href='#common', data-toggle='tab') Common
+                                    li
+                                      a(href='#loyalty', data-toggle='tab') Loyalty
+                              #my-tab-content.tab-content
+                                // COMMON TAB
+                                #common.tab-pane.active
+                                  .toolbar
+                                  .fresh-datatables
+                                    table#datatablesCommon.table.table-no-bordered.table-hover(cellspacing='0', width='100%', style='width:100%')
+                                      thead
+                                        tr
+                                          th Name
+                                          th Sex
+                                          th.disabled-sorting Actions
+                                      tfoot
+                                        tr
+                                          th Name
+                                          th Sex
+                                          th Actions
+                                      tbody
+                                        each customer in customers
+                                          if(customer.cust_type==0)
+                                            tr
+                                              td
+                                                a.viewDetails(style='color: black; cursor: pointer' rel='tooltip' title='Click to view details' customer_id=`${customer.cust_id}`)= customer.cust_fname+" "+customer.cust_mname+" "+customer.cust_lname
+                                              input.name(type='hidden' value=`${customer.cust_fname+" "+customer.cust_mname+" "+customer.cust_lname}` id=`${customer.cust_id}`)
+                                              td= customer.cust_gender
+                                              td
+                                                .dropdown(style="right: 10px")
+                                                  button.btn.btn-simple.btn-info.btn-rotate(href='#', data-toggle='dropdown' style='left: auto; right: 5px')
+                                                    i.ti-settings
+                                                  ul.dropdown-menu
+                                                    li
+                                                      button.btn.btn-simple.btn-info.reserveButton(data-toggle='modal',  value=`${customer.cust_id}` style="margin-right: 15px")
+                                                        span.btn-label
+                                                        i.ti-calendar
+                                                        |  New Reservation
+                                                    li
+                                                      button.btn.btn-simple.btn-info.amenityButton(data-toggle='modal' value=`${customer.cust_id}` style="margin-right: 15px")
+                                                        span.btn-label
+                                                        i.fa.fa-bed
+                                                        |  Amenities Only
+                                                    li
+                                                      button.btn.btn-simple.btn-info.loyaltyRegistrationButton(data-toggle='modal' value=`${customer.cust_id}` style="margin-right: 15px")
+                                                        span.btn-label
+                                                        i.ti-notepad
+                                                        | Loyalty  Membership
+                                                    li
+                                                      button.btn.btn-simple.btn-warning.updateButton(data-toggle='modal' value=`${customer.cust_id}` style="margin-right: 15px")
+                                                        span.btn-label
+                                                        i.ti-pencil-alt
+                                                        |  Update
+                                                    li
+                                                      button.btn.btn-simple.btn-danger.buttonDelete(data-toggle='modal' stlye="margin-right: 15px" value=`${customer.cust_id}`)
+                                                        span.btn-label
+                                                        i.ti-trash
+                                                        |  Delete
+                                // LOYALTY TAB
+                                #loyalty.tab-pane
+                                  .toolbar
+                                  .fresh-datatables
+                                    table#datatablesLoyalty.table.table-no-bordered.table-hover(cellspacing='0', width='100%', style='width:100%')
+                                      thead
+                                        tr
+                                          th Name
+                                          th Sex
+                                          th.disabled-sorting Actions
+                                      tfoot
+                                        tr
+                                          th Name
+                                          th Sex
+                                          th Actions
+                                      tbody
+                                        each customer in customers
+                                          if(customer.cust_type==1)
+                                            tr
+                                              td
+                                                a.viewLoyaltyDetails(style='color: black; cursor: pointer' rel='tooltip' title='Click to view details' customer_id=`${customer.cust_id}`)= customer.cust_fname+" "+customer.cust_mname+" "+customer.cust_lname
+                                              input.name(type='hidden' value=`${customer.cust_fname+" "+customer.cust_mname+" "+customer.cust_lname}` id=`${customer.cust_id}`)
+                                              td= customer.cust_gender
+                                              td
+                                                .dropdown(style="right: 20px")
+                                                  button.btn.btn-simple.btn-info.btn-rotate(href='#', data-toggle='dropdown' style='left: auto; right: 13px')
+                                                    i.ti-settings
+                                                  ul.dropdown-menu
+                                                    li
+                                                      //- a.btn.btn-simple.btn-info.reserveButton(href=`selectDate/${customer.cust_id}` stlye="margin-right: 15px")
+                                                      button.btn.btn-simple.btn-info.reserveButton(data-toggle='modal',  value=`${customer.cust_id}` stlye="margin-right: 13px")
+                                                        span.btn-label
+                                                        i.ti-calendar
+                                                        |  New Reservation
+                                                    li
+                                                      button.btn.btn-simple.btn-info.amenityButton(data-toggle='modal' value=`${customer.cust_id}` stlye="margin-right: 13px")
+                                                        span.btn-label
+                                                        i.fa.fa-bed
+                                                        |  Amenities Only
+                                                    li
+                                                      button.btn.btn-simple.btn-warning.updateLoyaltyButton(data-toggle='modal' value=`${customer.cust_id}` stlye="margin-right: 13px")
+                                                        span.btn-label
+                                                        i.ti-pencil-alt
+                                                        |  Update
+                                                    li
+                                                      button.btn.btn-simple.btn-danger.buttonDelete(data-toggle='modal' stlye="margin-right: 15px" value=`${customer.cust_id}`)
+                                                        span.btn-label
+                                                        i.ti-trash
+                                                        |  Delete
+
+                            
+
+
+                  #ReservationModal.modal.fade(tabindex='-1', role='dialog')
+                    .modal-dialog(role='document')
+                      .modal-content
+                        .modal-header
+                          h3.modal-title
+                            center New Reservation
+                              p#hello(style='font-size: 20px')
+                          button.close(type='button', data-dismiss='modal', aria-label='Close')
+                        .modal-body.text-center
+                          .row
+                            .col-md-2
+                              .form-group
+                                .radio
+                                  input(type='radio', name='nog', value='single' checked)
+                                  label(for='radio20')
+                                    | Single
+                          .row
+                            .col-md-2
+                              .form-group
+                                .radio
+                                  input(type='radio', name='nog', value='multiple')
+                                  label(for='radio20')
+                                    | Multiple 
+                          .row#Multiple(style='display:none')
+                            .col-md-4  
+                              .input-group
+                                span.input-group-btn
+                                  button.btn.btn-info.btn-numberMale.buttonMinus(type='button', disabled='disabled', data-type='minus', data-field='quantMale' id="add" )
+                                    span.ti-minus
+                                input.form-control.input-number.male(type='text', id="quantity" name='quantMale', value="0" min='0', max='6' disabled)
+                                span.input-group-btn
+                                  button.btn.btn-info.btn-numberMale.buttonAdd(type='button', data-type='plus', data-field='quantMale', disabled id="add")
+                                    span.ti-plus
+                              span.help-block Male
+                            .col-md-4  
+                              .input-group
+                                span.input-group-btn
+                                  button.btn.btn-info.btn-number.buttonMinus(type='button', disabled='disabled', data-type='minus', data-field='quantFemale' id="add")
+                                    span.ti-minus
+                                input.form-control.input-number.female(type='text', id="quantityFemale" name='quantFemale', value="0" min='0', max='6' disabled)
+                                span.input-group-btn
+                                  button.btn.btn-info.btn-number.buttonAdd(type='button', data-type='plus', data-field='quantFemale', disabled id="add")
+                                    span.ti-plus
+                              span.help-block Female
+                        .modal-footer#reservationFooter
+                          //- button.btn.btn-secondary.pull-right.btn.btn-info.btn-fill.btn-wd(type='button' id="book" href=`selectDate/${customer.cust_id}`) Book Reservation
+                          //- button.btn.btn-secondary.pull-left.btn.btn-danger.btn-fill.btn-wd(type='button', data-dismiss='modal') Cancel
+        
+                  //AMENITY ONLY
+                  #amenityOnly.modal.fade(tabindex='-1', role='dialog', aria-labelledby='exampleModalLabel', aria-hidden='true')
+                    .modal-dialog(role='document')
+                        .modal-content
+                          .modal-header
+                            button.close(type='button', data-dismiss='modal', aria-label='Close')
+                              span(aria-hidden='true') ×
+                            center
+                              h4 Amenities Only
+                              p.modal-title#custName
+                          .modal-body
+                            .row
+                              .col-md-15
+                                .panel-info
+                                  .panel-heading 
+                                    center The Entrance Fee is ₱#{reqSession.utilities[0].entrance_fee}.00
+
+                            .row
+                              center
+                                h5 Specify number of guests.
+                                .col-md-4 
+                                .col-md-4
+                                  .input-group
+                                    span.input-group-btn
+                                      button.btn.btn-info.btn-number.buttonMinus(type='button',  data-type='minus', data-field='quantGuest' )
+                                        span.ti-minus
+                                    input.form-control.input-number.quantityGuest(type='text', id="quantityGuest" name='quantGuest', value="0" min='0', max='6' disabled)
+                                    span.input-group-btn
+                                      button.btn.btn-info.btn-number.buttonAdd(type='button', data-type='plus', data-field='quantGuest' )
+                                        span.ti-plus
+                          .modal-footer
+                            button.btn.btn-secondary.btn.btn-danger.btn-fill.btn-wd.pull-left(data-dismiss='modal') Close
+                            button.btn.btn-secondary.btn.btn-info.btn-fill.btn-wd.pull-right.proceedButton(type='button') Proceed
+
+
+                  //VIEW COMMON CUSTOMER DETAILS
+                  #viewCustomerDetails.modal.fade(tabindex='-1', role='dialog', aria-labelledby='exampleModalLabel', aria-hidden='true')
+                    .modal-dialog(role='document')
+                      .modal-content
+                        .modal-header
+                          button.close(type='button', data-dismiss='modal', aria-label='Close')
+                            span(aria-hidden='true') ×
+                          center
+                            h4.modal-title#titleName
+                        .modal-body#Details
+                        .modal-footer#footerAppend
+                          center
+                            button.btn.btn-secondary.btn.btn-info.btn-fill.btn-wd(data-dismiss='modal') Close
+                  //VIEW LOYALTY CUSTOMER DETAILS
+                  #viewCustomerLoyaltyDetails.modal.fade(tabindex='-1', role='dialog', aria-labelledby='exampleModalLabel', aria-hidden='true')
+                    .modal-dialog(role='document')
+                      .modal-content
+                        .modal-header
+                          button.close(type='button', data-dismiss='modal', aria-label='Close')
+                            span(aria-hidden='true') ×
+                          center
+                            h4.modal-title#titleLoyaltyName
+                        .modal-body#LoyaltyDetails
+                        .modal-footer#footerAppend
+                          center
+                            button.btn.btn-secondary.btn.btn-info.btn-fill.btn-wd(data-dismiss='modal') Close
+        
+                // Registration For Loyalty
+                #registerLoyalty.modal.fade(tabindex='-1', role='dialog', aria-labelledby='exampleModalLabel', aria-hidden='true')
+                  .modal-dialog(role='document')
+                    .modal-content
+                      .modal-header
+                        button.close(type='button', data-dismiss='modal', aria-label='Close')
+                          span(aria-hidden='true') ×
+                        center
+                          h4.modal-title#titleCustomerName
+                      .modal-body
+                        .row
+                          .col-md-15
+                            .panel-info
+                              .panel-heading 
+                                p The Perks of being loyalty member is you can earn points and use it as payment and you can have own account to monitor your Points, Reservations etc.
+                        br
+                        .row
+                          .col-md-6
+                            .form-group
+                              label.control-label Username
+                              star *
+                              .input-group
+                                .input-group-addon 
+                                  i.fa.fa-user
+                                input.form-control(type='text', name='username', id="usernameReg" placeholder='username')
+                              .category#ValidUsername
+                        .row
+                          .col-md-5
+                            .form-group
+                              label.control-label Password
+                              star *
+                              .input-group
+                                .input-group-addon 
+                                  i.fa.fa-key
+                                input.form-control(type='password', name='username', id="password1" placeholder='password')
+                              .category#ValidLength
+                          .col-md-5
+                            .form-group
+                              label.control-label Re-enter Password
+                              star *
+                              input.form-control(type='password', name='username', id="password3" placeholder='confim password' disabled)
+                            .category#ValidPass
+                        .row
+                        .row
+                          .col-md-5
+                            .form-group
+                              h4 Fee: 
+                                a ₱#{reqSession.utilities[0].membership_fee}
+                      .modal-footer
+                        button.btn.btn-secondary.btn.btn-info.btn-fill.btn-wd.pull-right.buttonRegisterSubmit(type='button') Submit
+                        button.btn.btn-secondary.btn.btn-danger.btn-fill.btn-wd.pull-left(type='button') Cancel
+
+                // PAYNOW LOYALTY
+                #payment.modal.fade(tabindex='-1', role='dialog' aria-labelledby='myModalLabel')
+                  .modal-dialog(role='document')
+                    .modal-content
+                      .modal-header
+                        h5.modal-title
+                          center Summary
+                        button.close(type='button', data-dismiss='modal', aria-label='Close')
+                      .modal-body
+                        .row
+                          .col-md-5
+                            h4
+                              strong Name: 
+                                a#customerName
+                        hr
+                        .row
+                          .col-md-10
+                            p Registration for Loyalty Membership
+                        .row
+                          .col-md-4
+                          .col-md-6
+                            h3
+                              strong#TotalPrice
+                              input.totalPrice(type='' value='')
+
+                        hr
+                        .row
+                          .col-md-5
+                            .form-group.has-default.bmd-form-group
+                              label Amount Received:
+                              .input-group
+                                span.input-group-addon ₱  
+                                input.form-control.amountReceived(type='number', placeholder='Amount Received' data-mask='000.000.000.000.000,00' data-mask-reverse="true")
+                                span.input-group-addon .00
+                          
+                          .col-md-5
+                            .form-group.has-default.bmd-form-group
+                              label Change: 
+                              .input-group
+                                span.input-group-addon ₱ 
+                                input.form-control.change(type='number', placeholder='Change' value='0' disabled)
+                                span.input-group-addon .00
+                        .modal-footer
+                          button.btn.btn-secondary.pull-right.btn.btn-success.btn-fill.btn-wd.buttonDone(type='button') Done
+                          button.btn.btn-secondary.pull-left.btn.btn-danger.btn-fill.btn-wd(type='button', data-dismiss='modal') Cancel
+
+                // PAYNOW AMENITY
+                #paynowAmenity.modal.fade(tabindex='-1', role='dialog' aria-labelledby='myModalLabel')
+                  .modal-dialog(role='document')
+                    .modal-content
+                      .modal-header
+                        h5.modal-title
+                          center Summary
+                        button.close(type='button', data-dismiss='modal', aria-label='Close')
+                      .modal-body
+                        .row
+                          .col-md-10
+                            h4
+                              strong Name: 
+                                a#Name
+                        hr
+                        .row
+                          .col-md-15
+                            .panel-info
+                              .panel-heading 
+                                center Privelage to use all amenity.
+                        .row
+                          .col-md-10
+                            h4 Total Guest: 
+                                a#EntranceFee
+                                  strong#numberOfGuest 
+                        .row
+                          .col-md-4
+                          .col-md-6
+                            h3
+                              strong#TotalAmenityPrice
+                              input.totalAmenityPrice(type='hidden' value='')
+
+                        hr
+                        .row
+                          .col-md-5
+                            .form-group.has-default.bmd-form-group
+                              label Amount Received:
+                              .input-group
+                                span.input-group-addon ₱  
+                                input.form-control.amountAmenityReceived(type='number', placeholder='Amount Received' data-mask='000.000.000.000.000,00' data-mask-reverse="true")
+                                span.input-group-addon .00
+                          
+                          .col-md-5
+                            .form-group.has-default.bmd-form-group
+                              label Change: 
+                              .input-group
+                                span.input-group-addon ₱ 
+                                input.form-control.changeAmenity(type='number', placeholder='Change' value='0' disabled)
+                                span.input-group-addon .00
+                        .modal-footer
+                          button.btn.btn-secondary.pull-right.btn.btn-success.btn-fill.btn-wd.buttonAmenityDone(type='button') Done
+                          button.btn.btn-secondary.pull-left.btn.btn-danger.btn-fill.btn-wd(type='button', data-dismiss='modal') Cancel
+            
+        footer.footer
+          .container-fluid
+            .copyright.pull-right
+              | © 
+              script.
+                document.write(new Date().getFullYear())
+              | , made with 
+              i.fa.fa-heart.heart
+              |  by 
+              a(href='#') TEAM MBAY
+  .fixed-plugin
+  // Core JS Files. Extra: TouchPunch for touch library inside jquery-ui.min.js
+  script(src='/assets/paperDashboardPro/js/jquery-3.1.1.min.js', type='text/javascript')
+  script(src='/assets/paperDashboardPro/js/jquery-ui.min.js', type='text/javascript')
+  script(src='/assets/paperDashboardPro/js/perfect-scrollbar.min.js', type='text/javascript')
+  script(src='/assets/paperDashboardPro/js/bootstrap.min.js', type='text/javascript')
+  // Forms Validations Plugin
+  script(src='/assets/paperDashboardPro/js/jquery.validate.min.js')
+  // Promise Library for SweetAlert2 working on IE
+  script(src='/assets/paperDashboardPro/js/es6-promise-auto.min.js')
+  // Plugin for Date Time Picker and Full Calendar Plugin
+  script(src='/assets/paperDashboardPro/js/moment.min.js')
+  // Date Time Picker Plugin is included in this js file
+  script(src='/assets/paperDashboardPro/js/bootstrap-datetimepicker.js')
+  // Select Picker Plugin
+  script(src='/assets/paperDashboardPro/js/bootstrap-selectpicker.js')
+  // Switch and Tags Input Plugins
+  script(src='/assets/paperDashboardPro/js/bootstrap-switch-tags.js')
+  // Circle Percentage-chart
+  script(src='/assets/paperDashboardPro/js/jquery.easypiechart.min.js')
+  // Charts Plugin
+  script(src='/assets/paperDashboardPro/js/chartist.min.js')
+  // Notifications Plugin
+  script(src='/assets/paperDashboardPro/js/bootstrap-notify.js')
+  // Sweet Alert 2 plugin
+  script(src='/assets/paperDashboardPro/js/sweetalert.js')
+  // Wizard Plugin
+  script(src='/assets/paperDashboardPro/js/jquery.bootstrap.wizard.min.js')
+  // Bootstrap Table Plugin
+  script(src='/assets/paperDashboardPro/js/bootstrap-table.js')
+  // Plugin for DataTables.net
+  script(src='/assets/paperDashboardPro/js/jquery.datatables.js')
+  // Full Calendar Plugin
+  script(src='/assets/paperDashboardPro/js/fullcalendar.min.js')
+  // Paper Dashboard PRO Core javascript and methods for Demo purpose
+  script(src='/assets/paperDashboardPro/js/paper-dashboard.js')
+  // Sharrre Library
+  script(src='/assets/paperDashboardPro/js/jquery.sharrre.js')
+  // Paper Dashboard PRO DEMO methods, don't include it in your project!
+  script(src='/assets/paperDashboardPro/js/demo.js')
+  //- PASSWORD VALIDATION
+  script.
+    $(document).ready(function(){
+      // FIRST PASSWORD
+      $('#password1').on('change paste keyup', function(){
+        $('#ValidLength').empty()
+        if($(this).val() != 0)
+        {
+          $('#password3').attr('disabled',false)
+        }
+        else
+        {
+          $('#password3').attr('disabled',true)
+          $('#password3').val('')
+        }
+        if($(this).val().length == 7 || $(this).val().length == 8 || $(this).val().length == 9)
+        {
+          $('#ValidLength').append('Passwords is medium')
+          $('#ValidLength').css('color','orange')
+        }
+        else if($(this).val().length <= 7)
+        {
+          $('#ValidLength').append('Passwords is too short')
+          $('#ValidLength').css('color','red')
+          $('#password3').attr('disabled',true)
+        }
+        else if($(this).val().length >= 10 )
+        {
+          $('#ValidLength').append('Passwords is strong')
+          $('#ValidLength').css('color','green')
+        }
+
+        if($(this).val()==0)
+        {
+          $('#ValidLength').empty()
+          $('#ValidPass').empty()
+        }
+      })
+      // SECOND PASSWORD
+      $('#password3').on('change paste keyup', function(){
+          $('#ValidPass').empty()
+        if($(this).val() != $('#password1').val())
+        {
+          $('#ValidPass').append(`Passwords is not match`)
+          $('#ValidPass').css('color','red')
+        }
+        else if($(this).val() == $('#password1').val())
+        {
+          $('#ValidPass').append(`Passwords is match`)
+          $('#ValidPass').css('color','green')
+        }
+        if($(this).val().length == 0)
+        {
+          $('#ValidPass').empty()
+        }
+      })
+    })
+
+    // USERNAME VALIDATION
+    $('#usernameReg').on('change paste keyup',function(){
+      $('#ValidUsername').empty()
+      var username = $(this).val()
+        if(username.length <= 5 )
+        {
+          $('#ValidUsername').append('Username is too short')
+          $('#ValidUsername').css('color','red')
+        }
+        if (username.length == 0)
+        {
+          $('#ValidUsername').empty()
+        }
+    })
+
+  //- REGISTRATION FOR LOYALTY
+  script.
+    $(document).ready(function(){
+      $('.loyaltyRegistrationButton').click(function(){
+        var cust_id = $(this).val()
+        var cust_name = $(`.name[id='${cust_id}']`).val()
+        $('#registerLoyalty').modal('show')
+        $('#titleCustomerName').append(`${cust_name}`)
+        $('#registerLoyalty').on('hidden.bs.modal', function (){
+        $('#titleCustomerName').empty()
+        });
+
+      // SUBMIT BUTTON
+      $('.buttonRegisterSubmit').click(function(){
+        var password1 = $('#password1').val()
+        var password3 = $('#password3').val()
+        var username = $('#usernameReg').val()
+        var scriptSession = !{JSON.stringify(reqSession)};
+        var membership_fee = scriptSession.utilities[0].membership_fee
+        var valid =  scriptSession.utilities[0].membership_validity
+        var validity = moment(new Date()).format('MMMM DD, YYYY')
+            validity = moment(validity).add(valid,'months').format('MMMM DD, YYYY')
+            
+            
+        if(password1 == password3 && password1 != 0 && password3 != 0)
+        {
+          swal({
+            title:'Are you sure?',
+            icon: 'warning'
+          }).then(function(submit){
+            if(submit)
+            {
+              swal({
+                title: "Pay now or pay later?",
+                icon: 'info',
+                buttons: ['Pay Later',"Pay Now"]
+              }).then(function(PayNow){
+                if(PayNow)
+                {
+                  console.log(cust_name)
+                  $('#payment').modal('show')
+                  $('#customerName').append(`${cust_name}`)
+                  $('#TotalPrice').append(`Total Price: ₱${membership_fee}.00`)
+                  $('.totalPrice').val(membership_fee)
+
+                  $('.buttonDone').click(function(){
+                    if($('.amountReceived').val()==0)
+                    {
+                      swal({
+                        title: "Amount received is 0.",
+                        icon: 'warning'
+                      })
+                    }
+                    else if($('.amountReceived').val() < $('.totalPrice').val())
+                    {
+                      swal({
+                        title: "The amount received is insuficient.",
+                        icon: 'warning'
+                      })
+                    }
+                    else if($('.amountReceived').val() >= $('.totalPrice').val())
+                    {
+                      swal({
+                        title: "Are you sure?",
+                        icon: 'info'
+                      }).then(function(sure){
+                        if(sure)
+                        {
+                          $.post('./RegisterCommonToLoyaltyPaynow',{cust_id,username,password1,validity,membership_fee}).done(function(data){
+                            if(data.alertDesc==0)
+                            {
+                              swal({
+                                title: 'Success',
+                                text: cust_name+' is now a loyalty member.',
+                                icon: 'success'
+                              }).then(function(){
+                                location.reload()
+                              })
+                            }
+                            else if(data.alertDesc == 1)
+                            {
+                              swal({
+                                title: 'ERROR',
+                                icon: 'error'
+                              })
+                            }
+                            else if(data.alertDesc==2)
+                            {
+                              swal({
+                                title:'Oops',
+                                text: username+' already exists.',
+                                icon: 'warning'
+                              })
+                            }
+                          })
+                        }
+                      })
+                    }
+                  })
+                }
+                else
+                {
+                  
+                  swal({
+                      title: "Are you sure?",
+                      icon: 'info'
+                    }).then(function(sure){
+                      if(sure)
+                      {
+                        $.post('./RegisterCommonToLoyalty',{cust_id,username,password1,validity,membership_fee}).done(function(data){
+                          if(data.alertDesc==0)
+                          {
+                            swal({
+                              title: 'Success',
+                              text: cust_name+' is now a loyalty member.',
+                              icon: 'success'
+                            }).then(function(){
+                              location.reload()
+                            })
+                          }
+                          else if(data.alertDesc == 1)
+                          {
+                            swal({
+                              title: 'ERROR',
+                              icon: 'error'
+                            })
+                          }
+                          else if(data.alertDesc==2)
+                          {
+                            swal({
+                              title:'Oops',
+                              text: username+' already exist.',
+                              icon: 'warning'
+                            })
+                          }
+                        })
+                      }
+                    })
+                }
+              })
+            }
+            
+          })
+        }
+        if(password1 == 0 && password3 ==0 && username ==0 || password1 == 0 || password3 ==0 || username ==0)
+        {
+          swal({
+              title: 'Please double check the fields.',
+              text: 'Make sure all required fields have value.', 
+              icon: 'warning'
+            })
+        }
+    })
+      })
+    })
+
+  //- COMPUTATION FOR CHANGE
+  script.
+    $(document).ready(function(){
+      $('.amountReceived').on('change paste keyup',function(){
+        var totalPrice = $('.totalPrice').val()
+        var input = $('.amountReceived').val()
+        if($('.amountReceived').val()==0)
+          {
+            $('.change').val(0)
+          }
+        else
+        {
+          input -= parseFloat(totalPrice)
+          $('.change').val(input)
+        }
+      })
+    })
+
+
+  //- AMENITY
+  script.
+    $(document).ready(function(){
+      $('.amenityButton').click(function(){
+        var id = $(this).val()
+        var cust_name = $(`.name[id='${id}'`).val()
+        $('#amenityOnly').modal('show')
+        $('#custName').append(`${cust_name}`)
+
+        // PROCEED
+        $('.proceedButton').click(function(){
+          var guest_quantity = $('.quantityGuest').val()
+          var scriptSession = !{JSON.stringify(reqSession)};
+          var entrance_fee = scriptSession.utilities[0].entrance_fee
+              entrance_fee_total = parseInt(guest_quantity) * parseFloat(entrance_fee)
+          swal({
+            title: guest_quantity+' Guest?',
+            text: ' Are you sure?',
+            icon: 'info',
+            buttons: ['No','Yes'],
+          }).then(function(Yes){
+            if(Yes)
+            {
+              swal({
+                title: "Pay now or pay later?",
+                icon: 'info',
+                buttons: ['Pay Later',"Pay Now"],
+              }).then(function(PayNow){
+                if(PayNow)
+                {
+                  $('#paynowAmenity').modal('show')
+                  $('#Name').append(`${cust_name}`)
+                  $('#numberOfGuest').append(`${guest_quantity} x `)
+                  $('#EntranceFee').append(`₱${entrance_fee}.00`)
+
+                  $('.totalAmenityPrice').val(entrance_fee_total)
+                  $('#TotalAmenityPrice').append(`Total Price: ₱${entrance_fee_total}.00`)
+
+                  // BUTTON AMENITY DONE
+
+                  $('.buttonAmenityDone').click(function(){
+                    var amount_received = $('.amountAmenityReceived').val()
+                    var total_price = $('.totalAmenityPrice').val()
+                    
+                    console.log('AMOUNT RECEIVED', amount_received)
+                    console.log('TOTAL PRICE', total_price)
+
+                    console.log(amount_received >= total_price)
+                    if(amount_received == 0)
+                    {
+                      swal({
+                        title: "Amount received is 0.",
+                        icon: 'warning'
+                      })
+                    }
+                    else if(parseFloat(amount_received) < parseFloat(total_price))
+                    {
+                      swal({
+                        title: "The amount received is insuficient.",
+                        icon: 'warning'
+                      })
+                    }
+                    else if(parseFloat(amount_received) >= parseFloat(total_price))
+                    {
+                      swal({
+                        title: "Are you sure?",
+                        icon: 'info'
+                      }).then(function(sure){
+                        if(sure)
+                        {
+                          $.post('./AmenityPayNow',{
+                            cust_id: id,
+                            guest_quantity,
+                            entrance_fee_total
+                          }).done(function(data){
+                            if(data.alertDesc==0)
+                            {
+                              swal({
+                                title: "Success",
+                                icon: 'success'
+                              }).then(function(){
+                                location.reload();
+                              })
+                            }
+                            else
+                            {
+                              swal({
+                                title: "ERROR",
+                                icon: 'error'
+                              })
+                            }
+                          })
+                        }
+                      })
+                    }
+                  })
+
+                }
+                else
+                {
+                  alert("PAYLATER")
+                  $.post('./AmenityPayLater',{
+                            cust_id: id,
+                            guest_quantity,
+                            entrance_fee_total
+                          }).done(function(data){
+                            if(data.alertDesc==0)
+                            {
+                              swal({
+                                title: "Success",
+                                icon: 'success'
+                              }).then(function(){
+                                location.reload();
+                              })
+                            }
+                            else
+                            {
+                              swal({
+                                title: "ERROR",
+                                icon: 'error'
+                              })
+                            }
+                  })
+                }
+              })
+            }
+            else
+            {
+
+            }
+          })
+        })
+
+
+
+
+         $('#amenityOnly').on('hidden.bs.modal', function (){
+        $('#custName').empty()
+
+        
+        
+        });
+      })
+    })
+  
+  //- COMPUTATION FOR CHANGE[AMENITY]
+  script.
+    $(document).ready(function(){
+      $('.amountAmenityReceived').on('change paste keyup',function(){
+        var totalPrice = $('.totalAmenityPrice').val()
+        var input = $('.amountAmenityReceived').val()
+        if($('.amountAmenityReceived').val()==0)
+          {
+            $('.changeAmenity').val(0)
+          }
+        else
+        {
+          input -= parseFloat(totalPrice)
+          $('.changeAmenity').val(input)
+        }
+      })
+    })
+
+
+  //- RESERVATION 
+  script.
+    $(document).ready(function(){
+      $('.reserveButton').click(function(){
+        var id = $(this).val()
+        var name = $(`.name[id='${id}']`).val()
+
+        $('#hello').append(`(${name})`)
+        $('#ReservationModal').on('hidden.bs.modal', function (){
+          $('#hello').empty()
+        });
+        $('#ReservationModal').modal('show')
+        $('input[type="radio"]').click(function(e){
+        if(e.target.checked)
+        {
+        $('#reservationFooter').empty()
+          if($(this).val() == "single")
+          {
+            $('#Multiple').css('display','none')
+            $('#reservationFooter').empty()
+          //-  alert("single")
+            $('.buttonAdd').attr('disabled', true)
+            //- $('#reservationFooter').append(`
+            //- <a class="btn btn-secondary btn-info btn-fill" href="selectDate?id=${id}&reservetype=single" stlye="margin-right: 15px">Next</a>
+            //- <button class="btn btn-secondary pull-left btn btn-danger btn-fill btn-wd" type="button" data-dismiss="modal">Cancel</button>`)
+          }
+          else if($(this).val()=="multiple")
+          {
+            $('#Multiple').css('display','block')
+            $('button[id="add"]').click(function(){
+            $('#reservationFooter').empty()
+            var male=$('.male[name="quantMale"]').val()
+            var female=$('.female[name="quantFemale"]').val()
+            total = parseInt(male) + parseInt(female)
+            $('#reservationFooter').append(`
+            <button class="btn btn-secondary btn-info btn-fill total" stlye="margin-right: 15px">Next</a>
+            <button class="btn btn-secondary pull-left btn btn-danger btn-fill btn-wd" type="button" data-dismiss="modal">Cancel</button>`)
+            $(document).on('click', '.total', function(){
+              $('#reservationFooter').empty()
+              var scriptSession = !{JSON.stringify(reqSession)};
+              var max_guest =  scriptSession.utilities.max_guest
+               if(total > max_guest)
+               {
+                swal({
+                  title: "Not allowed.",
+                  icon: 'warning'
+                }).then(function(){
+                $('#reservationFooter').append(`
+            <button class="btn btn-secondary btn-info btn-fill total" stlye="margin-right: 15px">Next</a>
+            <button class="btn btn-secondary pull-left btn btn-danger btn-fill btn-wd" type="button" data-dismiss="modal">Cancel</button>`)
+
+                })
+               }
+               else
+               {
+                swal({
+                  title: "Confirmation",
+                  text: male+" Male & "+female+" Female",
+                  icon: "warning",
+                  buttons: [true,"Confirm"]
+                  }).then(function(confirm){
+                    if(confirm)
+                    {
+                      location.href=`selectDate?id=${id}&reservetype=multiple&male=${male}&female=${female}`
+                    }
+                    else
+                    {
+                    $('.male').val('0')
+                    $('.female').val('0')
+                    $('#reservationFooter').append(`
+                    <a class="btn btn-secondary btn-info btn-fill" href="selectDate?id=${id}&reservetype=single&male=0&female=0" stlye="margin-right: 15px">Next</a>
+                    <button class="btn btn-secondary pull-left btn btn-danger btn-fill btn-wd" type="button" data-dismiss="modal">Cancel</button>`)
+                    }
+                  })
+               }
+            
+            })  
+            
+            })
+            $('.buttonAdd').attr('disabled',false)
+          }
+         }
+        $('#reservationFooter').append(`
+        <a class="btn btn-secondary btn-info btn-fill" href="selectDate?id=${id}&reservetype=single&male=0&female=0" stlye="margin-right: 15px">Next</a>
+        <button class="btn btn-secondary pull-left btn btn-danger btn-fill btn-wd" type="button" data-dismiss="modal">Cancel</button>`)
+        })
+        $('#reservationFooter').append(`
+        <a class="btn btn-secondary btn-info btn-fill" href="selectDate?id=${id}&reservetype=single&male=0&female=0" stlye="margin-right: 15px">Next</a>
+        <button class="btn btn-secondary pull-left btn btn-danger btn-fill btn-wd" type="button" data-dismiss="modal">Cancel</button>`)
+        $('#ReservationModal').on('hidden.bs.modal', function (){
+          $('#reservationFooter').empty()
+        })
+      })
+    })
+  script.
+    $(document).ready(function(){
+      $('.buttonDelete').click(function(){
+        var cust_id = $(this).val()
+        var cust_name =$(`.name[id='${cust_id}']`).val()
+        swal({
+          title: "Are you sure? Do you want to delete "+cust_name,
+          text: "Once deleted, you will not be able to recover this file!",
+          icon: "warning",
+          buttons: [true,"Yes"],
+          dangerMode: true,
+        })
+        .then((willDelete) => {
+          if(willDelete)
+          {
+              swal({
+              title: 'Please enter the administrator password.',
+              icon: "warning",
+              content: "input",
+              buttons: [true,"Confirm"],
+              dangerMode: true,
+            }).then((confirm)=>{
+              if(confirm)
+              {
+                var admin_password = $('.swal-content__input').val()
+                $.post('/frontdesk/DeleteCustomer',{admin_password,cust_id}).done(function(data){
+                  if(data.alertDesc==0)// IF SUCCESS
+                  {
+                    swal({
+                      title: 'Success',
+                      text: cust_name+' is deleted',
+                      icon: 'success'
+                    }).then(function(){
+                      location.reload()
+                    })
+                  }
+                  else if(data.alertDesc==1)// IF NOT SUCCESS
+                  {
+                    swal({
+                      title: 'Error',
+                      text: cust_name+' is not deleted.',
+                      icon: 'error'
+                    })
+                  }
+                  else if(data.alertDesc==2)// IF INCORRECT PASSWORD
+                  {
+                    swal({
+                      title: 'Error',
+                      text: 'The administrator password is incorrect.',
+                      icon: 'error'
+                    })
+                  }
+                })
+              }
+            });
+            $('.swal-content__input').attr('type', 'password')
+          }
+        })
+      })
+    })
+  
+  script.
+    $(document).ready(function(){
+        $('#checkbox1').on('change.bootstrapSwitch', function(e){
+          if(e.target.checked==false)
+          {
+            $("#username").prop('disabled', true);
+            $("#password").prop('disabled', true);
+            $("#password2").prop('disabled', true);
+          }
+          else if(e.target.checked==true)
+          {
+            $("#username").prop('disabled', false);
+            $("#password").prop('disabled', false);
+            $("#password2").prop('disabled', false);
+          }
+        });
+    })
+  script.
+    $(document).ready(function(){
+      $('.logout').click(function(){
+            swal({
+        title: "Are you sure?",
+        text: "Do you want to log out?",
+        icon: "warning",
+        buttons: true,
+        dangerMode: true,
+      })
+      .then((willDelete) => {
+        if (willDelete) {
+          $.post('/frontdesk/logout')
+          location.reload()
+        } 
+      });
+      })
+      $('.submitButton').click(function(){
+        if($("#checkbox1").is(':checked'))
+        {
+        var newDate= $('#calendar').val()
+        var vals = newDate.split('-');
+        var year = vals[2];
+        var month = vals[0];
+        var date = vals[1];
+        var dateNow = new Date()
+        var scriptSession = !{JSON.stringify(reqSession)};
+        var membership_validity= scriptSession.utilities.membership_validity
+        console.log(scriptSession)
+        var membershipDate = moment(dateNow).add(membership_validity,'months').format('MMMM DD, YYYY')
+        $.post('/frontdesk/Home/newCustomer/Loyalty',{
+          firstname:$('#firstname').val(),
+          lastname:$('#lastname').val(),
+          middlename:$('#middlename').val(),
+          gender:$("input[name='gender']:checked").val(),
+          contact_no:$('#contact_no').val(),
+          address:$('#address').val(),
+          medical_history:$('#medical_history').val(),
+          username:$('#username').val(),
+          password:$('#password').val(),
+          newDate, year, month, date, membershipDate
+        }).done(function(data){
+          if(data.alertSuccess == 1)
+          {
+            swal({
+              title:'Success', 
+              text:'New guest added.', 
+              icon:'success'
+              }).then(function(){
+                location.reload()
+              })
+          }
+          else
+            {
+              swal({
+                title:'Not Success', 
+                text:'Customer already exist.', 
+                icon:'warning'
+                })
+            }
+        })
+        }
+        else
+        {
+          var newDate= $('#calendar').val()
+          var vals = newDate.split('-');
+          var year = vals[2];
+          var month = vals[0];
+          var date = vals[1];
+          $.post('/frontdesk/Home/newCustomer',{
+            firstname:$('#firstname').val(),
+            lastname:$('#lastname').val(),
+            middlename:$('#middlename').val(),
+            gender:$("input[name='gender']:checked").val(),
+            contact_no:$('#contact_no').val(),
+            address:$('#address').val(),
+            medical_history:$('#medical_history').val(),
+            newDate, year, month, date
+          }).done(function(data){
+            if(data.alertSuccess==1)
+            {
+              swal({
+                title:'Success', 
+                text:'New guest added.', 
+                icon:'success'
+                }).then(function(){
+                  location.reload()
+              })
+            }
+            else 
+            {
+              swal({
+                title:'Not Success', 
+                text:'Customer already exist.', 
+                icon:'warning'
+                })
+            }
+          })
+        }
+      })
+    })
+
+
+
+  script.
+    $(function () {
+      var date = new Date()
+      var year = date.getFullYear()
+      var year2 = year - "18"
+      var year3 = new Date(year2, 00,01)
+      $('.datepicker').datetimepicker({
+        viewMode: 'years',
+        format: 'MM-DD-YYYY',
+        maxDate: year3,
+        icons: {
+          time: "fa fa-clock-o",
+          date: "fa fa-calendar",
+          up: "fa fa-chevron-up",
+          down: "fa fa-chevron-down",
+          previous: 'fa fa-chevron-left',
+          next: 'fa fa-chevron-right',
+          today: 'fa fa-screenshot',
+          clear: 'fa fa-trash',
+          close: 'fa fa-remove'
+          },
+          widgetPositioning:{"horizontal":"auto",
+          "vertical":"auto"}
+        });
+    })
+
+
+        
+      $('.datepicker').on('dp.hide', function(event){
+        setTimeout(function(){
+          $('.datepicker').data('DateTimePicker').viewMode('years');
+        },1);
+      });
+  script.
+    $(document).ready(function() {
+      var interval = setInterval(function() {
+          var momentNow = moment();
+          $('#date-part').html(momentNow.format('YYYY MMMM DD') + ' '
+                              + momentNow.format('dddd')
+                              .substring(0,3).toUpperCase());
+          $('#time-part').html(momentNow.format('A hh:mm:ss'));
+      }, 100);
+      
+      $('#stop-interval').on('click', function() {
+          clearInterval(interval);
+      });
+      $('#calendar').val('')
+      });
+
+
+  script(type='text/javascript').
+    $(document).ready(function(){
+    demo.initOverviewDashboard();
+    demo.initCirclePercentage();
+    });
+  script(type='text/javascript').
+    $(document).ready(function() {
+    $('#datatablesCommon').DataTable({
+    "pagingType": "full_numbers",
+    "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+    responsive: true,
+    language: {
+    search: "_INPUT_",
+    searchPlaceholder: "Search records",
+    }
+    });
+    });
+  script(type='text/javascript').
+    $(document).ready(function() {
+    $('#datatablesLoyalty').DataTable({
+    "pagingType": "full_numbers",
+    "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+    responsive: true,
+    language: {
+    search: "_INPUT_",
+    searchPlaceholder: "Search records",
+    }
+    });
+    });
+  script(type='text/javascript').
+    $(document).ready(function(){
+    demo.initWizard();
+    });
+  script.
+    $().ready(function(){
+    $('#registerFormValidation').validate();
+    $('#loginFormValidation').validate();
+    $('#allInputsFormValidation').validate();
+        });
+  script.
+        //plugin bootstrap minus and plus
+    //http://jsfiddle.net/laelitenetwork/puJ6G/
+    $('.btn-numberMale').click(function(e){
+        e.preventDefault();
+        
+        fieldName = $(this).attr('data-field');
+        type      = $(this).attr('data-type');
+        var input = $("input[name='"+fieldName+"']");
+        var currentVal = parseInt(input.val());
+        if (!isNaN(currentVal)) {
+            if(type == 'minus') {
+                
+                if(currentVal > input.attr('min')) {
+                    input.val(currentVal - 1).change();
+                } 
+                if(parseInt(input.val()) == input.attr('min')) {
+                    $(this).attr('disabled', true);
+                }
+
+            } else if(type == 'plus') {
+
+                if(currentVal < input.attr('max')) {
+                    input.val(currentVal + 1).change();
+                }
+                if(parseInt(input.val()) == input.attr('max')) {
+                    $(this).attr('disabled', true);
+                }
+
+            }
+        } else {
+            input.val(0);
+        }
+    });
+    $('.input-number').focusin(function(){
+      $(this).data('oldValue', $(this).val());
+    });
+    $('.input-number').change(function() {
+        
+        minValue =  parseInt($(this).attr('min'));
+        maxValue =  parseInt($(this).attr('max'));
+        valueCurrent = parseInt($(this).val());
+        
+        name = $(this).attr('name');
+        if(valueCurrent >= minValue) {
+            $(".btn-numberMale[data-type='minus'][data-field='"+name+"']").removeAttr('disabled')
+        } else {
+            alert('Sorry, the minimum value was reached');
+            $(this).val($(this).data('oldValue'));
+        }
+        if(valueCurrent <= maxValue) {
+            $(".btn-numberMale[data-type='plus'][data-field='"+name+"']").removeAttr('disabled')
+        } else {
+            alert('Sorry, the maximum value was reached');
+            $(this).val($(this).data('oldValue'));
+        }
+        
+            
+        });
+        $(".input-number").keydown(function (e) {
+                // Allow: backspace, delete, tab, escape, enter and .
+                if ($.inArray(e.keyCode, [46, 8, 9, 27, 13, 190]) !== -1 ||
+                    // Allow: Ctrl+A
+                    (e.keyCode == 65 && e.ctrlKey === true) || 
+                    // Allow: home, end, left, right
+                    (e.keyCode >= 35 && e.keyCode <= 39)) {
+                        // let it happen, don't do anything
+                        return;
+                }
+                // Ensure that it is a number and stop the keypress
+                if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
+                    e.preventDefault();
+                }
+          });
+  
+  
+  script.
+        //plugin bootstrap minus and plus
+    //http://jsfiddle.net/laelitenetwork/puJ6G/
+    $('.btn-number').click(function(e){
+        e.preventDefault();
+        
+        fieldName = $(this).attr('data-field');
+        type      = $(this).attr('data-type');
+        var input = $("input[name='"+fieldName+"']");
+        var currentVal = parseInt(input.val());
+        if (!isNaN(currentVal)) {
+            if(type == 'minus') {
+                
+                if(currentVal > input.attr('min')) {
+                    input.val(currentVal - 1).change();
+                } 
+                if(parseInt(input.val()) == input.attr('min')) {
+                    $(this).attr('disabled', true);
+                }
+
+            } else if(type == 'plus') {
+
+                if(currentVal < input.attr('max')) {
+                    input.val(currentVal + 1).change();
+                }
+                if(parseInt(input.val()) == input.attr('max')) {
+                    $(this).attr('disabled', true);
+                }
+
+            }
+        } else {
+            input.val(0);
+        }
+    });
+    $('.input-number').focusin(function(){
+      $(this).data('oldValue', $(this).val());
+    });
+    $('.input-number').change(function() {
+        
+        minValue =  parseInt($(this).attr('min'));
+        maxValue =  parseInt($(this).attr('max'));
+        valueCurrent = parseInt($(this).val());
+        
+        name = $(this).attr('name');
+        if(valueCurrent >= minValue) {
+            $(".btn-number[data-type='minus'][data-field='"+name+"']").removeAttr('disabled')
+        } else {
+            alert('Sorry, the minimum value was reached');
+            $(this).val($(this).data('oldValue'));
+        }
+        if(valueCurrent <= maxValue) {
+            $(".btn-number[data-type='plus'][data-field='"+name+"']").removeAttr('disabled')
+        } else {
+            alert('Sorry, the maximum value was reached');
+            $(this).val($(this).data('oldValue'));
+        }
+        
+            
+        });
+        $(".input-number").keydown(function (e) {
+                // Allow: backspace, delete, tab, escape, enter and .
+                if ($.inArray(e.keyCode, [46, 8, 9, 27, 13, 190]) !== -1 ||
+                    // Allow: Ctrl+A
+                    (e.keyCode == 65 && e.ctrlKey === true) || 
+                    // Allow: home, end, left, right
+                    (e.keyCode >= 35 && e.keyCode <= 39)) {
+                        // let it happen, don't do anything
+                        return;
+                }
+                // Ensure that it is a number and stop the keypress
+                if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
+                    e.preventDefault();
+                }
+          });
+  script.
+    $(document).ready(function(){
+      $('.viewDetails').click(function(){
+        var customer_id = $(this).attr('customer_id')
+        
+        $.post('./Customer/viewCustomerDetails',{customer_id}).done(function(data){
+          console.log(data)
+          $('#viewCustomerDetails').modal('show')
+          $('#titleName').append(`${data[0].cust_fname} ${data[0].cust_mname} ${data[0].cust_lname}`)
+          
+          
+          var birthday =data[0].cust_birthMonth+'-'+data[0].cust_birthDate+'-'+data[0].cust_birthYear
+          console.log(birthday)
+            birthday = moment(birthday).format('MMMM DD, YYYY')
+          $('#Details').append(`<p>Address: ${data[0].cust_address}
+          <p>Birthday: ${birthday} 
+          <p>Contact No: ${data[0].cust_contact_no}`)
+        })
+      $('#viewCustomerDetails').on('hidden.bs.modal', function (){
+          $('#titleName').empty(),
+          $('#Details').empty()
+        });
+      })
+    })
+  script.
+    $(document).ready(function(){
+      $('.viewLoyaltyDetails').click(function(){
+        var customer_id = $(this).attr('customer_id')
+        
+        $.post('./Customer/viewCustomerLoyaltyDetails',{customer_id}).done(function(data){
+          console.log(data)
+          $('#viewCustomerLoyaltyDetails').modal('show')
+          $('#titleLoyaltyName').append(`${data[0].cust_fname} ${data[0].cust_mname} ${data[0].cust_lname}`)
+          
+          
+          var birthday =data[0].cust_birthMonth+'-'+data[0].cust_birthDate+'-'+data[0].cust_birthYear
+          console.log(birthday)
+            birthday = moment(birthday).format('MMMM DD, YYYY')
+          $('#LoyaltyDetails').append(`<p>Address: ${data[0].cust_address}
+          <p>Birthday: ${birthday} 
+          <p>Contact No: ${data[0].cust_contact_no}
+          <p>Points:${data[0].member_points}
+          <p>Membership Expiration: ${data[0].membership_validity}`)
+        })
+      $('#viewCustomerLoyaltyDetails').on('hidden.bs.modal', function (){
+          $('#titleLoyaltyName').empty(),
+          $('#LoyaltyDetails').empty()
+        });
+      })
+    })

@@ -1,0 +1,475 @@
+doctype html
+html(lang='en')
+  head
+    meta(charset='utf-8')
+    link(rel='apple-touch-icon', sizes='76x76', href='/assets/paperDashboardPro/img/apple-icon.png')
+    link(rel='icon', type='image/png', sizes='96x96', href='/assets/paperDashboardPro/img/favicon.png')
+    meta(http-equiv='X-UA-Compatible', content='IE=edge,chrome=1')
+    title #{reqSession.utilities.company_name}
+    // Canonical SEO
+    link(rel='canonical', href='http://www.creative-tim.com/product/paper-dashboard-pro')
+    meta(content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0', name='viewport')
+    meta(name='viewport', content='width=device-width')
+    // Bootstrap core CSS
+    link(href='/assets/paperDashboardPro/css/bootstrap.min.css', rel='stylesheet')
+    // Paper Dashboard core CSS
+    link(href='/assets/paperDashboardPro/css/paper-dashboard.css', rel='stylesheet')
+    // CSS for Demo Purpose, don't include it in your project
+    link(href='/assets/paperDashboardPro/css/demo.css', rel='stylesheet')
+    // Fonts and icons
+    link(href='http://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css', rel='stylesheet')
+    link(href='https://fonts.googleapis.com/css?family=Muli:400,300', rel='stylesheet', type='text/css')
+    link(href='/assets/paperDashboardPro/css/themify-icons.css', rel='stylesheet')
+  body
+    .wrapper
+      .sidebar(data-background-color='white', data-active-color='spa')
+        //
+          Tip 1: you can change the color of the sidebar's background using: data-background-color="white | brown"
+          Tip 2: you can change the color of the active button using the data-active-color="primary | info | success | warning | danger"
+        .logo
+          a.simple-text.logo-mini(href='')
+            | MBAY
+          a.simple-text.logo-normal(href='')
+            | #{reqSession.utilities.company_name}
+        .sidebar-wrapper
+          .user
+            .info
+              .photo
+                img(src='/assets/paperDashboardPro/img/icon.jpg')
+              a.collapsed(data-toggle='collapse', href='#collapseExample')
+                span
+                  | ADMINISTRATOR
+              .clearfix
+          ul.nav
+            li.active
+              a(href='./admindashboard')
+                i.ti-dashboard
+                p
+                  | Dashboard
+            li
+              a(data-toggle='collapse', href='#componentsExamples')
+                i.ti-clipboard
+                p
+                  | Maintenance
+                  b.caret
+              #componentsExamples.collapse
+                ul.nav
+                  li(style="margin-left: 5px;")
+                    a(data-toggle='collapse', href='#services')
+                      p
+                        span.sidebar-mini S
+                        | Services
+                        b(style="margin-right: 30px").caret
+                    #services.collapse
+                      ul.nav
+                        li(style="margin-left: 30px")
+                          a(href='./adminServiceType')
+                            span.sidebar-normal Service Type
+                        li(style="margin-left: 30px")
+                          a(href='./adminServices')
+                            span.sidebar-normal Services
+                        li(style="margin-left: 30px")
+                          a(href='./adminServiceDuration')
+                            span.sidebar-normal Service Duration
+                  li(style="margin-left: 5px;")
+                    a(data-toggle='collapse', href='#therapist')
+                      p
+                        span.sidebar-mini T
+                        | Therapist
+                        b(style="margin-right: 30px").caret
+                    #therapist.collapse
+                      ul.nav
+                        li(style="margin-left: 30px")
+                          a(href='./adminSpecialty')
+                            span.sidebar-normal Therapist Skills
+                        li(style="margin-left: 30px")
+                          a(href='./adminTherapist')
+                            span.sidebar-normal Therapist
+                  li(style="margin-left: 5px;")
+                    a(data-toggle='collapse', href='#packages')
+                      p
+                        | Packages
+                        span.sidebar-mini P
+                        b(style="margin-right: 30px").caret
+                    #packages.collapse
+                      ul.nav    
+                        li(style="margin-left: 30px")
+                          a(href='./adminPackages')
+                            span.sidebar-normal Packages
+                  li(style="margin-left: 5px;")
+                    a(data-toggle='collapse', href='#promos')
+                      p
+                        span.sidebar-mini P
+                        | Promos
+                        b(style="margin-right: 30px").caret
+                    #promos.collapse
+                      ul.nav
+                        li(style="margin-left: 30px")
+                          a(href='./adminPromos')
+                            span.sidebar-normal Promos
+                  li(style="margin-left: 5px;")
+                    a(data-toggle='collapse', href='#rooms')
+                      p
+                        span.sidebar-mini R
+                        | Rooms
+                        b(style="margin-right: 30px").caret
+                    #rooms.collapse
+                      ul.nav
+                        li(style="margin-left: 30px")
+                          a(href='./adminRoomType')
+                            span.sidebar-normal Room Type
+                        li(style="margin-left: 30px")
+                          a(href='./adminRooms')
+                            span.sidebar-normal Rooms
+                  li(style="margin-left: 5px;")
+                    a(data-toggle='collapse', href='#gifc')
+                      p
+                        span.sidebar-mini G
+                        | Gift Certificate
+                        b(style="margin-right: 30px").caret
+                    #gifc.collapse
+                      ul.nav
+                        li(style="margin-left: 30px")
+                          a(href='./giftcertificate')
+                            span.sidebar-normal Gift Certificate                       
+                  //-li
+                    a(href='#')
+                      span.sidebar-mini Q
+                      span.sidebar-normal Queue
+            li
+              a(href="./commission")
+                i.ti-envelope
+                p
+                  | Commission
+            li
+              a(href='./utilities')
+                i.ti-settings
+                p
+                  | Utilities
+            li
+              a(data-toggle='collapse', href='#queries')
+                i.ti-notepad
+                p
+                  | Queries
+                  b.caret
+              #queries.collapse
+                ul.nav
+                  li(style="margin-left: 30px;")
+                    a(href='./customerList')
+                      span.sidebar-mini 
+                      span.sidebar-normal Customers
+                  li(style="margin-left: 30px;")
+                    a(href='./loyaltyMembers')
+                      span.sidebar-mini 
+                      span.sidebar-normal Loyalty Members
+                  li(style="margin-left: 30px;")
+                    a(href='./servicesList')
+                      span.sidebar-mini 
+                      span.sidebar-normal Services
+                  li(style="margin-left: 30px;")
+                    a(href='./packagesList')
+                      span.sidebar-mini 
+                      span.sidebar-normal Packages
+                  li(style="margin-left: 30px;")
+                    a(href='./promoList')
+                      span.sidebar-mini 
+                      span.sidebar-normal Promos
+                  li(style="margin-left: 30px;")
+                    a(href='./therapistList')
+                      span.sidebar-mini 
+                      span.sidebar-normal Therapists
+                  li(style="margin-left: 30px;")
+                    a(href='./roomList')
+                      span.sidebar-mini 
+                      span.sidebar-normal Rooms    
+                  li(style="margin-left: 30px;")
+                    a(href='./freebiesList')
+                      span.sidebar-mini 
+                      span.sidebar-normal Freebies          
+            li
+              a(data-toggle='collapse', href='#reports')
+                i.ti-bar-chart-alt
+                p
+                  | Reports
+                  b.caret
+              #reports.collapse
+                ul.nav
+                  li(style="margin-left: 30px;")
+                    a(href='./servicesReport')
+                      span.sidebar-mini 
+                      span.sidebar-normal Services
+                  li(style="margin-left: 30px;")
+                    a(href='./packagesReport')
+                      span.sidebar-mini 
+                      span.sidebar-normal Packages
+                  li(style="margin-left: 30px;")
+                    a(href='./promosReport')
+                      span.sidebar-mini 
+                      span.sidebar-normal Promos
+                  li(style="margin-left: 30px;")
+                    a(href='./roomsReport')
+                      span.sidebar-mini 
+                      span.sidebar-normal Rooms 
+                  li(style="margin-left: 30px;")
+                    a(href='./freebiesReport')
+                      span.sidebar-mini 
+                      span.sidebar-normal Freebies
+                  li(style="margin-left: 30px;")
+                    a(href='./gcReports')
+                      span.sidebar-mini 
+                      span.sidebar-normal Gift Certificate     
+      .main-panel
+        nav.navbar.navbar-default
+          .container-fluid
+            .navbar-minimize
+              button#minimizeSidebar.btn.btn-fill.btn-icon
+                i.ti-more-alt
+            .navbar-header
+              button.navbar-toggle(type='button')
+                span.sr-only Toggle navigation
+                span.icon-bar.bar1
+                span.icon-bar.bar2
+                span.icon-bar.bar3
+              a.navbar-brand(href='#Dashboard')
+                | Dashboard
+            .collapse.navbar-collapse
+              
+              ul.nav.navbar-nav.navbar-right
+                li
+                  a.dropdown-toggle.btn-rotate(href='',data-toggle='dropdown')
+                    i.ti-settings
+                    p.hidden-md.hidden-lg
+                      | Settings
+                  ul.dropdown-menu
+                    li
+                      a.logout(style="cursor: pointer;") Log Out
+    
+        .content
+          .container-fluid
+            .row
+              .col-lg-4.col-sm-6
+                .card
+                  .card-content
+                    .row
+                      .col-xs-3
+                        .icon-big.icon-warning.text-center
+                          i.ti-user
+                      .col-xs-7
+                        .numbers
+                          p Total Guests Today
+                          | 30 Guests
+                  .card-footer
+                    hr
+                    .stats
+                      
+              .col-lg-5.col-sm-5
+                .card
+                  .card-content
+                    .row
+                      .col-xs-3
+                        .icon-big.icon-success.text-center
+                          i.ti-check
+                      .col-xs-7
+                        .numbers
+                          each therapist_count in therapist_counts
+                            p Available Therapists
+                            | #{therapist_count.total_therapist} therapist
+                  .card-footer
+                    hr
+                    .stats
+              .col-lg-3.col-sm-6
+                .card
+                  .card-content
+                    .row
+                      .col-xs-3
+                        .icon-big.icon-info.text-center
+                          i.ti-home
+                      .col-xs-8
+                        .numbers
+                          p Amenity Users
+                          |23
+                  .card-footer
+                    hr
+                    .stats
+              //- .col-lg-3.col-sm-6
+              //-   .card
+              //-     .card-content
+              //-       .row
+              //-         .col-xs-5
+              //-           .icon-big.icon-info.text-center
+              //-             i.ti-twitter-alt
+              //-         .col-xs-7
+              //-           .numbers
+              //-             p Followers
+              //-             | +45
+              //-     .card-footer
+              //-       hr
+              //-       .stats
+              //-         i.ti-reload
+              //-         |  Updated now
+            //- .row
+            //-   .col-lg-4.col-sm-6
+            //-     .card
+            //-       .card-content
+            //-         .row
+            //-           .col-xs-7
+            //-             .numbers.pull-left
+            //-               | $34,657
+            //-           .col-xs-5
+            //-             .pull-right
+            //-               span.label.label-success
+            //-                 | +18%
+            //-         h6.big-title
+            //-           | total earnings 
+            //-           span.text-muted in last
+            //-           |  ten 
+            //-           span.text-muted quarters
+            //-         #chartTotalEarnings
+            //-       .card-footer
+            //-         hr
+            //-         .footer-title Financial Statistics
+            //-         .pull-right
+            //-           button.btn.btn-info.btn-fill.btn-icon.btn-sm
+            //-             i.ti-plus
+            //-   .col-lg-4.col-sm-6
+            //-     .card
+            //-       .card-content
+            //-         .row
+            //-           .col-xs-7
+            //-             .numbers.pull-left
+            //-               | 169
+            //-           .col-xs-5
+            //-             .pull-right
+            //-               span.label.label-danger
+            //-                 | -14%
+            //-         h6.big-title
+            //-           | total subscriptions 
+            //-           span.text-muted in last
+            //-           |  7 days
+            //-         #chartTotalSubscriptions
+            //-       .card-footer
+            //-         hr
+            //-         .footer-title View all members
+            //-         .pull-right
+            //-           button.btn.btn-default.btn-fill.btn-icon.btn-sm
+            //-             i.ti-angle-right
+            //-   .col-lg-4.col-sm-6
+            //-     .card
+            //-       .card-content
+            //-         .row
+            //-           .col-xs-7
+            //-             .numbers.pull-left
+            //-               | 8,960
+            //-           .col-xs-5
+            //-             .pull-right
+            //-               span.label.label-warning
+            //-                 | ~51%
+            //-         h6.big-title
+            //-           | total downloads 
+            //-           span.text-muted in last
+            //-           |  6 years
+            //-         #chartTotalDownloads
+            //-       .card-footer
+            //-         hr
+            //-         .footer-title View more details
+            //-         .pull-right
+            //-           button.btn.btn-success.btn-fill.btn-icon.btn-sm
+            //-             i.ti-info
+            .row
+              .col-lg-3.col-sm-6
+                .card.card-circle-chart(data-background-color='blue')
+                  .card-header.text-center
+                    h5.card-title Dashboard
+                    p.description Monthly sales target
+                  .card-content
+                    #chartDashboard.chart-circle(data-percent='70') 70%
+              .col-lg-3.col-sm-6
+                .card.card-circle-chart(data-background-color='green')
+                  .card-header.text-center
+                    h5.card-title Orders
+                    p.description Completed
+                  .card-content
+                    #chartOrders.chart-circle(data-percent='34') 34%
+              .col-lg-3.col-sm-6
+                .card.card-circle-chart(data-background-color='orange')
+                  .card-header.text-center
+                    h5.card-title New Visitors
+                    p.description Out of total number
+                  .card-content
+                    #chartNewVisitors.chart-circle(data-percent='62') 62%
+              .col-lg-3.col-sm-6
+                .card.card-circle-chart(data-background-color='brown')
+                  .card-header.text-center
+                    h5.card-title Subscriptions
+                    p.description Monthly newsletter
+                  .card-content
+                    #chartSubscriptions.chart-circle(data-percent='10') 10%
+        footer.footer
+          .container-fluid
+            nav.pull-left
+            .copyright.pull-right
+              | © 
+              script.
+                document.write(new Date().getFullYear())
+              | , made with 
+              i.fa.fa-heart.heart
+              |  by 
+              a Team MBAY
+    
+  // Core JS Files. Extra: TouchPunch for touch library inside jquery-ui.min.js
+  script(src='/assets/paperDashboardPro/js/jquery-3.1.1.min.js', type='text/javascript')
+  script(src='/assets/paperDashboardPro/js/jquery-ui.min.js', type='text/javascript')
+  script(src='/assets/paperDashboardPro/js/perfect-scrollbar.min.js', type='text/javascript')
+  script(src='/assets/paperDashboardPro/js/bootstrap.min.js', type='text/javascript')
+  // Forms Validations Plugin
+  script(src='/assets/paperDashboardPro/js/jquery.validate.min.js')
+  // Promise Library for SweetAlert2 working on IE
+  script(src='/assets/paperDashboardPro/js/es6-promise-auto.min.js')
+  // Plugin for Date Time Picker and Full Calendar Plugin
+  script(src='/assets/paperDashboardPro/js/moment.min.js')
+  // Date Time Picker Plugin is included in this js file
+  script(src='/assets/paperDashboardPro/js/bootstrap-datetimepicker.js')
+  // Select Picker Plugin
+  script(src='/assets/paperDashboardPro/js/bootstrap-selectpicker.js')
+  // Switch and Tags Input Plugins
+  script(src='/assets/paperDashboardPro/js/bootstrap-switch-tags.js')
+  // Circle Percentage-chart
+  script(src='/assets/paperDashboardPro/js/jquery.easypiechart.min.js')
+  // Charts Plugin
+  script(src='/assets/paperDashboardPro/js/chartist.min.js')
+  // Notifications Plugin
+  script(src='/assets/paperDashboardPro/js/bootstrap-notify.js')
+  // Sweet Alert 2 plugin
+  script(src='/assets/paperDashboardPro/js/sweetalert.js')
+  // Wizard Plugin
+  script(src='/assets/paperDashboardPro/js/jquery.bootstrap.wizard.min.js')
+  // Bootstrap Table Plugin
+  script(src='/assets/paperDashboardPro/js/bootstrap-table.js')
+  // Plugin for DataTables.net
+  script(src='/assets/paperDashboardPro/js/jquery.datatables.js')
+  // Paper Dashboard PRO Core javascript and methods for Demo purpose
+  script(src='/assets/paperDashboardPro/js/paper-dashboard.js')
+  // Sharrre Library
+  script(src='/assets/paperDashboardPro/js/jquery.sharrre.js')
+  // Paper Dashboard PRO DEMO methods, don't include it in your project!
+  script(src='/assets/paperDashboardPro/js/demo.js')
+  script(type='text/javascript').
+    $(document).ready(function(){
+      $('.logout').click(function(){
+            swal({
+        title: "Are you sure?",
+        text: "Do you want to Log Out?",
+        icon: "warning",
+        buttons: true,
+        dangerMode: true,
+      })
+      .then((willDelete) => {
+        if (willDelete) {
+          $.post('/admin/admin/logout')
+          location.reload()
+        } 
+      });
+      })
+    demo.initOverviewDashboard();
+    demo.initCirclePercentage();
+    });

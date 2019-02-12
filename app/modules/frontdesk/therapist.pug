@@ -1,0 +1,468 @@
+doctype html
+html(lang='en')
+  head
+    meta(charset='utf-8')
+    link(rel='apple-touch-icon', sizes='76x76', href='/assets/paperDashboardPro/img/apple-icon.png')
+    link(rel='icon', type='image/png', sizes='96x96', href='/assets/paperDashboardPro/img/favicon.png')
+    meta(http-equiv='X-UA-Compatible', content='IE=edge,chrome=1')
+    title MBAY Health Spa
+    // Bootstrap core CSS
+    link(href='/assets/paperDashboardPro/css/bootstrap.min.css', rel='stylesheet')
+    // Paper Dashboard core CSS
+    link(href='/assets/paperDashboardPro/css/paper-dashboard.css', rel='stylesheet')
+    // CSS for Demo Purpose, don't include it in your project
+    link(href='/assets/paperDashboardPro/css/demo.css', rel='stylesheet')
+    // Fonts and icons
+    link(href='http://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css', rel='stylesheet')
+    link(href='https://fonts.googleapis.com/css?family=Muli:400,300', rel='stylesheet', type='text/css')
+    link(href='/assets/paperDashboardPro/css/themify-icons.css', rel='stylesheet')
+    style.
+      .dropdown-menu {
+        margin-left: -112px !important;
+      }
+  body
+    .wrapper
+      .sidebar(data-active-color='spa', style='color: white')
+        //
+          Tip 1: you can change the color of the sidebar's background using: data-background-color="white | brown"
+          Tip 2: you can change the color of the active button using the data-active-color="primary | info | success | warning | danger"
+        .logo
+          a.simple-text.logo-mini(href='http://www.creative-tim.com')
+            | CT
+          a.simple-text.logo-normal(href='http://www.creative-tim.com')
+            | MBAY Health Spa
+        .sidebar-wrapper
+          .user
+            .info
+              .photo
+                img(src='/assets/paperDashboardPro/img/icon.jpg')
+              a.collapsed(data-toggle='collapse', href='#collapseExample')
+                span
+                  | Front Desk
+              .clearfix
+          ul.nav
+            li
+              a(href='./frontdesk/home')
+                i.ti-pencil
+                p
+                  | Registration
+            li
+              a(href='./fdReservation')
+                i.ti-calendar
+                p
+                  | Reservation
+            li
+              a(href='./payment')
+                i.ti-credit-card
+                p
+                  | Payment
+            li.active
+              a(href='./therapist')
+                i.ti-user
+                p
+                  | Therapist Attendance
+            li
+              a(href='./giftcert')
+                i.ti-gift
+                p
+                  | Gift Certification      
+      .main-panel
+        nav.navbar.navbar-default
+          .container-fluid
+            .navbar-minimize
+              button#minimizeSidebar.btn.btn-fill.btn-icon
+                i.ti-more-alt
+            .navbar-header
+              button.navbar-toggle(type='button')
+                span.sr-only Toggle navigation
+                span.icon-bar.bar1
+                span.icon-bar.bar2
+                span.icon-bar.bar3
+              a.navbar-brand(href='#Dashboard')
+                | Overview
+            .collapse.navbar-collapse
+              
+              ul.nav.navbar-nav.navbar-right
+                li
+                  a.btn-rotate(href='#settings')
+                    i.ti-settings
+                    p.hidden-md.hidden-lg
+                      | Settings
+        .content
+          .container-fluid
+            .row
+              .col-md-12
+                .card
+                  .row
+                    div
+                      .card-content
+                        center
+                          h2 Therapists
+                        //
+                          <button class="btn btn-info btn-fill btn-wd" data-toggle="modal" data-target="#addNewService" style="margin-left: 20px">
+                          <span class="btn-label">
+                          <i class="fa fa-plus"></i>
+                          </span>
+                          New Guest
+                          </button>
+                  .content
+                    .container-fluid
+                      .row
+                        .col-md-12
+                          p.category  
+                          br
+                          .card
+                            .card-content
+                              .toolbar
+                                // Here you can write extra buttons/actions for the toolbar
+                              .fresh-datatables
+                                table#datatables.table.table-no-bordered.table-hover(cellspacing='0', width='100%', style='width:100%')
+                                  thead
+                                    tr
+                                      th.disabled-sorting Name
+                                      th.disabled-sorting Shift
+                                      th.disabled-sorting Status
+                                      th.disabled-sorting Time Arrived
+                                      th.disabled-sorting Actions
+                                  tfoot
+                                    tr
+                                      th.disabled-sorting Name
+                                      th.disabled-sorting Shift
+                                      th.disabled-sorting Status
+                                      th.disabled-sorting Time Arrived
+                                      th.disabled-sorting Actions
+                                  tbody
+                                    each thera in therapist
+                                      tr
+                                        td= thera.therapist_fname+" "+thera.therapist_mname+" "+thera.therapist_lname
+                                        input.name(type='hidden' value=`${thera.therapist_fname} ${thera.therapist_mname} ${thera.therapist_lname}` id=`${thera.therapist_id}`)
+                                        td= thera.therapist_shift
+                                        if(thera.availability==0)
+                                          td
+                                          td= thera.therapist_datetime_in
+                                          td
+                                            .dropdown(style="right: 10px")
+                                              button.btn.btn-simple.btn-info.btn-rotate(href='#', data-toggle='dropdown' style='left: auto; right: 13px')
+                                                i.ti-settings
+                                              ul.dropdown-menu
+                                                li
+                                                  //- a.btn.btn-simple.btn-info.reserveButton(href=`selectDate/${customer.cust_id}` stlye="margin-right: 15px")
+                                                  button.btn.btn-simple.btn-info.buttonAvailable(type='button' value=`${thera.therapist_id}`)
+                                                    span.btn-label
+                                                    i.ti-check
+                                                    |  Available
+                                                
+                                                li
+                                                  button.btn.btn-simple.btn-danger.buttonAbsent(type='button' value=`${thera.therapist_id}`)
+                                                    span.btn-label
+                                                    i.ti-close
+                                                    |  Unavailable
+                                        else if(thera.availability==1)
+                                          td Available
+                                          td= thera.therapist_datetime_in
+                                          td
+                                            .dropdown(style="right: 10px")
+                                              button.btn.btn-simple.btn-info.btn-rotate(href='#', data-toggle='dropdown' style='left: auto; right: 13px')
+                                                i.ti-settings
+                                              ul.dropdown-menu
+                                               
+                                                li
+                                                  button.btn.btn-simple.btn-warning.buttonBreak(type='button' value=`${thera.therapist_id}`)
+                                                    span.btn-label
+                                                    i.ti-time
+                                                    |  Break
+                                                li
+                                                  button.btn.btn-simple.btn-danger.buttonAbsent(type='button' value=`${thera.therapist_id}`)
+                                                    span.btn-label
+                                                    i.ti-close
+                                                    |  Unavailable
+                                        else if(thera.availability==2)
+                                          td Not Availalbe/Absent
+                                          td= thera.therapist_datetime_in
+                                          td
+                                            .dropdown(style="right: 10px")
+                                              button.btn.btn-simple.btn-info.btn-rotate(href='#', data-toggle='dropdown' style='left: auto; right: 13px')
+                                                i.ti-settings
+                                              ul.dropdown-menu
+                                                li
+                                                  //- a.btn.btn-simple.btn-info.reserveButton(href=`selectDate/${customer.cust_id}` stlye="margin-right: 15px")
+                                                  button.btn.btn-simple.btn-info.buttonAvailable(type='button' value=`${thera.therapist_id}`)
+                                                    span.btn-label
+                                                    i.ti-check
+                                                    |  Available
+                                                li
+                                                  button.btn.btn-simple.btn-warning.buttonBreak(type='button' value=`${thera.therapist_id}`)
+                                                    span.btn-label
+                                                    i.ti-time
+                                                    |  Break
+                                                li
+                                                  button.btn.btn-simple.btn-danger.buttonAbsent(type='button' value=`${thera.therapist_id}`)
+                                                    span.btn-label
+                                                    i.ti-close
+                                                    |  Unavailable
+                                        else if(thera.availability==3)
+                                          td On break
+                                          td= thera.therapist_datetime_in
+                                          td
+                                            .dropdown(style="right: 10px")
+                                              button.btn.btn-simple.btn-info.btn-rotate(href='#', data-toggle='dropdown' style='left: auto; right: 13px')
+                                                i.ti-settings
+                                              ul.dropdown-menu
+                                                li
+                                                  //- a.btn.btn-simple.btn-info.reserveButton(href=`selectDate/${customer.cust_id}` stlye="margin-right: 15px")
+                                                  button.btn.btn-simple.btn-info.buttonDoneBreakTime(type='button' value=`${thera.therapist_id}`)
+                                                    span.btn-label
+                                                    i.ti-check
+                                                    |  Available
+                                                li
+                                                  button.btn.btn-simple.btn-danger.buttonAbsent(type='button' value=`${thera.therapist_id}`)
+                                                    span.btn-label
+                                                    i.ti-close
+                                                    |  Unavailable
+                                        //- td
+                                        //-   .dropdown(style="right: 10px")
+                                        //-     button.btn.btn-simple.btn-info.btn-rotate(href='#', data-toggle='dropdown' style='left: auto; right: 13px')
+                                        //-       i.ti-settings
+                                        //-     ul.dropdown-menu
+                                        //-       li
+                                        //-         //- a.btn.btn-simple.btn-info.reserveButton(href=`selectDate/${customer.cust_id}` stlye="margin-right: 15px")
+                                        //-         button.btn.btn-simple.btn-info.buttonAvailable(type='button' value=`${thera.therapist_id}`)
+                                        //-           span.btn-label
+                                        //-           i.ti-check
+                                        //-           |  Available
+                                        //-       li
+                                        //-         button.btn.btn-simple.btn-warning.buttonBreak(type='button' value=`${thera.therapist_id}`)
+                                        //-           span.btn-label
+                                        //-           i.ti-time
+                                        //-           |  Break
+                                        //-       li
+                                        //-         button.btn.btn-simple.btn-danger.buttonAbsent(type='button' value=`${thera.therapist_id}`)
+                                        //-           span.btn-label
+                                        //-           i.ti-close
+                                        //-           |  Unavailable
+                  footer.footer
+                    .container-fluid
+                      .copyright.pull-right
+                        | © 
+                        script.
+                          document.write(new Date().getFullYear())
+                        | , made with 
+                        i.fa.fa-heart.heart
+                        |  by 
+                        a(href='http://www.creative-tim.com') Creative Tim
+  .fixed-plugin
+  // Core JS Files. Extra: TouchPunch for touch library inside jquery-ui.min.js
+  script(src='/assets/paperDashboardPro/js/jquery-3.1.1.min.js', type='text/javascript')
+  script(src='/assets/paperDashboardPro/js/jquery-ui.min.js', type='text/javascript')
+  script(src='/assets/paperDashboardPro/js/perfect-scrollbar.min.js', type='text/javascript')
+  script(src='/assets/paperDashboardPro/js/bootstrap.min.js', type='text/javascript')
+  // Forms Validations Plugin
+  script(src='/assets/paperDashboardPro/js/jquery.validate.min.js')
+  // Promise Library for SweetAlert2 working on IE
+  script(src='/assets/paperDashboardPro/js/es6-promise-auto.min.js')
+  // Plugin for Date Time Picker and Full Calendar Plugin
+  script(src='/assets/paperDashboardPro/js/moment.min.js')
+  // Date Time Picker Plugin is included in this js file
+  script(src='/assets/paperDashboardPro/js/bootstrap-datetimepicker.js')
+  // Select Picker Plugin
+  script(src='/assets/paperDashboardPro/js/bootstrap-selectpicker.js')
+  // Switch and Tags Input Plugins
+  script(src='/assets/paperDashboardPro/js/bootstrap-switch-tags.js')
+  // Circle Percentage-chart
+  script(src='/assets/paperDashboardPro/js/jquery.easypiechart.min.js')
+  // Charts Plugin
+  script(src='/assets/paperDashboardPro/js/chartist.min.js')
+  // Notifications Plugin
+  script(src='/assets/paperDashboardPro/js/bootstrap-notify.js')
+  // Sweet Alert 2 plugin
+  script(src='/assets/paperDashboardPro/js/sweetalert.js')
+  // Wizard Plugin
+  script(src='/assets/paperDashboardPro/js/jquery.bootstrap.wizard.min.js')
+  // Bootstrap Table Plugin
+  script(src='/assets/paperDashboardPro/js/bootstrap-table.js')
+  // Plugin for DataTables.net
+  script(src='/assets/paperDashboardPro/js/jquery.datatables.js')
+  // Full Calendar Plugin
+  script(src='/assets/paperDashboardPro/js/fullcalendar.min.js')
+  // Paper Dashboard PRO Core javascript and methods for Demo purpose
+  script(src='/assets/paperDashboardPro/js/paper-dashboard.js')
+  // Sharrre Library
+  script(src='/assets/paperDashboardPro/js/jquery.sharrre.js')
+  // Paper Dashboard PRO DEMO methods, don't include it in your project!
+  script(src='/assets/paperDashboardPro/js/demo.js')
+  script.
+    $(document).ready(function(){
+      $('.buttonDoneBreakTime').click(function(){
+        var therapist_id = $(this).val()
+        var therapist_name = $(`.name[id='${therapist_id}']`).val()
+        var datetime_in = moment(new Date()).format('MMMM DD, YYYY hh:mm A')
+        
+        swal({
+          title: 'Confirmation',
+          text: 'Did '+therapist_name+' arrived yet?',
+          icon: 'warning'
+        }).then(function(arrived){
+          if(arrived)
+            {
+              $.post('./therapist/DoneBreakTime',{
+                therapist_id
+              }).done(function(data){
+                if(data.alertDesc==0)
+                {
+                  swal({
+                    title: 'Success',
+                    icon: 'success'
+                  }).then(function(){
+                    location.reload()
+                  })
+                }
+                else
+                {
+                  swal({
+                    title: 'Error',
+                    icon: 'error'
+                  })
+                }
+              })
+            }
+        })
+      })
+    })
+  script.
+    $(document).ready(function(){
+      $('.buttonAvailable').click(function(){
+        var therapist_id = $(this).val()
+        var therapist_name = $(`.name[id='${therapist_id}']`).val()
+        var datetime_in = moment(new Date()).format('MMMM DD, YYYY hh:mm A')
+        
+        swal({
+          title: 'Confirmation',
+          text: 'Did '+therapist_name+' arrived yet?',
+          icon: 'warning'
+        }).then(function(arrived){
+          if(arrived)
+            {
+              $.post('./therapist/Present',{
+                therapist_id,
+                datetime_in
+              }).done(function(data){
+                if(data.alertDesc==0)
+                {
+                  swal({
+                    title: 'Success',
+                    icon: 'success'
+                  }).then(function(){
+                    location.reload()
+                  })
+                }
+                else
+                {
+                  swal({
+                    title: 'Error',
+                    icon: 'error'
+                  })
+                }
+              })
+            }
+        })
+      })
+    })
+
+  script.
+    $(document).ready(function(){
+      $('.buttonBreak').click(function(){
+        var therapist_id = $(this).val()
+        var therapist_name = $(`.name[id='${therapist_id}']`).val()
+
+        swal({
+          title: 'Confirmation',
+          text: therapist_name+" is having a break.",
+          icon: 'warning'
+        }).then(function(confirm){
+          if(confirm)
+          {
+            $.post('./therapist/BreakTime',{
+              therapist_id
+            }).done(function(data){
+              if(data.alertDesc==0)
+              {
+                swal({
+                  title: 'Success',
+                  icon: 'success'
+                }).then(function(){
+                  location.reload()
+                })
+              }
+              else
+              {
+                swal({
+                  title: 'Error',
+                  icon: 'error'
+                })
+              }
+            })
+          }
+        })
+      })
+    })
+
+  script.
+    $(document).ready(function(){
+      $('.buttonAbsent').click(function(){
+        var therapist_id = $(this).val()
+        var therapist_name = $(`.name[id='${therapist_id}']`).val()
+        var datetime_in = moment(new Date()).format('MMMM DD, YYYY hh:mm A')
+        
+        swal({
+          title: 'Confirmation',
+          text: 'Is '+therapist_name+' absent?',
+          icon: 'warning'
+        }).then(function(arrived){
+          if(arrived)
+            {
+              $.post('./therapist/Absent',{
+                therapist_id
+              }).done(function(data){
+                if(data.alertDesc==0)
+                {
+                  swal({
+                    title: 'Success',
+                    icon: 'success'
+                  }).then(function(){
+                    location.reload()
+                  })
+                }
+                else
+                {
+                  swal({
+                    title: 'Error',
+                    icon: 'error'
+                  })
+                }
+              })
+            }
+        })
+      })
+    })
+  script(type='text/javascript').
+    $(document).ready(function(){
+    demo.initOverviewDashboard();
+    demo.initCirclePercentage();
+    });
+  script(type='text/javascript').
+    $(document).ready(function() {
+    $('#datatables').DataTable({
+    "pagingType": "full_numbers",
+    order: [ 3, 'desc' ],
+    "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+    responsive: true,
+    language: {
+    search: "_INPUT_",
+    searchPlaceholder: "Search records",
+    }
+    });
+    });
+  script(type='text/javascript').
+    $(document).ready(function(){
+    demo.initWizard();
+    });

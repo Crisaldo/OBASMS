@@ -1,0 +1,1059 @@
+doctype html
+html(lang='en')
+  head
+    meta(charset='utf-8')
+    link(rel='apple-touch-icon', sizes='76x76', href='/assets/paperDashboardPro/img/apple-icon.png')
+    link(rel='icon', type='image/png', sizes='96x96', href=`/upload/${reqSession.utilities[0].company_logo}`)
+    meta(http-equiv='X-UA-Compatible', content='IE=edge,chrome=1')
+    title #{reqSession.utilities[0].company_name}
+    // Canonical SEO
+    link(rel='canonical', href='http://www.creative-tim.com/product/paper-dashboard-pro')
+    meta(content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0', name='viewport')
+    meta(name='viewport', content='width=device-width')
+    // Bootstrap core CSS
+    link(href='/assets/paperDashboardPro/css/bootstrap.min.css', rel='stylesheet')
+    // Paper Dashboard core CSS
+    link(href='/assets/paperDashboardPro/css/paper-dashboard.css', rel='stylesheet')
+    // CSS for Demo Purpose, don't include it in your project
+    link(href='/assets/paperDashboardPro/css/demo.css', rel='stylesheet')
+    // Fonts and icons
+    link(href='http://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css', rel='stylesheet')
+    link(href='https://fonts.googleapis.com/css?family=Muli:400,300', rel='stylesheet', type='text/css')
+    link(href='/assets/paperDashboardPro/css/themify-icons.css', rel='stylesheet')
+    style.
+      .pull-right .dropdown-menu:after {
+        left: auto;
+        right: 10px;
+          }
+      .pull-right .dropdown-menu {
+          left: auto;
+          right: 0;
+      }
+  body
+    .wrapper
+      .sidebar(data-active-color='spa', style='color: white')
+        //
+          Tip 1: you can change the color of the sidebar's background using: data-background-color="white | brown"
+          Tip 2: you can change the color of the active button using the data-active-color="primary | info | success | warning | danger"
+        .logo
+          a.simple-text.logo-mini(href='#')
+          a.simple-text.logo-normal(href='#')
+            | #{reqSession.utilities[0].company_name}
+        .sidebar-wrapper
+          .user
+            .info
+              .photo
+                img(src='/assets/paperDashboardPro/img/icon.jpg')
+              a.collapsed(data-toggle='collapse', href='#collapseExample' )
+                span
+                  | ADMINISTRATOR
+              .clearfix
+          ul.nav
+            li
+              a(href='./admindashboard')
+                i.ti-dashboard
+                p
+                  | Dashboard
+            li.active
+              a(data-toggle='collapse', href='#componentsExamples')
+                i.ti-clipboard
+                p
+                  | Maintenance
+                  b.caret
+              #componentsExamples.collapse.in
+                ul.nav
+                  li(style="margin-left: 5px;")
+                    a(data-toggle='collapse', href='#services')
+                      p
+                        span.sidebar-mini S
+                        | Services
+                        b(style="margin-right: 30px").caret
+                    #services.collapse
+                      ul.nav
+                        li(style="margin-left: 30px")
+                          a(href='./adminServiceType')
+                            span.sidebar-normal Service Type
+                        li(style="margin-left: 30px")
+                          a(href='./adminServices')
+                            span.sidebar-normal Services
+                        li(style="margin-left: 30px")
+                          a(href='./adminServiceDuration')
+                            span.sidebar-normal Service Duration
+                  li(style="margin-left: 5px;")
+                    a(data-toggle='collapse', href='#therapist')
+                      p
+                        span.sidebar-mini T
+                        | Therapist
+                        b(style="margin-right: 30px").caret
+                    #therapist.collapse
+                      ul.nav
+                        li(style="margin-left: 30px")
+                          a(href='./adminSpecialty')
+                            span.sidebar-normal Therapist Skills
+                        li(style="margin-left: 30px")
+                          a(href='./adminTherapist')
+                            span.sidebar-normal Therapist
+                  li(style="margin-left: 5px;")
+                    a(data-toggle='collapse', href='#packages')
+                      p
+                        | Packages
+                        span.sidebar-mini P
+                        b(style="margin-right: 30px").caret
+                    #packages.collapse
+                      ul.nav    
+                        li(style="margin-left: 30px")
+                          a(href='./adminPackages')
+                            span.sidebar-normal Packages
+                  li(style="margin-left: 5px;").active
+                    a(data-toggle='collapse', href='#promos')
+                      p
+                        span.sidebar-mini P
+                        | Promos
+                        b(style="margin-right: 30px").caret
+                    #promos.collapse.in
+                      ul.nav
+                        li(style="margin-left: 30px").active
+                          a(href='./adminPromos')
+                            span.sidebar-normal Promos
+                  li(style="margin-left: 5px;")
+                    a(data-toggle='collapse', href='#rooms')
+                      p
+                        span.sidebar-mini R
+                        | Rooms
+                        b(style="margin-right: 30px").caret
+                    #rooms.collapse
+                      ul.nav
+                        li(style="margin-left: 30px")
+                          a(href='./adminRoomType')
+                            span.sidebar-normal Room Type
+                        li(style="margin-left: 30px")
+                          a(href='./adminRooms')
+                            span.sidebar-normal Rooms
+                  li(style="margin-left: 5px;")
+                    a(data-toggle='collapse', href='#freebies')
+                      p
+                        span.sidebar-mini F
+                        | Freebies
+                        b(style="margin-right: 30px").caret
+                    #freebies.collapse
+                      ul.nav
+                        li(style="margin-left: 30px")
+                          a(href='./adminFreebies')
+                            span.sidebar-normal Freebies  
+                  li(style="margin-left: 5px;")
+                    a(data-toggle='collapse', href='#gifc')
+                      p
+                        span.sidebar-mini G
+                        | Gift Certificate
+                        b(style="margin-right: 30px").caret
+                    #gifc.collapse
+                      ul.nav
+                        li(style="margin-left: 30px")
+                          a(href='./giftcerticate')
+                            span.sidebar-normal Gift Certificate                              
+            li
+              a(href="./commission")
+                i.ti-envelope
+                p
+                  | Commission
+            li
+              a(href="./utilities")
+                i.ti-settings
+                p
+                  | Utilities
+            li
+              a(data-toggle='collapse', href='#queries')
+                i.ti-notepad
+                p
+                  | Queries
+                  b.caret
+              #queries.collapse
+                ul.nav
+                  li(style="margin-left: 30px;")
+                    a(href='./customerList')
+                      span.sidebar-mini 
+                      span.sidebar-normal Customers
+                  li(style="margin-left: 30px;")
+                    a(href='./loyaltyMembers')
+                      span.sidebar-mini 
+                      span.sidebar-normal Loyalty Members
+                  li(style="margin-left: 30px;")
+                    a(href='./servicesList')
+                      span.sidebar-mini 
+                      span.sidebar-normal Services
+                  li(style="margin-left: 30px;")
+                    a(href='./packagesList')
+                      span.sidebar-mini 
+                      span.sidebar-normal Packages
+                  li(style="margin-left: 30px;")
+                    a(href='./promoList')
+                      span.sidebar-mini 
+                      span.sidebar-normal Promos
+                  li(style="margin-left: 30px;")
+                    a(href='./therapistList')
+                      span.sidebar-mini 
+                      span.sidebar-normal Therapists
+                  li(style="margin-left: 30px;")
+                    a(href='./roomList')
+                      span.sidebar-mini 
+                      span.sidebar-normal Rooms    
+                  li(style="margin-left: 30px;")
+                    a(href='./freebiesList')
+                      span.sidebar-mini 
+                      span.sidebar-normal Freebies          
+            li
+              a(data-toggle='collapse', href='#reports')
+                i.ti-bar-chart-alt
+                p
+                  | Reports
+                  b.caret
+              #reports.collapse
+                ul.nav
+                  li(style="margin-left: 30px;")
+                    a(href='./servicesReport')
+                      span.sidebar-mini 
+                      span.sidebar-normal Daily
+                  li(style="margin-left: 30px;")
+                    a(href='./packagesReport')
+                      span.sidebar-mini 
+                      span.sidebar-normal Monthly
+      .main-panel
+        nav.navbar.navbar-default
+          .container-fluid
+            .navbar-minimize
+
+            .navbar-header
+
+              a.navbar-brand(href='#')
+                | Promos
+            .collapse.navbar-collapse
+
+              ul.nav.navbar-nav.navbar-right
+                li
+                  a.dropdown-toggle.btn-rotate(href='',data-toggle='dropdown')
+                    i.ti-settings
+                    p.hidden-md.hidden-lg
+                      | Settings
+                  ul.dropdown-menu
+                    li
+                      a.logout(style="cursor: pointer;") Log Out
+        .content
+          .container-fluid
+            .row
+              .col-md-12
+                .card
+                  .row
+                    .col-md-6
+                      .card-content
+                        button.btn.btn-info.btn-fill.btn-wd(data-toggle='modal', data-target='#addNewService') Add New Promo Bundle
+                  .content
+                    .container-fluid
+                      .row
+                        .col-md-12
+                          p.category  
+                          br
+                          .card
+                            .card-content
+                              .toolbar
+                                // Here you can write extra buttons/actions for the toolbar
+                              .fresh-datatables
+                                table#datatables.table.table-no-bordered.table-hover(cellspacing='0', width='100%', style='width:100%')
+                                  thead
+                                    tr
+                                      th Name
+                                      th Services Included
+                                      th Duration
+                                      th Price
+                                      th Points
+                                      th Person
+                                      th Validity
+                                      th Available
+                                      th.disabled-sorting Actions
+                                  
+                                  tbody
+                                    each promo in promos
+                                      tr
+                                        td= promo.promobundle_name
+                                        input.name(type='hidden' value=`${promo.promobundle_name}` id=`${promo.promobundle_id}`)
+                                        td
+                                          button.btn.btn-fill.btn-info.viewButton(data-toggle='modal', value=`${promo.promobundle_id}`) View Services
+                                        td= promo.promobundle_duration+" "+"minutes"
+                                        td= "₱"+promo.promobundle_price
+                                        td= promo.promobundle_points
+                                        td= promo.promobundle_maxPerson
+                                        td= promo.promobundle_valid_from+" to "+promo.promobundle_valid_until
+                                        td
+                                          if(promo.promobundle_availability==0)
+                                            input.switch-icon(type='checkbox' checked value=`${promo.promobundle_id}`)
+                                          else if(promo.promobundle_availability==1)
+                                            input.switch-icon(type='checkbox' value=`${promo.promobundle_id}`)
+                                        td
+                                          .dropdown.pull-right(style="right: 25px")
+                                            button.btn.btn-simple.btn-info.btn-rotate(href='#', data-toggle='dropdown' style='left: auto; right: 13px')
+                                              i.ti-settings
+                                            ul.dropdown-menu
+                                              li
+                                                button.btn.btn-simple.btn-warning.updateButton(data-toggle='modal', value=`${promo.promobundle_id}` stlye="margin-right: 15px")
+                                                  span.btn-label
+                                                  i.ti-pencil-alt
+                                                  |  Update
+                                              li
+                                                button.btn.btn-simple.btn-danger.deleteButton(data-toggle='modal', value=`${promo.promobundle_id}` stlye="margin-right: 15px")
+                                                  span.btn-label
+                                                  i.ti-trash
+                                                  |  Delete
+                  // ADD
+                  #addNewService.modal.fade(tabindex='-1', role='dialog')
+                    .modal-dialog(role='document')
+                      .modal-content
+                        .modal-header
+                          h5.modal-title
+                            center Add New Promo Bundle
+                          button.close(type='button', data-dismiss='modal', aria-label='Close')
+                        form#allInputsFormValidation(method='#' action='#')
+                          .modal-body
+                            .row
+                              .col-md-6
+                                .form-group.has-default.bmd-form-group
+                                  label Promo Bundle Name
+                                  star *
+                                  input.form-control(type='text', placeholder='Promo Bundle Name' id='name' name='name' required='true', aria-required='true')
+                              .col-md-6
+                                .form-group.has-default.bmd-form-group
+                                  label Promo Bundle Price
+                                  star *
+                                  .input-group
+                                      span.input-group-addon ₱  
+                                      input.form-control(type='number', placeholder='Promo Bundle Price' id='price' name='price' required='true', aria-required='true' disabled)
+                                  span.help-block#suggestedPrice
+                            .form-group.has-default.bmd-form-group
+                              center
+                                label Services Included*
+                                  select.selectpicker(multiple='', title='Select Service/s', data-style='btn-info', data-size='7' id='services_included' name='promos')
+                                    each service in services
+                                      option(value=`${service.service_id}` price=`${service.service_price}` service_name=`${service.service_name}` service_duration=`${service.service_duration_desc}` service_points=`${service.service_points}` equivalent_points=`${service.service_equivalentPoints}`)= service.service_name+"("+service.service_duration_desc+" minutes)"+" ₱"+service.service_price
+                              
+                            .form-group.has-default.bmd-form-group
+                              center
+                                label Room Included*
+                                  select.selectpicker(title='Select Room', id='room_included' data-style='btn-info', data-size='7' name='room_included')
+                                    each room in rooms
+                                      if(room.room_rate == 0)
+                                        option(value=`${room.room_id}` price=`${room.room_rate}` service_name=`${room.room_name}`)= room.room_name+" - FREE"
+                                      else
+                                        option(value=`${room.room_id}` price=`${room.room_rate}` service_name=`${room.room_name}`)= room.room_name+" - ₱"+room.room_rate+"/hour"
+                            
+                            .row
+                              .col-md-6
+                                .form-group.has-default.bmd-form-group
+                                label Promo Duration
+                                .input-group
+                                  input.form-control(type='number', placeholder='Promo Bundle Duration' id='duration' name='duration' required='true', aria-required='true' disabled)
+                                  span.input-group-addon minutes
+                              
+                                .category#suggestedDuration
+                              .col-md-6  
+                                .form-group.has-default.bmd-form-group
+                                label Package Available for:
+                                select.selectpicker(name='person' title='Select..' id='promobundle_maxPerson' data-style='btn-info')
+                                  -for(var i=0;i<reqSession.utilities[0].max_guest;i++)
+                                    if(i == 0)
+                                      option(value=i+1)= i+1+" Person"
+                                    else
+                                      option(value=i+1)= i+1+" Persons"
+
+                            .row
+                              .col-md-6
+                                .form-group.has-default.bmd-form-group
+                                label Promo Points
+                                .input-group
+                                  input.form-control(type='number', placeholder='Promo Bundle Points' id='points' name='points' required='true', aria-required='true' disabled)
+                                  span.input-group-addon points
+                             
+                                .category#suggestedPoints  
+                              .col-md-6
+                                .form-group.has-default.bmd-form-group
+                                label Promo Equivalent Points
+                                .input-group
+                                  input.form-control(type='number', placeholder='Promo Bundle Equivalent Points' id='equivalent_points' name='equivalent_points' required='true', aria-required='true' disabled)
+                                  span.input-group-addon points
+                             
+                                .category#suggestedEquivalentPoints                  
+                                   
+                            //
+                              <div class="form-group has-default bmd-form-group">
+                              <label>Promo Bundle Validity</label>
+                              <input type="text" class="form-control" placeholder="Promo Bundle Validity">
+                              </div>
+                            .row
+                              .col-md-6
+                                #dp.form-group.has-default.bmd-form-group
+                                  label Promo Bundle Valid From:
+                                  .form-group
+                                    input#promobundle_valid_from.datepicker.form-control(type='text', placeholder='Promo Bundle Validity'  name='valid')
+                              .col-md-6
+                                #dp.form-group.has-default.bmd-form-group
+                                  label Promo Bundle Valid Until:
+                                  .form-group
+                                    input#promobundle_valid_until.datepicker.form-control(type='text', placeholder='Promo Bundle Validity'  name='valid')
+                          .modal-footer
+                            button.btn.btn-secondary.pull-left.btn.btn-info.btn-fill.btn-wd.addButton(type='button') Add Promo Bundle
+                            button.btn.btn-secondary.btn.btn-danger.btn-fill.btn-wd(type='button', data-dismiss='modal') Cancel
+
+
+                  // DELETE  
+                  #modal-warning.modal.modal-warning.fade
+                    .modal-dialog
+                      .modal-content
+                        .modal-header
+                          button.close(type='button', data-dismiss='modal', aria-label='Close')
+                            span(aria-hidden='true') ×
+                          h4.modal-title Warning
+                        .modal-body
+                          p Are you sure you?
+                        .modal-footer
+                            button.btn.btn-danger.btn-fill.pull-left#cancelButton(type='button', data-dismiss='modal') No
+                            button.btn.btn-info.btn-fill.pull-right#deleteSubmit(type='button') Yes
+                  
+                  //UPDATE
+                  #updateModal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='exampleModalLabel', aria-hidden='true')
+                    .modal-dialog(role='document')
+                      .modal-content
+                        .modal-header
+                          h5#exampleModalLabel.modal-title Promobundle Information
+                          button.close(type='button', data-dismiss='modal', aria-label='Close') 
+                            span(aria-hidden='true') x
+                        .modal-body#updateAppend
+                        .modal-footer
+                            button.btn.btn-danger.btn-fill.pull-left#cancelButton(type='button', data-dismiss='modal') Close
+                            button.btn.btn-info.btn-fill.pull-right#updateSubmitButton(type='button') Submit
+                  
+                  //VIEW SERVICES INCLUDED
+                  #servicesIncluded.modal.fade(tabindex='-1', role='dialog', aria-labelledby='exampleModalLabel', aria-hidden='true')
+                    .modal-dialog(role='document')
+                      .modal-content
+                        .modal-header
+                          button.close(type='button', data-dismiss='modal', aria-label='Close')
+                            span(aria-hidden='true') ×
+                          center
+                            h4.modal-title#title
+                        .modal-body#viewAppend
+                        .modal-footer#footerAppend
+                          center
+                            button.btn.btn-secondary.btn.btn-info.btn-fill.btn-wd.updateServicesIncluded(data-toggle='modal') Update
+                  
+
+
+                  //UPDATE SERVICES INCLUDED
+                  #updatePromoServices.modal.fade(tabindex='-1', role='dialog', aria-labelledby='exampleModalLabel', aria-hidden='true')
+                    .modal-dialog(role='document')
+                      .modal-content
+                        .modal-header
+                          button.close(type='button', data-dismiss='modal', aria-label='Close')
+                            span(aria-hidden='true') ×
+                          center
+                            h4.modal-title Services
+                        .modal-body#servicesAppend
+                        .modal-footer
+                          button.btn.btn-danger.btn-fill.pull-left#cancelButton(type='button', data-dismiss='modal') Close
+                          button.btn.btn-info.btn-fill.pull-right#updateServicesIncludedButton(type='button') Submit
+            
+
+        footer.footer
+          .container-fluid
+            nav.pull-left
+              
+            .copyright.pull-right
+              | © 
+              script.
+                document.write(new Date().getFullYear())
+              | , made with 
+              i.fa.fa-heart.heart
+              |  by 
+              a(href='') TEAM MBAY
+  // Core JS Files. Extra: TouchPunch for touch library inside jquery-ui.min.js
+  script(src='/assets/paperDashboardPro/js/jquery-3.1.1.min.js', type='text/javascript')
+  script(src='/assets/paperDashboardPro/js/jquery-ui.min.js', type='text/javascript')
+  script(src='/assets/paperDashboardPro/js/perfect-scrollbar.min.js', type='text/javascript')
+  script(src='/assets/paperDashboardPro/js/bootstrap.min.js', type='text/javascript')
+  // Forms Validations Plugin
+  script(src='/assets/paperDashboardPro/js/jquery.validate.min.js')
+  // Promise Library for SweetAlert2 working on IE
+  script(src='/assets/paperDashboardPro/js/es6-promise-auto.min.js')
+  // Plugin for Date Time Picker and Full Calendar Plugin
+  script(src='/assets/paperDashboardPro/js/moment.min.js')
+  // Date Time Picker Plugin is included in this js file
+  script(src='/assets/paperDashboardPro/js/bootstrap-datetimepicker.js')
+  // Select Picker Plugin
+  script(src='/assets/paperDashboardPro/js/bootstrap-selectpicker.js')
+  // Switch and Tags Input Plugins
+  script(src='/assets/paperDashboardPro/js/bootstrap-switch-tags.js')
+  // Circle Percentage-chart
+  script(src='/assets/paperDashboardPro/js/jquery.easypiechart.min.js')
+  // Charts Plugin
+  script(src='/assets/paperDashboardPro/js/chartist.min.js')
+  // Notifications Plugin
+  script(src='/assets/paperDashboardPro/js/bootstrap-notify.js')
+  // Sweet Alert 2 plugin
+  script(src='/assets/paperDashboardPro/js/sweetalert.js')
+  // Wizard Plugin
+  script(src='/assets/paperDashboardPro/js/jquery.bootstrap.wizard.min.js')
+  // Bootstrap Table Plugin
+  script(src='/assets/paperDashboardPro/js/bootstrap-table.js')
+  // Plugin for DataTables.net
+  script(src='/assets/paperDashboardPro/js/jquery.datatables.js')
+  // Full Calendar Plugin
+  script(src='/assets/paperDashboardPro/js/fullcalendar.min.js')
+  // Paper Dashboard PRO Core javascript and methods for Demo purpose
+  script(src='/assets/paperDashboardPro/js/paper-dashboard.js')
+  // Sharrre Library
+  script(src='/assets/paperDashboardPro/js/jquery.sharrre.js')
+  // Paper Dashboard PRO DEMO methods, don't include it in your project!
+  script(src='/assets/paperDashboardPro/js/demo.js')
+  script(src='/assets/paperDashboardPro/js/bootstrap-datepicker.min.js')
+  script.
+    $(document).ready(function(){
+      $('#services_included').on('change',function(){
+        var selected = $('option:selected',this)
+        if(selected.length !=0)
+        {
+          $('#price').attr('disabled',false)
+          $('#duration').attr('disabled',false)
+          $('#points').attr('disabled',false)
+          $('#equivalent_points').attr('disabled',false)
+        }
+        else
+        {
+          $('#price').attr('disabled',true)
+          $('#duration').attr('disabled',true)
+          $('#points').attr('disabled',true)
+          $('#equivalent_points').attr('disabled',true)
+          
+          $('#suggestedPrice').text(' ')
+          $('#suggestedDuration').text(' ')
+          $('#suggestedPoints').text(' ')
+          $('#suggestedEquivalentPoints').text(' ')
+        }
+      })
+    })
+  script.
+    $(document).ready(function(){
+      $('#services_included').on('change',function(){
+        var selected = $('option:selected',this)
+        var price_perService=[]
+        var total=0
+        var totalDuration=0;
+        var totalPoints =0;
+        var totalEquivalentPoints =0
+        selected.each(function(){
+          price_perService.push({
+            name: this.getAttribute('service_name'),
+            price: parseFloat(this.getAttribute('price')),
+            duration: parseFloat(this.getAttribute('service_duration')),
+            points: parseFloat(this.getAttribute('service_points')),
+            equivalent_points: parseFloat(this.getAttribute('equivalent_points'))
+          })
+        })
+        for(var i=0;i<price_perService.length;i++)
+        {
+            totalDuration = totalDuration + price_perService[i].duration
+            total = total + price_perService[i].price
+            totalPoints = totalPoints + price_perService[i].points
+            totalEquivalentPoints = totalEquivalentPoints + price_perService[i].equivalent_points
+            $('#suggestedDuration').text("Suggested Duration is "+totalDuration+" minutes")
+            $('#suggestedPrice').text("Suggested Price is ₱"+total)
+            $('#suggestedPoints').text('Suggested Points is '+totalPoints+' points')
+            $('#suggestedEquivalentPoints').text('Suggested Equivalent Points is '+totalEquivalentPoints+' points')
+        }
+      })
+      function getSum(total,num){
+        return total+num;
+      }
+    })
+
+  script.
+    $(document).ready(function(){
+      $('.addButton').click(function(){
+        var promobundle_name = $('#name').val()
+        var promobundle_price = $('#price').val()
+        var services_included = $('#services_included').val()
+        var promobundle_duration =$('#duration').val()
+        var promobundle_person_count = $('#person').val()
+        var promobundle_valid_from =$('#promobundle_valid_from').val()
+        var promobundle_valid_until = $('#promobundle_valid_until').val()
+        var promobundle_points = $('#points').val()
+        var equivalent_points = $('#equivalent_points').val()
+        var promobundle_maxPerson = $('#promobundle_maxPerson').val()
+        var promobundle_roomIncluded = $('#room_included').val()
+        var pers = moment(promobundle_valid_from).format('MM-DD-YYYY')
+        var secs = moment(promobundle_valid_until).format('MM-DD-YYYY')
+        if(promobundle_roomIncluded == ' ' || promobundle_roomIncluded == 0)
+        {
+          console.log('NULL')
+          promobundle_roomIncluded = 'NULL'
+        }
+        else
+        {
+          console.log('NOT NULL')
+          promobundle_roomIncluded = $('#room_included').val()
+        }
+
+        if(promobundle_name==0 && promobundle_price ==0 && services_included ==0 && promobundle_duration ==0 && promobundle_person_count ==0
+          && promobundle_valid_from ==0 && promobundle_valid_until==0 && promobundle_points==0 && equivalent_points ==0 && promobundle_maxPerson==0
+          || promobundle_name==0 || promobundle_price ==0 || services_included ==0 || promobundle_duration ==0 || promobundle_person_count ==0
+          || promobundle_valid_from ==0 || promobundle_valid_until==0 || promobundle_points==0  || equivalent_points ==0 || promobundle_maxPerson==0)
+        {
+           swal({
+              title: 'Please double check the fields.',
+              text: 'Make sure all required fields have value.', 
+              icon: 'warning'
+            })
+        }
+        else
+        {
+          if(pers < secs)
+            {
+              $.post('./adminPromos',{
+              promobundle_name,
+              promobundle_price,
+              services_included,
+              promobundle_duration,
+              promobundle_points,
+              promobundle_person_count,
+              promobundle_valid_from,
+              promobundle_valid_until,
+              promobundle_equivalentPoints: equivalent_points,
+              promobundle_maxPerson,
+              promobundle_roomIncluded
+            }).done(function(data){
+              if(data.alertDesc ==0) // IF SUCCESS
+              {
+                  swal({
+                      title: "Success",
+                      text: "New promo has been added.",
+                      icon: 'success'
+                    }).then(function(){
+                      location.reload();
+                    })
+              }
+              else if(data.alertDesc==1) // IF NOT SUCCESS or ERROR
+              {
+                swal({
+                      title: "Error",
+                      text: "Error",
+                      icon: 'error'
+                    })
+              }
+              else if (data.alertDesc ==2) // IF PROMO IS EXIST
+              {
+                swal({
+                  title: 'Error',
+                  text: promobundle_name+" already exists.",
+                  icon: 'error'
+                })
+              }
+            })
+          }
+          else
+          {
+            swal({
+              title: "Error",
+              text: 'The promo validity cannot be more than or uqual',
+              icon: 'error'
+            })
+          }
+        } 
+      })
+    })
+
+  script.
+      $(document).ready(function(){
+        $('.logout').click(function(){
+            swal({
+            title: "Are you sure?",
+            text: "Do you want to Log Out?",
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+          })
+          .then((logout) => {
+            if (logout) {
+              $.post('/admin/admin/logout')
+              location.reload()
+            } 
+          });
+          })
+
+
+        // VIEW SERVICES INCLUDED
+        $('.viewButton').click(function(){
+          var idNow = $(this).val();
+            $.post('/admin/adminPromos/query1',{id1:idNow})
+          .done(data=>{
+            $('#title').append(`${data.out2.promobundle_name}`)
+            $('#viewAppend').append(`
+                  <div class="row">
+                    <div class="col-md-10" id=services_name>
+                      <label> Services Included </label>
+                      <div class="form-group has-default bmd-form-group">
+                      
+                      </div>
+                    </div>
+                  </div>
+            `)
+            $('#footerAppend').append(`
+              <input type="hidden" id="inputId" value="${data.id2}"></input>`)
+            for(var i=0; i<data.out1.length;i++){
+              console.log(data.out1[i].service_name)
+                $('#services_name').append(`<li>${data.out1[i].service_name}</li>`)
+              }
+            $('#servicesIncluded').modal('show')
+            $('#servicesIncluded').on('hidden.bs.modal', function (){
+                $('#services_name').remove()
+              });
+            $('#servicesIncluded').on('hidden.bs.modal', function (){
+                $('#inputId').remove()
+              });
+            $('#servicesIncluded').on('hidden.bs.modal', function (){
+                $('#title').empty()
+              });
+          })
+        })
+
+
+
+        // UPDATE SERVICES INCLUDED
+        $('.updateServicesIncluded').click(function(){
+          var idNow = $('#inputId').val();
+          console.log(idNow)
+            $.post('/admin/adminPromos/query2',{id1:idNow})
+          .done(data=>{
+            $('#servicesAppend').append(`
+                <div class="form-group has-default bmd-form-group">
+                  <label>Services
+                    <select name="nameOfservice" id="nameOfservice" multiple="" title="Choose Services" data-style="btn-info" data-size="7" class="selectpicker">
+                    </select>
+                  </label>
+                </div>
+            `)
+            for(var i=0; i<data.out1.length;i++){
+
+                $('#nameOfservice').append(`<option value="${data.out1[i].service_id}"> ${data.out1[i].service_name} </option>`)
+              }
+            $('#nameOfservice').selectpicker()
+            $('#updatePromoServices').modal('show')
+            $('#servicesIncluded').modal('hide')
+            $('#updatePromoServices').on('hidden.bs.modal', function (){
+                $('#servicesAppend').empty()
+              });
+         $('#updateServicesIncludedButton').click(function(){
+              $.post('/admin/adminTherapist/updateServicesInPromo',{
+                  nameOfservice:$('#nameOfservice').val(),
+                  
+                  id1: idNow
+                })
+                .done(
+
+                          swal({
+                          title:'Success', 
+                          text:'Services included updated.', 
+                          icon:'success'
+                          }).then(function(){
+                            
+                            location.href='/admin/adminPromos';
+                          })
+              )
+          })
+        })
+      })      
+
+
+
+        // UPDATE PROMO INFORMATION
+        $('.updateButton').click(function(){
+          var idNow = $(this).val();
+              $.post('/admin/adminPromos/query',{id1:idNow})
+          .done(data=>{
+            console.log(data)
+              $('#updateAppend').append(`
+                  <div class="row">
+                    <div class="col-md-6">
+                      <div class="form-group has-default bmd-form-group">
+                        <label>Promo Bundle Name*</label>
+                        <input type="text" placeholder="${data.promobundle_name}" value="${data.promobundle_name}" id="promobundle_name" name="promobundle_name" class="form-control"/>
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="form-group has-default bmd-form-group">
+                        <label>Promo Bundle Price*</label>
+                        <div class="input-group">
+                          <span class="input-group-addon">₱ </span>
+                          <input type="text" placeholder="${data.promobundle_price}" value="${data.promobundle_price}" id="promobundle_price" name="promobundle_price" class="form-control"/>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-6">
+                      <div class="form-group has-default bmd-form-group" id="dp">
+                        <label>Promo Bundle Valid From:</label>
+                        <div class="form-group">
+                          <input class="datepicker form-control" id="promobundle_validFrom" placeholder="${data.promobundle_valid_from}" value='${data.promobundle_valid_from}' type="text"  name="valid" />
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="form-group has-default bmd-form-group" id="dp">
+                        <label>Promo Bundle Valid Until:</label>
+                        <div class="form-group">
+                          <input class="datepicker form-control" id="promobundle_validUntil" placeholder="${data.promobundle_valid_until}" value='${data.promobundle_valid_until}' type="text"  name="valid" />
+                        </div>
+                      </div>
+                    </div>
+                  </div>`)
+              $('.datepicker').datetimepicker({
+                viewMode: 'months',
+                format: 'MMMM DD, YYYY',
+                icons: {
+                  time: "fa fa-clock-o",
+                  date: "fa fa-calendar",
+                  up: "fa fa-chevron-up",
+                  down: "fa fa-chevron-down",
+                  previous: 'fa fa-chevron-left',
+                  next: 'fa fa-chevron-right',
+                  today: 'fa fa-screenshot',
+                  clear: 'fa fa-trash',
+                  close: 'fa fa-remove'
+                  },
+                  widgetPositioning:{"horizontal":"auto",
+                  "vertical":"auto"}
+              })
+              $('#promobundle_valid').datepicker();
+              $('#updateModal').modal('show')
+              $('#updateModal').on('hidden.bs.modal', function (){
+                $('#updateAppend').empty()
+                })
+              $('#updateSubmitButton').click(function(){
+                  $.post('./adminPromos/update',{
+                  promobundle_name:$('#promobundle_name').val(),
+                  promobundle_price:$('#promobundle_price').val(),
+                  promobundle_valid_from: $('#promobundle_validFrom').val(),
+                  promobundle_valid_until: $('#promobundle_validUntil').val(),
+                  
+                  id:idNow
+                  })
+                  .done(function(data){
+                      if(data.alertDesc==0)
+                      {
+                          swal({
+                          title:'Success', 
+                          text:'Promo bundle information updated.', 
+                          icon:'success'
+                          }).then(function(){
+                            location.reload();
+                          })
+                      }
+                      else
+                      {
+                        swal({
+                          title: 'ERROR',
+                          icon: 'error'
+                        })
+                      }
+                  })
+                })
+                $('#cancelButton').click(function(){
+                  $('#updateAppend').remove();
+                })
+              
+              })
+
+          })
+      })
+  script(type='text/javascript').
+    $(document).ready(function(){
+    demo.initOverviewDashboard();
+    demo.initCirclePercentage();
+    });
+  script(type='text/javascript').
+    $(document).ready(function() {
+    $('#datatables').DataTable({
+    "pagingType": "full_numbers",
+    "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+    responsive: true,
+    language: {
+    search: "_INPUT_",
+    searchPlaceholder: "Search records",
+    }
+    });
+    });
+  script.
+    $(function () {
+      var date = new Date()
+      var year = date.getFullYear()
+      $('.datepicker').datetimepicker({
+        viewMode: 'months',
+        format: 'MMMM DD, YYYY',
+        minDate: date,
+        icons: {
+          time: "fa fa-clock-o",
+          date: "fa fa-calendar",
+          up: "fa fa-chevron-up",
+          down: "fa fa-chevron-down",
+          previous: 'fa fa-chevron-left',
+          next: 'fa fa-chevron-right',
+          today: 'fa fa-screenshot',
+          clear: 'fa fa-trash',
+          close: 'fa fa-remove'
+          },
+          widgetPositioning:{"horizontal":"auto",
+          "vertical":"auto"}
+        });
+    })
+  script.
+    $(document).ready(function(){
+      $('#promobundle_valid_from').val('')
+      $('#promobundle_valid_until').val('')
+    })
+  script.
+    $(document).ready(function(){
+        $('.deleteButton').click(function(){
+            var idNow = $(this).val();
+            var name = $(`.name[id='${idNow}']`).val()
+            swal({
+              title: 'Do you want to delete '+name+'?',
+              text: 'Are you sure?',
+              icon: "info",
+              buttons: ["Cancel","Proceed"],
+              dangerMode: true
+                
+              }).then((proceed) => {
+                if(proceed)
+                {
+                $.post('./adminPromos/delete',{id:idNow}).done(function(data){
+                  if(data.alertDesc==0)
+                  {
+                    swal({
+                      title: name+' has been deleted.',
+                      icon: 'success'
+                    }).then(function(){
+                      location.reload()
+                    })
+                  }
+                  else
+                  {
+                    swal({
+                      title: 'Error',
+                      icon: 'error'
+                    })
+                  }
+                })
+                }
+                else
+                {
+
+                }
+                });
+            
+        }); 
+            
+    })
+
+  script.
+    $(document).ready(function(){
+       $(function(){
+                var name = localStorage.getItem('name')
+                if (localStorage.getItem('name'))
+                {
+                  if(localStorage.getItem('status')==1)
+                  {
+                  $.notify(
+                    {
+                    icon: 'ti-bell',
+                    message: name+' has been set to not available.',
+                    
+                  },
+                  {
+                    type: 'success'
+                  },
+                  {
+                  animate: {
+                        enter: 'animated bounceInDown',
+                        exit: 'animated bounceOutUp'
+                      }
+                  })
+                    localStorage.clear()
+                  }
+                  else
+                  {
+                      $.notify(
+                    {
+                    icon: 'ti-bell',
+                    message: name+' has been set to available.',
+                    
+                  },
+                  {
+                    type: 'success'
+                  },
+                  {
+                  animate: {
+                        enter: 'animated bounceInDown',
+                        exit: 'animated bounceOutUp'
+                      }
+                  })
+                    localStorage.clear()
+                  }
+              }
+              })
+        $('.switch-icon').on('switchChange.bootstrapSwitch', function(event,state){
+          var idNow = $(this).val();
+          var name = $(`.name[id='${idNow}']`).val()
+          if(state==false)
+          {
+            var stats = 1
+            console.log(name)
+            //- alert(stats)
+            //- alert(idNow)
+            $.post('./adminPromos/statusChange',{stats,id:idNow}).done(function(data){
+              if(data.alertDesc == 0)
+              {
+                localStorage.setItem('name',name)
+                localStorage.setItem('status',stats)
+                location.reload()
+                
+                
+              }
+              else
+              {
+
+              }
+            })
+            
+          }
+          else if(state==true)
+          {
+            var idNow = $(this).val();
+            var stats = 0
+            //- alert(stats)
+            //- alert(idNow)
+            $.post('./adminPromos/statusChange',{stats,id:idNow}).done(function(data){
+              if(data.alertDesc==0)
+              {
+                localStorage.setItem('name',name)
+                localStorage.setItem('status',stats)
+                location.reload()
+              }
+              else
+              {
+
+              }
+            })
+          }
+        });
+    })
+  script.
+    $(document).ready(function(){
+      $('#registerFormValidation').validate();
+      $('#loginFormValidation').validate();
+      $('#allInputsFormValidation').validate();
+        });  

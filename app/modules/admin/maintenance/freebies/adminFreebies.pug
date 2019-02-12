@@ -1,0 +1,1057 @@
+doctype html
+html(lang='en')
+  head
+    meta(charset='utf-8')
+    link(rel='apple-touch-icon', sizes='76x76', href='../paperDashboardPro/img/apple-icon.png')
+    link(rel='icon', type='image/png', sizes='96x96', href=`/upload/${reqSession.utilities[0].company_logo}`)
+    meta(http-equiv='X-UA-Compatible', content='IE=edge,chrome=1')
+    title #{reqSession.utilities[0].company_name}
+    
+    // Bootstrap core CSS
+    link(href='/assets/paperDashboardPro/css/bootstrap.min.css', rel='stylesheet')
+    // Paper Dashboard core CSS
+    link(href='/assets/paperDashboardPro/css/paper-dashboard.css', rel='stylesheet')
+    // CSS for Demo Purpose, don't include it in your project
+    link(href='/assets/paperDashboardPro/css/demo.css', rel='stylesheet')
+    // Fonts and icons
+    link(href='http://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css', rel='stylesheet')
+    link(href='https://fonts.googleapis.com/css?family=Muli:400,300', rel='stylesheet', type='text/css')
+    link(href='/assets/paperDashboardPro/css/themify-icons.css', rel='stylesheet')
+    style.
+      .pull-right .dropdown-menu:after {
+        left: auto;
+        right: 10px;
+          }
+      .pull-right .dropdown-menu {
+          left: auto;
+          right: 0;
+      }
+  body
+    .wrapper
+      .sidebar(data-active-color='spa', style='color: white')
+        //
+          Tip 1: you can change the color of the sidebar's background using: data-background-color="white | brown"
+          Tip 2: you can change the color of the active button using the data-active-color="primary | info | success | warning | danger"
+        .logo
+          a.simple-text.logo-mini(href='http://www.creative-tim.com')
+            | MBAY
+          a.simple-text.logo-normal(href='http://www.creative-tim.com')
+            | MBAY Health Spa
+        .sidebar-wrapper
+          .user
+            .info
+              .photo
+                img(src='../paperDashboardPro/img/faces/face-2.jpg')
+              a.collapsed(data-toggle='collapse', href='#collapseExample')
+                span
+                  | ADMINISTRATOR
+              .clearfix
+          ul.nav
+            li
+              a(href='./admindashboard')
+                i.ti-dashboard
+                p
+                  | Dashboard
+            li.active
+              a(data-toggle='collapse', href='#componentsExamples')
+                i.ti-clipboard
+                p
+                  | Maintenance
+                  b.caret
+              #componentsExamples.collapse.in
+                ul.nav
+                  li(style="margin-left: 5px;")
+                    a(data-toggle='collapse', href='#services')
+                      p
+                        span.sidebar-mini S
+                        | Services
+                        b(style="margin-right: 30px").caret
+                    #services.collapse
+                      ul.nav
+                        li(style="margin-left: 30px")
+                          a(href='./adminServiceType')
+                            span.sidebar-normal Service Type
+                        li(style="margin-left: 30px")
+                          a(href='./adminServices')
+                            span.sidebar-normal Services
+                        li(style="margin-left: 30px")
+                          a(href='./adminServiceDuration')
+                            span.sidebar-normal Service Duration
+                  li(style="margin-left: 5px;")
+                    a(data-toggle='collapse', href='#therapist')
+                      p
+                        span.sidebar-mini T
+                        | Therapist
+                        b(style="margin-right: 30px").caret
+                    #therapist.collapse
+                      ul.nav
+                        li(style="margin-left: 30px")
+                          a(href='./adminSpecialty')
+                            span.sidebar-normal Therapist Skills
+                        li(style="margin-left: 30px")
+                          a(href='./adminTherapist')
+                            span.sidebar-normal Therapist
+                  li(style="margin-left: 5px;")
+                    a(data-toggle='collapse', href='#packages')
+                      p
+                        | Packages
+                        span.sidebar-mini P
+                        b(style="margin-right: 30px").caret
+                    #packages.collapse
+                      ul.nav    
+                        li(style="margin-left: 30px")
+                          a(href='./adminPackages')
+                            span.sidebar-normal Packages
+                  li(style="margin-left: 5px;")
+                    a(data-toggle='collapse', href='#promos')
+                      p
+                        span.sidebar-mini P
+                        | Promos
+                        b(style="margin-right: 30px").caret
+                    #promos.collapse
+                      ul.nav
+                        li(style="margin-left: 30px")
+                          a(href='./adminPromos')
+                            span.sidebar-normal Promos
+                  li(style="margin-left: 5px;")
+                    a(data-toggle='collapse', href='#rooms')
+                      p
+                        span.sidebar-mini R
+                        | Rooms
+                        b(style="margin-right: 30px").caret
+                    #rooms.collapse
+                      ul.nav
+                        li(style="margin-left: 30px")
+                          a(href='./adminRoomType')
+                            span.sidebar-normal Room Type
+                        li(style="margin-left: 30px")
+                          a(href='./adminRooms')
+                            span.sidebar-normal Rooms
+                  li(style="margin-left: 5px;").active
+                    a(data-toggle='collapse', href='#freebies')
+                      p
+                        span.sidebar-mini F
+                        | Freebies
+                        b(style="margin-right: 30px").caret
+                    #freebies.collapse.in
+                      ul.nav
+                        li(style="margin-left: 30px").active
+                          a(href='./adminFreebies')
+                            span.sidebar-normal Freebies
+                  li(style="margin-left: 5px;")
+                    a(data-toggle='collapse', href='#gifc')
+                      p
+                        span.sidebar-mini G
+                        | Gift Certificate
+                        b(style="margin-right: 30px").caret
+                    #gifc.collapse
+                      ul.nav
+                        li(style="margin-left: 30px")
+                          a(href='./giftcertificate')
+                            span.sidebar-normal Gift Certificate      
+            li
+              a(href="./commission")
+                i.ti-envelope
+                p
+                  | Commission
+            li
+              a(href="./utilities")
+                i.ti-settings
+                p
+                  | Utilities
+            li
+              a(data-toggle='collapse', href='#queries')
+                i.ti-notepad
+                p
+                  | Queries
+                  b.caret
+              #queries.collapse
+                ul.nav
+                  li(style="margin-left: 30px;")
+                    a(href='./customerList')
+                      span.sidebar-mini 
+                      span.sidebar-normal Customers
+                  li(style="margin-left: 30px;")
+                    a(href='./loyaltyMembers')
+                      span.sidebar-mini 
+                      span.sidebar-normal Loyalty Members
+                  li(style="margin-left: 30px;")
+                    a(href='./servicesList')
+                      span.sidebar-mini 
+                      span.sidebar-normal Services
+                  li(style="margin-left: 30px;")
+                    a(href='./packagesList')
+                      span.sidebar-mini 
+                      span.sidebar-normal Packages
+                  li(style="margin-left: 30px;")
+                    a(href='./promoList')
+                      span.sidebar-mini 
+                      span.sidebar-normal Promos
+                  li(style="margin-left: 30px;")
+                    a(href='./therapistList')
+                      span.sidebar-mini 
+                      span.sidebar-normal Therapists
+                  li(style="margin-left: 30px;")
+                    a(href='./roomList')
+                      span.sidebar-mini 
+                      span.sidebar-normal Rooms    
+                  li(style="margin-left: 30px;")
+                    a(href='./freebiesList')
+                      span.sidebar-mini 
+                      span.sidebar-normal Freebies          
+            li
+              a(data-toggle='collapse', href='#sales')
+                i.ti-bar-chart-alt
+                p
+                  | Sales
+                  b.caret
+              #sales.collapse
+                ul.nav
+                  li(style="margin-left: 30px;")
+                    a(href='./servicesReport')
+                      span.sidebar-mini 
+                      span.sidebar-normal Daily
+                  li(style="margin-left: 30px;")
+                    a(href='./packagesReport')
+                      span.sidebar-mini 
+                      span.sidebar-normal Monthly
+      .main-panel
+        nav.navbar.navbar-default
+          .container-fluid
+            .navbar-minimize
+
+            .navbar-header
+
+              a.navbar-brand(href='#Dashboard')
+                | Freebies
+            .collapse.navbar-collapse
+
+              ul.nav.navbar-nav.navbar-right
+                li
+                  a.dropdown-toggle.btn-rotate(href='',data-toggle='dropdown')
+                    i.ti-settings
+                    p.hidden-md.hidden-lg
+                      | Settings
+                  ul.dropdown-menu
+                    li
+                      a.logout(style="cursor: pointer;") Log Out
+        .content
+          .container-fluid
+            .row
+              .col-md-12
+                .card
+                  .row
+                    .col-md-6
+                      .card-content
+                        button.btn.btn-info.btn-fill.btn-wd(data-toggle='modal', data-target='#addNewFreebies') Add New Freebie
+                  .card-content
+                    .nav-tabs-navigation
+                      .nav-tabs-wrapper
+                        ul#tabs.nav.nav-tabs(data-tabs='tabs')
+                          li.active
+                            a(href='#service', data-toggle='tab') Services
+                          li
+                            a(href='#package', data-toggle='tab') Packages
+                          li
+                            a(href='#promo', data-toggle='tab') Promo
+                    #my-tab-content.tab-content
+                      //SERVICES
+                      #service.tab-pane.active
+                        .content
+                          .container-fluid
+                            .row
+                              .col-md-12
+                                .card
+                                  .card-content
+                                    .toolbar
+                                      // Here you can write extra buttons/actions for the toolbar
+                                    .fresh-datatables
+                                      table#datatablesServices.table.table-no-bordered.table-hover(cellspacing='0', width='100%', style='width:100%')
+                                        thead
+                                          tr
+                                            th Freebie
+                                            th.disabled-sorting
+                                            th.disabled-sorting
+                                            th.disabled-sorting Points Required
+                                            th.disabled-sorting Available
+                                            th.disabled-sorting Actions
+                                        tfoot
+                                          tr
+                                            th Freebie
+                                            th
+                                            th
+                                            th Points Required
+                                            th Available
+                                            th Actions
+                                        tbody
+                                          each freebie in freebies
+                                            tr
+                                              td= freebie.service_name
+                                              input.name(type='hidden' id=`${freebie.freebies_id}` value=`${freebie.service_name}`)
+                                              td
+                                              td
+                                              td= freebie.equivalent_points
+                                              td
+                                                if(freebie.freebies_availability==0)
+                                                  input.switch-icon(type='checkbox' checked value=`${freebie.freebies_id}`)
+                                                else if(freebie.freebies_availability==1)
+                                                  input.switch-icon(type='checkbox' value=`${freebie.freebies_id}`)
+
+                                              td
+                                                if(freebie.freebies_availability==1)
+                                                  .dropdown.pull-right(style="right: 20px")
+                                                    button.btn.btn-simple.btn-info.btn-rotate(href='#', data-toggle='dropdown' style='left: auto; right: 13px')
+                                                      i.ti-settings
+                                                    ul.dropdown-menu
+                                                      li
+                                                        button.btn.btn-simple.btn-warning.updateButton(data-toggle='modal', value=`${freebie.freebies_id}` stlye="margin-right: 15px")
+                                                          span.btn-label
+                                                          i.ti-pencil-alt
+                                                          |  Update
+                                                      li
+                                                        button.btn.btn-simple.btn-danger.deleteButton(data-toggle='modal', value=`${freebie.freebies_id}` stlye="margin-right: 15px")
+                                                          span.btn-label
+                                                          i.ti-trash
+                                                          |  Delete
+                                                else if(freebie.freebies_availability==0)
+                                                  .dropdown.pull-right(style="right: 20px")
+                                                    button.btn.btn-simple.btn-info.btn-rotate.bawal(href='#', data-toggle='dropdown' style='left: auto; right: 13px')
+                                                      i.ti-settings
+                      
+                      // PACKAGE
+                      #package.tab-pane.active
+                        .content
+                          .container-fluid
+                            .row
+                              .col-md-12
+                                .card
+                                  .card-content
+                                    .toolbar
+                                      // Here you can write extra buttons/actions for the toolbar
+                                    .fresh-datatables
+                                      table#datatablesPackage.table.table-no-bordered.table-hover(cellspacing='0', width='100%', style='width:100%')
+                                        thead
+                                          tr
+                                            th Freebie
+                                            th.disabled-sorting
+                                            th.disabled-sorting
+                                            th.disabled-sorting Points Required
+                                            th.disabled-sorting Available
+                                            th.disabled-sorting Actions
+                                        tfoot
+                                          tr
+                                            th Freebie
+                                            th
+                                            th
+                                            th Points Required
+                                            th Available
+                                            th Actions
+                                        tbody
+                                          each pack in packages
+                                            tr
+                                              td= pack.package_name
+                                              input.name(type='hidden' id=`${pack.freebies_package_id}` value=`${pack.package_name}`)
+                                              td
+                                              td
+                                              td= pack.equivalent_points
+                                              td
+                                                if(pack.freebies_package_availability==0)
+                                                  input.switch-icon(type='checkbox' checked value=`${pack.freebies_package_id}`)
+                                                else if(pack.freebies_package_availability==1)
+                                                  input.switch-icon(type='checkbox' value=`${pack.freebies_package_id}`)
+
+                                              td
+                                                if(pack.freebies_package_availability==1)
+                                                  .dropdown.pull-right(style="right: 20px")
+                                                    button.btn.btn-simple.btn-info.btn-rotate(href='#', data-toggle='dropdown' style='left: auto; right: 13px')
+                                                      i.ti-settings
+                                                    ul.dropdown-menu
+                                                      li
+                                                        button.btn.btn-simple.btn-warning.updateButton(data-toggle='modal', value=`${pack.freebies_package_id}` stlye="margin-right: 15px")
+                                                          span.btn-label
+                                                          i.ti-pencil-alt
+                                                          |  Update
+                                                      li
+                                                        button.btn.btn-simple.btn-danger.deleteButton(data-toggle='modal', value=`${pack.freebies_package_id}` stlye="margin-right: 15px")
+                                                          span.btn-label
+                                                          i.ti-trash
+                                                          |  Delete
+                                                else if(pack.freebies_package_availability==0)
+                                                  .dropdown.pull-right(style="right: 20px")
+                                                    button.btn.btn-simple.btn-info.btn-rotate.bawal(href='#', data-toggle='dropdown' style='left: auto; right: 13px')
+                                                      i.ti-settings          
+                      
+                      // PROMO
+                      #promo.tab-pane.active
+                        .content
+                          .container-fluid
+                            .row
+                              .col-md-12
+                                .card
+                                  .card-content
+                                    .toolbar
+                                      // Here you can write extra buttons/actions for the toolbar
+                                    .fresh-datatables
+                                      table#datatablesPromo.table.table-no-bordered.table-hover(cellspacing='0', width='100%', style='width:100%')
+                                        thead
+                                          tr
+                                            th Freebie
+                                            th.disabled-sorting
+                                            th.disabled-sorting
+                                            th.disabled-sorting Points Required
+                                            th.disabled-sorting Available
+                                            th.disabled-sorting Actions
+                                        tfoot
+                                          tr
+                                            th Freebie
+                                            th
+                                            th
+                                            th Points Required
+                                            th Available
+                                            th Actions
+                                        tbody
+                                          each promo in promos
+                                            tr
+                                              td= promo.promobundle_name
+                                              input.name(type='hidden' id=`${promo.freebies_promo_id}` value=`${promo.promobundle_name}`)
+                                              td
+                                              td
+                                              td= promo.equivalent_points
+                                              td
+                                                if(promo.freebies_promo_availability==0)
+                                                  input.switch-icon(type='checkbox' checked value=`${promo.freebies_promo_id}`)
+                                                else if(promo.freebies_promo_availability==1)
+                                                  input.switch-icon(type='checkbox' value=`${promo.freebies_promo_id}`)
+
+                                              td
+                                                if(promo.freebies_promo_availability==1)
+                                                  .dropdown.pull-right(style="right: 20px")
+                                                    button.btn.btn-simple.btn-info.btn-rotate(href='#', data-toggle='dropdown' style='left: auto; right: 13px')
+                                                      i.ti-settings
+                                                    ul.dropdown-menu
+                                                      li
+                                                        button.btn.btn-simple.btn-warning.updateButton(data-toggle='modal', value=`${promo.freebies_promo_id}` stlye="margin-right: 15px")
+                                                          span.btn-label
+                                                          i.ti-pencil-alt
+                                                          |  Update
+                                                      li
+                                                        button.btn.btn-simple.btn-danger.deleteButton(data-toggle='modal', value=`${promo.freebies_promo_id}` stlye="margin-right: 15px")
+                                                          span.btn-label
+                                                          i.ti-trash
+                                                          |  Delete
+                                                else if(promo.freebies_promo_availability==0)
+                                                  .dropdown.pull-right(style="right: 20px")
+                                                    button.btn.btn-simple.btn-info.btn-rotate.bawal(href='#', data-toggle='dropdown' style='left: auto; right: 13px')
+                                                      i.ti-settings                  
+
+                                
+                          // DELETE  
+                          #modal-warning.modal.modal-warning.fade
+                            .modal-dialog
+                              .modal-content
+                                .modal-header
+                                  button.close(type='button', data-dismiss='modal', aria-label='Close')
+                                    span(aria-hidden='true') ×
+                                  h4.modal-title Warning
+                                .modal-body
+                                  p Are you sure you?
+                                .modal-footer
+                                    button.btn.btn-danger.btn-fill.pull-left#cancelButton(type='button', data-dismiss='modal') No
+                                    button.btn.btn-info.btn-fill.pull-right#deleteSubmit(href='button') Yes
+
+                          //- ADD
+                          #addNewFreebies.modal.fade(tabindex='-1', role='dialog')
+                            .modal-dialog(role='document')
+                              .modal-content
+                                .modal-header
+                                  h5.modal-title
+                                    center Add New Freebie
+                                  button.close(type='button', data-dismiss='modal', aria-label='Close')
+                                form#allInputsFormValidation(method='#' action='#')
+                                  .modal-body
+                                    .row
+                                      .col-md-6
+                                        .form-group.has-default.bmd-form-group
+                                          label Service Included
+                                          star *
+                                            select.selectpicker(data-style='btn-info' name='service' required='true', aria-required='true')
+                                              each service in services
+                                                option(value=`${service.service_id}`)= service.service_name
+                                      .col-md-6
+                                        .form-group.has-default.bmd-form-group
+                                          label Points Required 
+                                          star *
+                                          input.form-control#points(type='number', placeholder='Points Required' name="required_points" required='true', aria-required='true')            
+                                  .modal-footer
+                                    button.btn.btn-secondary.pull-left.btn.btn-info.btn-fill.btn-wd.addButton(type='button') Add Freebie
+                                    button.btn.btn-secondary.btn.btn-danger.btn-fill.btn-wd(type='button', data-dismiss='modal') Cancel
+                                
+                          //UPDATE
+                          #updateModal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='exampleModalLabel', aria-hidden='true')
+                            .modal-dialog(role='document')
+                              .modal-content
+                                .modal-header
+                                  button.close(type='button', data-dismiss='modal', aria-label='Close') 
+                                    span(aria-hidden='true') x
+                                  h3.modal-title 
+                                    center Freebie Information
+                                  center
+                                    h5#freebieName
+                                .modal-body#updateAppend
+                                .modal-footer
+                                    button.btn.btn-danger.btn-fill.pull-left.cancelButton(type='button', data-dismiss='modal') Close
+                                    button.btn.btn-info.btn-fill.pull-right.updateSubmitButton(type='button') Update
+        
+        footer.footer
+          .container-fluid
+            .copyright.pull-right
+              | © 
+              script.
+                document.write(new Date().getFullYear())
+              | , made with 
+              i.fa.fa-heart.heart
+              |  by 
+              a(href='#') Team MBAY
+    .fixed-plugin
+  // Core JS Files. Extra: TouchPunch for touch library inside jquery-ui.min.js
+  script(src='/assets/paperDashboardPro/js/jquery-3.1.1.min.js', type='text/javascript')
+  script(src='/assets/paperDashboardPro/js/jquery-ui.min.js', type='text/javascript')
+  script(src='/assets/paperDashboardPro/js/perfect-scrollbar.min.js', type='text/javascript')
+  script(src='/assets/paperDashboardPro/js/bootstrap.min.js', type='text/javascript')
+  // Forms Validations Plugin
+  script(src='/assets/paperDashboardPro/js/jquery.validate.min.js')
+  // Promise Library for SweetAlert2 working on IE
+  script(src='/assets/paperDashboardPro/js/es6-promise-auto.min.js')
+  // Plugin for Date Time Picker and Full Calendar Plugin
+  script(src='/assets/paperDashboardPro/js/moment.min.js')
+  // Date Time Picker Plugin is included in this js file
+  script(src='/assets/paperDashboardPro/js/bootstrap-datetimepicker.js')
+  // Select Picker Plugin
+  script(src='/assets/paperDashboardPro/js/bootstrap-selectpicker.js')
+  // Switch and Tags Input Plugins
+  script(src='/assets/paperDashboardPro/js/bootstrap-switch-tags.js')
+  // Circle Percentage-chart
+  script(src='/assets/paperDashboardPro/js/jquery.easypiechart.min.js')
+  // Charts Plugin
+  script(src='/assets/paperDashboardPro/js/chartist.min.js')
+  // Notifications Plugin
+  script(src='/assets/paperDashboardPro/js/bootstrap-notify.js')
+  // Sweet Alert 2 plugin
+  script(src='/assets/paperDashboardPro/js/sweetalert.js')
+  // Vector Map plugin
+  script(src='/assets/paperDashboardPro/js/jquery-jvectormap.js')
+  // Google Maps Plugin
+  script(src='https://maps.googleapis.com/maps/api/js?key=AIzaSyAFPQibxeDaLIUHsC6_KqDdFaUdhrbhZ3M')
+  // Wizard Plugin
+  script(src='/assets/paperDashboardPro/js/jquery.bootstrap.wizard.min.js')
+  // Bootstrap Table Plugin
+  script(src='/assets/paperDashboardPro/js/bootstrap-table.js')
+  // Plugin for DataTables.net
+  script(src='/assets/paperDashboardPro/js/jquery.datatables.js')
+  // Full Calendar Plugin
+  script(src='/assets/paperDashboardPro/js/fullcalendar.min.js')
+  // Paper Dashboard PRO Core javascript and methods for Demo purpose
+  script(src='/assets/paperDashboardPro/js/paper-dashboard.js')
+  // Sharrre Library
+  script(src='/assets/paperDashboardPro/js/jquery.sharrre.js')
+  // Paper Dashboard PRO DEMO methods, don't include it in your project!
+  script(src='/assets/paperDashboardPro/js/demo.js')
+  script.
+    $(document).ready(function(){
+          $('.deleteButton').click(function(){
+            var idNow = $(this).val();
+            console.log(idNow)
+            var name = $(`.name[id='${idNow}']`).val()
+            swal({
+              title: 'Do you want to delete '+name+'?',
+              text: 'Are you sure?',
+              icon: "info",
+              buttons: ["Cancel","Proceed"],
+              dangerMode: true
+                
+              }).then((proceed) => {
+                if(proceed)
+                {
+                $.post('/admin/adminFreebies/Delete',{id:idNow}).done(function(data){
+                  if(data.alertDesc==0)
+                  {
+                    swal({
+                      title: name+' has been deleted',
+                      icon: 'success'
+                    }).then(function(){
+                      location.reload()
+                    })
+                  }
+                  else
+                  {
+                    swal({
+                      title: 'Error',
+                      icon: 'error'
+                    })
+                  }
+                })
+                }
+                else
+                {
+
+                }
+                });
+            
+        });
+    })
+  script.
+    $(document).ready(function(){
+         $('.bawal').click(function(){
+          swal({
+            title: 'Set this item  to unavailable first',
+            icon: 'warning'
+          })
+        })
+    })
+  //- STATUS CHANGE FOR FREEBIES - SERVICES
+  script.
+    $(document).ready(function(){
+       $(function(){
+                  console.log(localStorage)
+                  var name = localStorage.getItem('name')
+                  if (localStorage.getItem('name'))
+                  {
+                    if(localStorage.getItem('status')==1)
+                    {
+                    $.notify(
+                      {
+                      icon: 'ti-bell',
+                      message: name+' has been set to not available',
+                      
+                    },
+                    {
+                      type: 'success'
+                    },
+                    {
+                    animate: {
+                          enter: 'animated bounceInDown',
+                          exit: 'animated bounceOutUp'
+                        }
+                    })
+                      localStorage.clear()
+                    }
+                    else
+                    {
+                       $.notify(
+                      {
+                      icon: 'ti-bell',
+                      message: name+' has been set to available',
+                      
+                    },
+                    {
+                      type: 'success'
+                    },
+                    {
+                    animate: {
+                          enter: 'animated bounceInDown',
+                          exit: 'animated bounceOutUp'
+                        }
+                    })
+                      localStorage.clear()
+                    }
+                }
+                })
+        $('.switch-icon').on('switchChange.bootstrapSwitch', function(event,state){
+          var idNow = $(this).val();
+          var name = $(`.name[id='${idNow}']`).val()
+          if(state==false)
+          {
+            var stats = 1
+            console.log(name)
+            //- alert(stats)
+            //- alert(idNow)
+            $.post('/admin/adminFreebies/statusChange',{stats,id1:idNow}).done(function(data){
+              if(data.alertDesc == 0)
+              {
+                localStorage.setItem('name',name)
+                localStorage.setItem('status',stats)
+                location.reload()
+                
+                
+              }
+              else
+              {
+
+              }
+            })
+            
+          }
+          else if(state==true)
+          {
+            var idNow = $(this).val();
+            var stats = 0
+            //- alert(stats)
+            //- alert(idNow)
+            $.post('/admin/adminFreebies/statusChange',{stats,id1:idNow}).done(function(data){
+              if(data.alertDesc==0)
+              {
+                localStorage.setItem('name',name)
+                localStorage.setItem('status',stats)
+                location.reload()
+              }
+              else
+              {
+
+              }
+            })
+          }
+        });
+    });
+
+
+  //- STATUS CHANGE FOR FREEBIES - PACKAGES
+  script.
+    $(document).ready(function(){
+       $(function(){
+                  console.log(localStorage)
+                  var name = localStorage.getItem('name')
+                  if (localStorage.getItem('name'))
+                  {
+                    if(localStorage.getItem('status')==1)
+                    {
+                    $.notify(
+                      {
+                      icon: 'ti-bell',
+                      message: name+' has been set to not available',
+                      
+                    },
+                    {
+                      type: 'success'
+                    },
+                    {
+                    animate: {
+                          enter: 'animated bounceInDown',
+                          exit: 'animated bounceOutUp'
+                        }
+                    })
+                      localStorage.clear()
+                    }
+                    else
+                    {
+                       $.notify(
+                      {
+                      icon: 'ti-bell',
+                      message: name+' has been set to available',
+                      
+                    },
+                    {
+                      type: 'success'
+                    },
+                    {
+                    animate: {
+                          enter: 'animated bounceInDown',
+                          exit: 'animated bounceOutUp'
+                        }
+                    })
+                      localStorage.clear()
+                    }
+                }
+                })
+        $('.switch-icon').on('switchChange.bootstrapSwitch', function(event,state){
+          var idNow = $(this).val();
+          var name = $(`.name[id='${idNow}']`).val()
+          if(state==false)
+          {
+            var stats = 1
+            console.log(name)
+            //- alert(stats)
+            //- alert(idNow)
+            $.post('/admin/adminFreebies/statusChangePackages',{stats,id1:idNow}).done(function(data){
+              if(data.alertDesc == 0)
+              {
+                localStorage.setItem('name',name)
+                localStorage.setItem('status',stats)
+                location.reload()
+                
+                
+              }
+              else
+              {
+
+              }
+            })
+            
+          }
+          else if(state==true)
+          {
+            var idNow = $(this).val();
+            var stats = 0
+            //- alert(stats)
+            //- alert(idNow)
+            $.post('/admin/adminFreebies/statusChangePackages',{stats,id1:idNow}).done(function(data){
+              if(data.alertDesc==0)
+              {
+                localStorage.setItem('name',name)
+                localStorage.setItem('status',stats)
+                location.reload()
+              }
+              else
+              {
+
+              }
+            })
+          }
+        });
+    });
+
+
+  //- STATUS CHANGE FOR FREEBIES - PROMOS
+  script.
+    $(document).ready(function(){
+       $(function(){
+                  console.log(localStorage)
+                  var name = localStorage.getItem('name')
+                  if (localStorage.getItem('name'))
+                  {
+                    if(localStorage.getItem('status')==1)
+                    {
+                    $.notify(
+                      {
+                      icon: 'ti-bell',
+                      message: name+' has been set to not available',
+                      
+                    },
+                    {
+                      type: 'success'
+                    },
+                    {
+                    animate: {
+                          enter: 'animated bounceInDown',
+                          exit: 'animated bounceOutUp'
+                        }
+                    })
+                      localStorage.clear()
+                    }
+                    else
+                    {
+                       $.notify(
+                      {
+                      icon: 'ti-bell',
+                      message: name+' has been set to available',
+                      
+                    },
+                    {
+                      type: 'success'
+                    },
+                    {
+                    animate: {
+                          enter: 'animated bounceInDown',
+                          exit: 'animated bounceOutUp'
+                        }
+                    })
+                      localStorage.clear()
+                    }
+                }
+                })
+        $('.switch-icon').on('switchChange.bootstrapSwitch', function(event,state){
+          var idNow = $(this).val();
+          var name = $(`.name[id='${idNow}']`).val()
+          if(state==false)
+          {
+            var stats = 1
+            console.log(name)
+            //- alert(stats)
+            //- alert(idNow)
+            $.post('/admin/adminFreebies/statusChangePromos',{stats,id1:idNow}).done(function(data){
+              if(data.alertDesc == 0)
+              {
+                localStorage.setItem('name',name)
+                localStorage.setItem('status',stats)
+                location.reload()
+                
+                
+              }
+              else
+              {
+
+              }
+            })
+            
+          }
+          else if(state==true)
+          {
+            var idNow = $(this).val();
+            var stats = 0
+            //- alert(stats)
+            //- alert(idNow)
+            $.post('/admin/adminFreebies/statusChangePromos',{stats,id1:idNow}).done(function(data){
+              if(data.alertDesc==0)
+              {
+                localStorage.setItem('name',name)
+                localStorage.setItem('status',stats)
+                location.reload()
+              }
+              else
+              {
+
+              }
+            })
+          }
+        });
+    });
+  script.
+    $(document).ready(function(){
+      $('.updateButton').click(function(){
+      var idNow = $(this).val();
+          $.post('/admin/adminFreebies/query',{id:idNow})
+          .done(data=>{
+            console.log(data)
+              $('#freebieName').append(`${data[0].service_name}`)
+              $('#updateAppend').append(`
+                  <div class="row">
+                    <div class="col-md-6">
+                      <div class="form-group has-default bmd-form-group">
+                        <label>Points Required </label>
+                        <star>*</star>
+                        <input class="form-control" id="req_points" type="number" placeholder="${data[0].equivalent_points}" value='${data[0].equivalent_points}' name="required_points" required="true" aria-required="true"/>
+                      </div>
+                    </div>
+                  </div>
+                  `)
+              $('#updateModal').modal('show')
+              $('#updateModal').on('hidden.bs.modal', function (){
+                $('#updateAppend').empty()
+                });
+              $('.updateSubmitButton').click(function(){
+                  $.post('/admin/adminFreebies/update',{
+                  points:$('#req_points').val(),
+                  id:idNow
+                  })
+                  .done(data=>{
+                      if(data.alertDesc==0){
+                          swal({
+                          title:'Success', 
+                          text:'Freebie Information Updated', 
+                          icon:'success'
+                          }).then(function(){
+                            location.reload();
+                          })
+                      }
+                      else
+                      {
+                         swal({
+                          title:'Error', 
+                          //- text:'Service Information Updated', 
+                          icon:'error'
+                         })
+                        
+                      }
+
+                  })
+                })
+              })
+
+          })
+    })
+
+
+  script.
+    $(document).ready(function(){
+      $('.addButton').click(function(){
+        var service = $('.selectpicker[name="service"]').val()
+        var points = $('#points').val()
+        if(points == 0 )
+        {
+          swal({
+              title: 'Please double check the Fields',
+              text: 'Make sure all required fields has value', 
+              icon: 'warning'
+            })
+        }
+        else
+        {
+          $.post('/admin/adminFreebies/addFreebies',{service:service,points:points})
+          .done(function(data){
+            if(data.alertDesc == 0)
+            {
+              swal({
+                title:'Success', 
+                text:'New Freebie Inserted', 
+                icon:'success'
+                }).then(function(){
+                  location.reload()
+                })
+            }
+            else if(data.alertDesc ==1)
+              {
+                swal({
+                  title:'Error', 
+                  text:'ERROR', 
+                  icon:'error'
+                  })
+              }
+            else if(data.alertDesc ==2)
+            {
+                swal({
+                  title:'Warning', 
+                  text:'Freebie Already Exist', 
+                  icon:'warning'
+                  })
+            }
+          })
+
+        }
+      })
+    })
+  script.
+      $(document).ready(function(){
+          $('.logout').click(function(){
+            swal({
+            title: "Are you sure?",
+            text: "Do you want to Log Out?",
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+          })
+          .then((logout) => {
+            if (logout) {
+              $.post('/admin/admin/logout')
+              location.reload()
+            } 
+          });
+          })
+      })
+  script(type='text/javascript').
+    $(document).ready(function(){
+    demo.initOverviewDashboard();
+    demo.initCirclePercentage();
+    });
+
+  script(type='text/javascript').
+      $(document).ready(function() {
+      $('#datatablesServices').DataTable({"lengthMenu": [[5, 25, 50, -1], [5, 25, 50, "All"]]});
+      });
+  script(type='text/javascript').
+      $(document).ready(function() {
+      $('#datatablesPackage').DataTable({"lengthMenu": [[5, 25, 50, -1], [5, 25, 50, "All"]]});
+      });
+  script(type='text/javascript').
+      $(document).ready(function() {
+      $('#datatablesPromo').DataTable({"lengthMenu": [[5, 25, 50, -1], [5, 25, 50, "All"]]});
+      });
+
+    
+        
+    //- $('#add').click(function(){
+    //- swal({
+    //-   title:'Success', 
+    //-   text:'New Service Type Added', 
+    //-   icon:'success'})
+    //-   .then(function(){
+    //-   location.reload();
+    //- })
+    //- });
+    //- });
+
+  script.
+    $().ready(function(){
+      $('#registerFormValidation').validate();
+      $('#loginFormValidation').validate();
+      $('#allInputsFormValidation').validate();
+        });
+
