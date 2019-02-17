@@ -362,10 +362,7 @@ html(lang='en')
                       if(restype=='single')
                           select.selectpicker(title='Select Therapist', data-style='btn-info', data-size='7' name='selected_therapist' id='selected_therapist' required='true' aria-label='true')
                             each thera in therapist
-                              if(thera.in_service == null || thera.in_service == 0)
-                                option(value=`${thera.therapist_id}`)= thera.therapist_fname+" "+thera.therapist_mname+" "+thera.therapist_lname
-                              else if(thera.in_service == 1)
-                                option(value=`${thera.therapist_id}` disabled style="background-color: #c5c5c5")= thera.therapist_fname+" "+thera.therapist_mname+" "+thera.therapist_lname+" - NOT AVAILABLE"
+                              option(value=`${thera.therapist_id}`)= thera.therapist_fname+" "+thera.therapist_mname+" "+thera.therapist_lname
                       else if(restype=='multiple')
                           select.selectpicker(multiple='', title='Select Therapist', data-style='btn-info', data-size='7' name='selected_therapist' id='selected_therapist' required='true' aria-label='true')
                             each thera in therapist
@@ -2547,10 +2544,10 @@ html(lang='en')
                                     }
                                   }
                                   
-                                  if(parseFloat($('.amountReceived').val()) != 0 && $('#checkboxPoints')[0].checked == true && $('.checkboxGc')[0].checked==false)
+                                  if(parseInt($('.amountReceived').val()) != 0 && $('#checkboxPoints')[0].checked == true && $('.checkboxGc')[0].checked==false)
                                   {
-                                    alert($('.hello').val())
-                                    if(parseFloat($('.amountReceived').val()) < parseFloat($('.amountNeeded').val()))
+                                    alert('pers')
+                                    if(parseInt($('.amountReceived').val()) < parseInt($('.amountNeeded').val()))
                                     {
                                       swal({
                                         title: "Amount Received is insufficient",
@@ -2561,6 +2558,7 @@ html(lang='en')
                                     {
                                       swal({
                                         title: "Are you sure?",
+                                        text: "(Cash & Points)",
                                         icon: 'info'
                                       }).then(function(sure){
                                         if(sure)

@@ -38,13 +38,17 @@ html(lang='en')
 			.container
 				.motto.text-center
 					h1 Therapist Portal
-						each therapist in therapists
-							h3= "Welcome! "+ therapist.therapist_fname+" "+therapist.therapist_mname+" "+therapist.therapist_lname
-								br
-								| View your things by navigating using these buttons.
+					- if(typeof user === 'undefined')
+						h3 *insert text here*
+						br
+						button.btn.btn-outline-neutral.btn-round(type='button' data-toggle='modal' data-target='#loginModal') Login
+					- else
+						h3 Welcome #{user.username}!
 							br
-							a.btn.btn-outline-primary.btn-round(style='margin:5px;color:white' data-toggle='modal' data-target='#scheduleModal') Schedule
-							a.btn.btn-outline-danger.btn-round(style='margin:5px;color:white' data-toggle='modal' data-target='#commissionModal') Commission
+							| View your things by navigating using these buttons.
+						br
+						a.btn.btn-outline-primary.btn-round(style='margin:5px;color:white' data-toggle='modal' data-target='#scheduleModal') Schedule
+						a.btn.btn-outline-danger.btn-round(style='margin:5px;color:white' data-toggle='modal' data-target='#commissionModal') Commission
 		#loginModal.modal.fade.show(tabindex='-1', role='dialog')
 			.modal-dialog.modal-register
 				.modal-content

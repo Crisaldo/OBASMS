@@ -1129,25 +1129,6 @@ router.get('/adminTherapist',mid.adminnauthed,(req, res) => {
     })
   })
 })
-
-router.post('/adminTherapist/account_check',(req,res)=>{
-  const query = `SELECT * FROM therapist_account_tbl WHERE therapist_username = "${req.body.username}"`
-
-  db.query(query,(err,out)=>{
-    console.log(query)
-    console.log(out)
-    if(out == undefined || out == 0)
-    {
-      var available = 0
-      res.send({availability:available})
-    }
-    else if(out != undefined)
-    {
-      var available = 1
-      res.send({availability:available})
-    }
-  })
-})
 //          > C R E A T E (ADD)
 router.post('/adminTherapist',(req, res) => {
   var aydi;
@@ -1206,17 +1187,6 @@ router.post('/adminTherapist',(req, res) => {
         VALUE(${aydi},0)`
 
         db.query(query3,(err,out)=>{
-        })
-
-        const query4 = `INSERT INTO therapist_account_tbl(therapist_id,therapist_username,therapist_password,delete_stats)
-        VALUE("${aydi}","${req.body.username}","${req.body.password}",0)`
-        console.log(query4)
-        db.query(query4,(err,out)=>{     
-          if(err)
-          {
-            console.log("error sa account")
-            console.log(err)
-          }     
         })
       })
     })
