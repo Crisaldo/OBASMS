@@ -147,14 +147,20 @@ html(lang='en')
                                         .form-group
                                           p.control-label
                                             strong
-                                              | Gender
+                                              | Sex
                                               star *
-                                      .col-md-5
+                                      .col-md-4
                                         .form-group
                                           p.control-label
                                             strong
                                               | Birthday
                                               star *
+                                      .col-md-3
+                                        .form-group
+                                          .checkbox
+                                            input#vatExempt(type='checkbox')
+                                            label(for='vatExempt')
+                                              | VAT-exempt
                                             
                                     .row
                                       .col-md-1
@@ -171,6 +177,10 @@ html(lang='en')
                                               | Female
                                       .col-md-4
                                         input.form-control.datepicker(type='text' name='birthday' id="calendar")
+                                      .col-md-4
+                                        select.selectpicker(title='Select', data-style='btn-info', data-size='7' id='person_exempt' aria-label='true')
+                                          each vatExempt in vatExempts
+                                            option(value=`${vatExempt.vat_exempt_id}`)= vatExempt.vat_exempt_desc
                                     br
                                     .row
                                       .col-md-7
@@ -266,12 +276,12 @@ html(lang='en')
                                       thead
                                         tr
                                           th Name
-                                          th Gender
+                                          th Sex
                                           th.disabled-sorting Actions
                                       tfoot
                                         tr
                                           th Name
-                                          th Gender
+                                          th Sex
                                           th Actions
                                       tbody
                                         each customer in customers
@@ -319,12 +329,12 @@ html(lang='en')
                                       thead
                                         tr
                                           th Name
-                                          th Gender
+                                          th Sex
                                           th.disabled-sorting Actions
                                       tfoot
                                         tr
                                           th Name
-                                          th Gender
+                                          th Sex
                                           th Actions
                                       tbody
                                         each customer in customers
@@ -675,6 +685,17 @@ html(lang='en')
   script(src='/assets/paperDashboardPro/js/jquery.sharrre.js')
   // Paper Dashboard PRO DEMO methods, don't include it in your project!
   script(src='/assets/paperDashboardPro/js/demo.js')
+  script.
+    $(document).ready(function(){
+       $(document).on('change.bootstrapSwitch','#vatExempt', function(e){
+         if(e.target.checked == true){
+           $('#person_exempt').attr('disabled',false)
+         } else if(e.target.checked == false) {
+           $('#person_exempt').attr('disabled',true)
+           $('#person_exempt').prop('disabled',true)
+         }
+       })
+    })
   //- PASSWORD VALIDATION
   script.
     $(document).ready(function(){

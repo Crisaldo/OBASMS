@@ -297,7 +297,62 @@ html(lang='en')
                       .form-group.has-default.bmd-form-group
                         label Closing Time
                         input.timepicker.form-control(type='text', placeholder='Closing Time' value=`${utilities.closing_time}` id='closing_time')
-                  
+                  .row
+                    .col-md-4
+                      .form-group.has-default.bmd-form-group
+                        label Official Receipt Number(OR)
+                        input.form-control(type='number', onkeypress="return !(event.charCode == 46)" placeholder='OR#' value=`${utilities.official_receipt_num}` id='official_receipt_num')
+                  .row
+                    .col-md-4
+                      .form-group.has-default.bmd-form-group
+                        label Value-added Tax(VAT)
+                        input.form-control(type='number', placeholder='VAT' value=`${utilities.vat}` id='vat')
+                        button.btn.btn-info.btn-sm.btn-fill.btn-magnify(type='button' data-target='#vatModal' data-toggle='modal' style="margin-left: 102%;margin-top: -61px;")
+                            span.btn-label
+                              i.ti-eye
+                            |  View VAT Exempted 
+                        #vatModal.modal.fade(tabindex='-1', role='dialog')
+                          .modal-dialog(role='document')
+                            .modal-content
+                              .modal-header
+                                h5.modal-title
+                                  center VAT Exemption
+                                button.close(type='button', data-dismiss='modal', aria-label='Close')
+                              form#allInputsFormValidation(method='' action='')
+                                .modal-body
+                                  .row
+                                    .col-md-1
+                                    .col-md-4
+                                      .form-group.has-default.bmd-form-group
+                                        input.form-control(type='text', placeholder='' value="" id='person_exempt')
+                                        button.btn.btn-info.btn-fill.newVatExempted(type="button" style="margin-left: 13em;margin-top: -4em;") Add
+                                  .row
+                                    .col-md-1
+                                    .col-md-9
+                                      .toolbar
+                                        // Here you can write extra buttons/actions for the toolbar
+                                      .fresh-datatables
+                                        table#datatables.table.table-no-bordered.table-hover(cellspacing='0', width='100%', style='width:100%')
+                                          thead
+                                            tr
+                                              th VAT Exempted
+                                              th.disabled-sorting Actions
+                                          
+                                          tbody
+                                            each vatExempt in vatExempts
+                                              tr
+                                                td= vatExempt.vat_exempt_desc
+                                                input.hiddenDesc(type='hidden' id=`${vatExempt.vat_exempt_id}` value=`${vatExempt.vat_exempt_desc}`)
+                                                td  
+                                                  button.btn.btn-simple.btn-danger.deleteExempt(type="button" value=`${vatExempt.vat_exempt_id}` )
+                                                    span.btn-label
+                                                      i.ti-trash
+                                                      
+                                                          
+                                  .row
+                                .modal-footer
+                                  center
+                                    button.btn.btn-secondary.btn.btn-danger.btn-fill.btn-wd(type='button', data-dismiss='modal') Close       
                   
                   hr
                   .row
@@ -451,6 +506,99 @@ html(lang='en')
   script(src='/assets/paperDashboardPro/js/demo.js')
   script.
     $(document).ready(function(){
+      $('.deleteExempt').on('click',function(){
+        var id = this.value
+        var desc = $(`.hiddenDesc[id="${id}"]`).val()
+
+        swal({
+          title: 'Are you sure?',
+          text: 'Do you to delete '+desc,
+          icon: 'warning',
+          buttons: true,
+          dangerMode: true,
+        }).then(function(willDelete){
+          if(willDelete){
+            $.post('./deleteExempt',{
+              id
+            }).done(function(data){
+              if(data.alertDesc == 0){
+                swal({
+                  title: "Success!",
+                  text: desc+' is deleted.',
+                  icon: 'success'
+                }).then(function(){
+                  location.reload()
+                })
+              } else if(data.alertDesc ==1){
+                swal({
+                  title: "ERROR",
+                  text: 'This item is not deleted',
+                  icon: 'error'
+                })
+              }
+            })
+          } else {
+           
+          }
+        })
+        
+      })
+    })
+  script.
+    $(document).ready(function(){
+      $('.newVatExempted').on('click',function(){
+      var person_exempt = $('#person_exempt').val()
+        if(person_exempt == '') {
+          swal({
+            title: 'No input',
+            icon: 'warning'
+          })
+        }
+        else{
+          $.post('./vatExempted',{
+            person_exempt
+          }).done(function(data){
+            if(data.alertDesc==0){
+              swal({
+                title: 'Success!',
+                text: person_exempt+' is added.',
+                icon: "success"
+              }).then(function(){
+                location.reload()
+              })
+            } else if(data.alertDesc ==1) {
+              swal({
+                title: "ERROR",
+                text: 'Please try again or double check the data',
+                icon: 'error'
+              })
+            } else if (data.alertDesc == 2){
+              swal({
+                title: person_exempt+' is already exist',
+                icon: 'info'
+              })
+            }
+          })
+        }
+      })
+    })
+  script.
+    $(document).ready(function(){
+        $('#official_receipt_num').on('input', function() {
+          this.value = this.value
+            .replace(/[^\d.]/g, '')             // numbers and decimals only
+            .replace(/(\..*)\./g, '$1')         // decimal can't exist more than once
+            .replace(/(\.[\d]{4})./g, '$1');    // not more than 4 digits after decimal
+        });
+        $('#vat').on('input', function() {
+          this.value = this.value
+            .replace(/[^\d.]/g, '')             // numbers and decimals only
+            .replace(/(\..*)\./g, '$1')         // decimal can't exist more than once
+            .replace(/(\.[\d]{4})./g, '$1');    // not more than 4 digits after decimal
+        });
+    })
+  script.
+    $(document).ready(function(){
               function readURL(input) {
           if (input.files && input.files[0]) {
               var reader = new FileReader();
@@ -525,7 +673,9 @@ html(lang='en')
           secondShift_timeEnd:$('#secondShift_timeEnd').val(),
           reservation_timeAllowance: $('#timeAllowance').val(),
           therapist_commission: $('#therapist_commission').val(),
-          amenity_cancellation: $('#amenity_cancellation').val()
+          amenity_cancellation: $('#amenity_cancellation').val(),
+          official_receipt_num: $('#official_receipt_num').val(),
+          vat: $('#vat').val()
         }).done(function(data){
             if(data.alertDesc==0)
               {

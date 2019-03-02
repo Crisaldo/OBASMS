@@ -130,16 +130,16 @@ html(lang='en')
                           a(href='./adminRooms')
                             span.sidebar-normal Rooms
                   li(style="margin-left: 5px;")
-                    a(data-toggle='collapse', href='#freebies')
-                      p
-                        span.sidebar-mini F
-                        | Freebies
-                        b(style="margin-right: 30px").caret
-                    #freebies.collapse
-                      ul.nav
-                        li(style="margin-left: 30px")
-                          a(href='./adminFreebies')
-                            span.sidebar-normal Freebies
+                    //- a(data-toggle='collapse', href='#freebies')
+                    //-   p
+                    //-     span.sidebar-mini F
+                    //-     | Freebies
+                    //-     b(style="margin-right: 30px").caret
+                    //- #freebies.collapse
+                    //-   ul.nav
+                    //-     li(style="margin-left: 30px")
+                    //-       a(href='./adminFreebies')
+                    //-         span.sidebar-normal Freebies
                   li(style="margin-left: 5px;")
                     a(data-toggle='collapse', href='#gifc')
                       p
@@ -306,18 +306,18 @@ html(lang='en')
                                   star *
                                     .input-group
                                       span.input-group-addon ₱   
-                                      input.form-control(type='text', number="true" placeholder='Service Price' name='service_price' id='service_price' required='true', aria-required='true')
+                                      input.form-control(type='number', number="true" placeholder='Service Price' name='service_price' min="0" id='service_price' required='true', aria-required='true')
                             .row
                               .col-md-6
                                 .form-group.has-default.bmd-form-group
                                   label Service Point/s
                                   star *
-                                  input.form-control(type='number', placeholder='Service Point' name='service_points' id='service_points' required='true', aria-required='true')
+                                  input.form-control(type='number', placeholder='Service Point' name='service_points' id='service_points' min="0" required='true', aria-required='true')
                               .col-md-6
                                 .form-group.has-default.bmd-form-group
                                   label Point/s Required To Avail As Freebie
                                   star *
-                                  input.form-control(type='number', placeholder='Required Point/s' name='equivalent_points' id='equivalent_points' required='true', aria-required='true')
+                                  input.form-control(type='number', placeholder='Required Point/s' name='equivalent_points' min="0" id='equivalent_points' required='true', aria-required='true')
                             
 
 
@@ -406,6 +406,33 @@ html(lang='en')
   script(src='/assets/paperDashboardPro/js/demo.js')
   script.
     $(document).ready(function(){
+        $('#service_price').on('input', function() {
+          this.value = this.value
+            .replace(/[^\d.]/g, '')             // numbers and decimals only
+            .replace(/(\..*)\./g, '$1')         // decimal can't exist more than once
+            .replace(/(\.[\d]{4})./g, '$1');    // not more than 4 digits after decimal
+        });
+
+      $('#service_points').on('input', function() {
+          this.value = this.value
+            .replace(/[^\d.]/g, '')             // numbers and decimals only
+            .replace(/(\..*)\./g, '$1')         // decimal can't exist more than once
+            .replace(/(\.[\d]{4})./g, '$1');    // not more than 4 digits after decimal
+        });
+
+
+      $('#equivalent_points').on('input', function() {
+          this.value = this.value
+            .replace(/[^\d.]/g, '')             // numbers and decimals only
+            .replace(/(\..*)\./g, '$1')         // decimal can't exist more than once
+            .replace(/(\.[\d]{4})./g, '$1');    // not more than 4 digits after decimal
+        });
+
+      
+
+    })
+  script.
+    $(document).ready(function(){
       $('.buttonAdd').click(function(){
         $('#addNewService').modal('show')
 
@@ -420,6 +447,10 @@ html(lang='en')
           }
           else
           {
+
+            if(isNaN(price)==true || isNaN(points)== true || isNaN(eq_points)== true) {
+              alert("invalid input")
+            }
             $.post('./adminServices',{
               service_type: $('#service_type').val(),
               service_name: $('#service_name').val(),
@@ -597,7 +628,7 @@ html(lang='en')
                         <label>Service Price</label>
                           <div class ="input-group">
                           <span class="input-group-addon"> ₱</span>
-                          <input type="text" id="price" value="${data.out1.service_price}" placeholder="${data.out1.service_price}" name="price" class="form-control"/>
+                          <input type="number" id="price" value="${data.out1.service_price}" placeholder="${data.out1.service_price}" name="price" class="form-control"/>
                         </div>
                       </div>
                     </div>
@@ -659,6 +690,27 @@ html(lang='en')
                   })
                 })
               })
+
+                $(document).on('input',"#price", function() {
+                  this.value = this.value
+                    .replace(/[^\d.]/g, '')             // numbers and decimals only
+                    .replace(/(\..*)\./g, '$1')         // decimal can't exist more than once
+                    .replace(/(\.[\d]{4})./g, '$1');    // not more than 4 digits after decimal
+                });
+
+                $(document).on('input','#points', function() {
+                  this.value = this.value
+                    .replace(/[^\d.]/g, '')             // numbers and decimals only
+                    .replace(/(\..*)\./g, '$1')         // decimal can't exist more than once
+                    .replace(/(\.[\d]{4})./g, '$1');    // not more than 4 digits after decimal
+                });
+
+                $(document).on('input', '#Eqpoints',  function() {
+                  this.value = this.value
+                    .replace(/[^\d.]/g, '')             // numbers and decimals only
+                    .replace(/(\..*)\./g, '$1')         // decimal can't exist more than once
+                    .replace(/(\.[\d]{4})./g, '$1');    // not more than 4 digits after decimal
+                });
 
           })
       })

@@ -121,16 +121,16 @@ html(lang='en')
                           a(href='./adminRooms')
                             span.sidebar-normal Rooms
                   li(style="margin-left: 5px;")
-                    a(data-toggle='collapse', href='#freebies')
-                      p
-                        span.sidebar-mini F
-                        | Freebies
-                        b(style="margin-right: 30px").caret
-                    #freebies.collapse
-                      ul.nav
-                        li(style="margin-left: 30px")
-                          a(href='./adminFreebies')
-                            span.sidebar-normal Freebies
+                    //- a(data-toggle='collapse', href='#freebies')
+                    //-   p
+                    //-     span.sidebar-mini F
+                    //-     | Freebies
+                    //-     b(style="margin-right: 30px").caret
+                    //- #freebies.collapse
+                    //-   ul.nav
+                    //-     li(style="margin-left: 30px")
+                    //-       a(href='./adminFreebies')
+                    //-         span.sidebar-normal Freebies
                   li(style="margin-left: 5px;").active
                     a(data-toggle='collapse', href='#gifc')
                       p
@@ -263,8 +263,8 @@ html(lang='en')
                                         td= gc.gc_refCode 
                                         td= gc.gc_name
                                           input.name(type='hidden' value=`${gc.gc_name} Ref.Code(${gc.gc_refCode})` id=`${gc.gc_id}`)
-                                        td= "₱"+gc.gc_value+".00"
-                                        td= "₱"+gc.gc_price+".00"
+                                        td= "₱"+gc.gc_value
+                                        td= "₱"+gc.gc_price
                                         td
                                           if(gc.release_stats==0)
                                             p Not Release
@@ -350,22 +350,22 @@ html(lang='en')
                                                     star *
                                                       .input-group
                                                         span.input-group-addon ₱
-                                                        input.form-control(type='text', placeholder='Value' name='gc_value' id='gc_value' required='true', aria-required='true')
-                                                        span.input-group-addon .00
+                                                        input.form-control(type='number', placeholder='Value' name='gc_value' id='gc_value' required='true', aria-required='true')
+                                                  
                                               .row
                                                 .col-md-6
                                                   .form-group.has-default.bmd-form-group
                                                     label Gift Certificate Quantity
                                                     star *
-                                                      input.form-control(type='text', number="true" placeholder='Quantity' name='gc_quantity' id='gc_quantity' required='true', aria-required='true')
+                                                      input.form-control(type='number', number="true" placeholder='Quantity' onkeypress="return !(event.charCode == 46)"  name='gc_quantity' id='gc_quantity' required='true', aria-required='true')
                                                 .col-md-6
                                                   .form-group.has-default.bmd-form-group
                                                     label Gift Certificate Price
                                                     star *
                                                       .input-group
                                                         span.input-group-addon ₱   
-                                                        input.form-control(type='text', number="true" placeholder='Price' name='gc_price' id='gc_price' required='true', aria-required='true')
-                                                        span.input-group-addon .00
+                                                        input.form-control(type='number', number="true" placeholder='Price' name='gc_price' id='gc_price' required='true', aria-required='true')
+                                                  
                                               
                                             
                                             .modal-footer
@@ -449,7 +449,27 @@ html(lang='en')
     script(src='/assets/paperDashboardPro/js/jquery.sharrre.js')
     // Paper Dashboard PRO DEMO methods, don't include it in your project!
     script(src='/assets/paperDashboardPro/js/demo.js')
-
+    script.
+      $(document).ready(function(){
+        $(document).on('input', '#gc_value',  function() {
+          this.value = this.value
+            .replace(/[^\d.]/g, '')             // numbers and decimals only
+            .replace(/(\..*)\./g, '$1')         // decimal can't exist more than once
+            .replace(/(\.[\d]{4})./g, '$1');    // not more than 4 digits after decimal
+        });
+        $(document).on('input', '#gc_quantity',  function() {
+          this.value = this.value
+            .replace(/[^\d.]/g, '')             // numbers and decimals only
+            .replace(/(\..*)\./g, '$1')         // decimal can't exist more than once
+            .replace(/(\.[\d]{4})./g, '$1');    // not more than 4 digits after decimal
+        });
+        $(document).on('input', '#gc_price',  function() {
+          this.value = this.value
+            .replace(/[^\d.]/g, '')             // numbers and decimals only
+            .replace(/(\..*)\./g, '$1')         // decimal can't exist more than once
+            .replace(/(\.[\d]{4})./g, '$1');    // not more than 4 digits after decimal
+        });
+      })
     //- SCRIPT FOR ADD
     script.
       $(document).ready(function(){

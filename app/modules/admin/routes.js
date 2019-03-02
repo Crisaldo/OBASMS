@@ -1693,16 +1693,20 @@ router.post('/adminFreebies/Delete',(req, res)=>{
 // [UTILITIES]
 //        > R E A D
   router.get('/utilities',mid.adminnauthed,(req, res) => {
-    const query =`SELECT * FROM utilities_tbl`
+    const query =`SELECT * FROM utilities_tbl;
+    SELECT * FROM vat_exempted_tbl`
 
     db.query(query,(err,out)=>{
       req.session.utilities = out[0]
       res.render('admin/utilities/utilities',{
-        results: out,
-        reqSession: req.session
+        results: out[0],
+        reqSession: req.session,
+        vatExempts: out[1]
       })
     })
   })
+
+
 
   // FILE UPLOAD using MULTER (IMAGE)
   var storage = multer.diskStorage({
@@ -1755,7 +1759,9 @@ router.post('/utilities/updateLogo',upload.single('company_logo'),(req,res)=>{
   secondShift_timeEnd="${req.body.secondShift_timeEnd}",
   reservation_timeAllowance="${req.body.reservation_timeAllowance}",
   therapist_commission="${req.body.therapist_commission}",
-  amenity_cancellation='${req.body.amenity_cancellation}'
+  amenity_cancellation='${req.body.amenity_cancellation}',
+  official_receipt_num='${req.body.official_receipt_num}',
+  vat='${req.body.vat}'
   WHERE utilities_id="${req.body.utilities_id}"
   `
 
@@ -1773,6 +1779,47 @@ router.post('/utilities/updateLogo',upload.single('company_logo'),(req,res)=>{
   })
 })
 
+router.post('/vatExempted',(req,res)=>{
+  const query = `SELECT * FROM vat_exempted_tbl WHERE vat_exempt_desc = "${req.body.person_exempt}"`
+
+  db.query(query,(err,out)=>{
+    if(out==undefined || out==0){
+      const query = `INSERT INTO vat_exempted_tbl(vat_exempt_desc)VALUE("${req.body.person_exempt}")`
+
+      db.query(query,(err,out)=>{
+        if(err){
+          console.log(query)
+          console.log(err)
+          var alertDesc = 1
+          res.send({alertDesc: alertDesc})
+        } else {
+          var alertDesc = 0
+          res.send({alertDesc:alertDesc})
+        }
+      })
+
+    }
+    else if(out != undefined || out != 0){
+      var alertDesc = 2
+      res.send({alertDesc: alertDesc})
+    }
+  })
+})
+router.post('/deleteExempt',(req,res)=>{
+  const query = `DELETE FROM vat_exempted_tbl WHERE vat_exempt_id = "${req.body.id}"`
+
+  db.query(query,(err,out)=>{
+    if(err){
+      console.log(err)
+      console.log(query)
+      var alertDesc = 1
+      res.send({alertDesc})
+    } else {
+      var alertDesc = 0
+      res.send({alertDesc:alertDesc})
+    }
+  })
+})
 
 // ********************************************************************************************************* ||
 // - - - - - - - - - - - - - - - - - - C O M M I S S I O N - - - - -  - - - - - - - - - - - - - - - - - - -  ||
@@ -1897,20 +1944,5 @@ router.get('/packagesReport',(req, res) => {
   res.render('admin/reports/packagesReport')
 })
 
-// router.get('/promosReport',(req, res) => {
-//   res.render('admin/reports/promosReport')
-// })
-
-// router.get('/roomsReport',(req, res) => {
-//   res.render('admin/reports/roomsReport')
-// })
-
-// router.get('/freebiesReport',(req, res) => {
-//   res.render('admin/reports/freebiesReport')
-// })
-
-// router.get('/gcReports',(req, res) => {
-//   res.render('admin/reports/gcReports')
-// })
 
 exports.admin = router

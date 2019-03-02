@@ -248,7 +248,7 @@ html(lang='en')
                               .col-sm-4
                               .col-sm-4
                                 .input-group
-                                  input.form-control(type='number' name="service_duration_desc" id='duration_desc')
+                                  input.form-control(type='number' name="service_duration_desc" onkeypress="return !(event.charCode == 46)" id='duration_desc')
                                   span.input-group-addon minutes
                             .row
                           .modal-footer
@@ -377,6 +377,15 @@ html(lang='en')
   // Paper Dashboard PRO DEMO methods, don't include it in your project!
   script(src='/assets/paperDashboardPro/js/demo.js')
   script(type='text/javascript')
+  script.
+    $(document).ready(function(){
+      $('#duration_desc').on('input', function() {
+        this.value = this.value
+          .replace(/[^\d.]/g, '')             // numbers and decimals only
+          .replace(/(\..*)\./g, '$1')         // decimal can't exist more than once
+          .replace(/(\.[\d]{4})./g, '$1');    // not more than 4 digits after decimal
+      });
+    })
   script.
     $(document).ready(function(){
         $('.addServiceDuration').click(function(){
@@ -562,7 +571,7 @@ html(lang='en')
                     <div class="col-sm-4"></div>
                     <div class="col-sm-4">
                       <div class="input-group">
-                        <input type="number" id="service_duration_desc" value='${data.service_duration_desc}' placeholder="${data.service_duration_desc} "class="form-control"/>
+                        <input type="number" id="service_duration_desc" onkeypress="return !(event.charCode == 46)" value='${data.service_duration_desc}' placeholder="${data.service_duration_desc} "class="form-control"/>
                         <span class="input-group-addon">minutes</span>
                       </div>
                     </div>
@@ -599,6 +608,12 @@ html(lang='en')
                       }
                   })
                 })
+               $('#service_duration_desc').on('input', function() {
+                this.value = this.value
+                  .replace(/[^\d.]/g, '')             // numbers and decimals only
+                  .replace(/(\..*)\./g, '$1')         // decimal can't exist more than once
+                  .replace(/(\.[\d]{4})./g, '$1');    // not more than 4 digits after decimal
+              });
               })
 
           })

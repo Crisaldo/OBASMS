@@ -19,6 +19,7 @@ html(lang='en')
     link(href='http://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css', rel='stylesheet')
     link(href='https://fonts.googleapis.com/css?family=Muli:400,300', rel='stylesheet', type='text/css')
     link(href='/assets/paperDashboardPro/css/themify-icons.css', rel='stylesheet')
+    link(href='/assets/paperDashboardPro/css/select2.min.css', rel='stylesheet')
     style.
       button.hello{
         background:none!important;
@@ -30,6 +31,16 @@ html(lang='en')
         color:#069;
         text-decoration:underline;
         cursor:pointer;
+      }
+
+      .dropdown-menu {
+        margin-left: -110px !important;
+      }
+      #checkout > div > div > div.modal-body > div:nth-child(5) > div:nth-child(2) > div > span > span.selection > span {
+        background-color: rgb(243, 242, 238) !important;
+        border: 0 !important;
+        width: 190%;
+
       }
   body.sidebar-mini
     .wrapper
@@ -362,7 +373,10 @@ html(lang='en')
                       if(restype=='single')
                           select.selectpicker(title='Select Therapist', data-style='btn-info', data-size='7' name='selected_therapist' id='selected_therapist' required='true' aria-label='true')
                             each thera in therapist
-                              option(value=`${thera.therapist_id}`)= thera.therapist_fname+" "+thera.therapist_mname+" "+thera.therapist_lname
+                              if(thera.in_service == null || thera.in_service == 0)
+                                option(value=`${thera.therapist_id}`)= thera.therapist_fname+" "+thera.therapist_mname+" "+thera.therapist_lname
+                              else if(thera.in_service == 1)
+                                option(value=`${thera.therapist_id}` disabled style="background-color: #c5c5c5")= thera.therapist_fname+" "+thera.therapist_mname+" "+thera.therapist_lname+" - NOT AVAILABLE"
                       else if(restype=='multiple')
                           select.selectpicker(multiple='', title='Select Therapist', data-style='btn-info', data-size='7' name='selected_therapist' id='selected_therapist' required='true' aria-label='true')
                             each thera in therapist
@@ -465,11 +479,11 @@ html(lang='en')
                           .row
                             .col-md-1
                               input.checkboxGC(type='checkbox' id='checkbox_gc' value='')
-                            .col-md-5
-                              label(for='checkbox_gc') Gift Certificate
-                            .col-md-6
+                            .col-md-6(style="width: 69%;")
                               .category#totalGCval 
-                          select.selectpicker.selectpickerGc(title='Select Gift Certificate', multiple data-style='btn-info', data-size='7' name='giftcert' data-id='giftcert' required='true' aria-label='true' disabled='disabled')
+                            .col-md-5(style="width: 69%;")
+                              label(for='checkbox_gc') Gift Certificate
+                          select#id_label_multiple.js-example-basic-multiple.js-states.form-control.selectpickerGc(title='Select Gift Certificate', multiple data-style='btn-info', data-size='7' name='giftcert' data-id='giftcert' required='true' aria-label='true' disabled='false')
                             each gc in giftcerts
                               option(value=`${gc.gc_id}` gc_value=`${gc.gc_value}`)= gc.gc_refCode+" "+gc.gc_name
                       
@@ -581,6 +595,7 @@ html(lang='en')
   script(src='/assets/paperDashboardPro/js/demo.js')
   script(src='/assets/pdfmake/pdfmake.js')
   script(src='/assets/pdfmake/vfs_fonts.js')
+  script(src='/assets/paperDashboardPro/js/jquery.select2.js')
   script.
     $(document).ready(function(){
       var datePicked = !{JSON.stringify(dateHello)}
@@ -1009,274 +1024,296 @@ html(lang='en')
 
   //- GIFT CERTIFICATE CHECKBOX
   script.
-    $(document).ready(function(){
-      $('.checkboxGc').on('change.bootstrapSwitch',function(e){
+      $(document).ready(function(){
+        $(document).on('change.bootstrapSwitch','.checkboxGC',function(e){
           var amountNeeded = $('.amountNeeded').val()
-        if(e.target.checked==true)
-        {
-          if($('.amountNeeded').val()==0)
+          console.log("aaa")
+          console.log($('.selectpickerGc').val())
+          if(e.target.checked==true)
           {
-            swal({
-                title: 'The balance is 0',
-                icon: 'info'
-              }).then(function(){
-                $('.amountReceived').val(' ')
-                $('.change').val(0)
-                $('.checkboxGc').prop('checked',false)
-              })
-          }
-          else if(parseInt($('.amountReceived').val()) >= $('.amountNeeded').val())
-          {
-            swal({
-                title: 'The balance is 0',
-                icon: 'info'
-              }).then(function(){
-                $('.checkboxGc').prop('checked',false)
-              })
-          }
-          else
-          {
-            $('.amountReceived').val(' ')
-            $('.change').val(' ')
-            $('.selectpickerGc').removeAttr('disabled')
-            $('.selectpickerGc').selectpicker("refresh");
-
-
-            $('.selectpickerGc').on('change',function(){
-
-                $('.amountReceived').val(' ')
-                $('.change').val(0)
-                var total_value =0
-                var selected = $('option:selected',this)
-                var giftcerts =[]
-                console.log(giftcerts)
-                selected.each(function(){
-                    giftcerts.push({
-                    gc_value: parseInt(this.getAttribute('gc_value'))
-                  })
+            if($('.amountNeeded').val()==0)
+            {
+              swal({
+                  title: 'The balance is 0',
+                  icon: 'info'
+                }).then(function(){
+                  $('.selectpickerGc').attr('disabled',true)
+                  $('.selectpickerGc').val(0);
+                  $('.selectpickerGc').selectpicker("refresh");
+                  $('.amountReceived').val(' ')
+                  $('.change').val(0)
+                  $('.checkboxGC').prop('checked',false)
                 })
+            }
+            else if(parseInt($('.amountReceived').val()) >= $('.amountNeeded').val())
+            {
+              swal({
+                  title: 'The balance is 0',
+                  icon: 'info'
+                }).then(function(){
+                  $('.selectpickerGc').attr('disabled',true)
+                  $('.selectpickerGc').val(0);
+                  $('.selectpickerGc').selectpicker("refresh");
+                  $('.checkboxGC').prop('checked',false)
+                })
+            }
+            else
+            {
+              $('.amountReceived').val(' ')
+              $('.change').val(' ')
+              $('.selectpickerGc').removeAttr('disabled')
+              $('.selectpickerGc').selectpicker("refresh");
 
-                if(selected.length==0)
-                {
-                  if($('#checkboxPoints')[0].checked==false)
+
+              $('.selectpickerGc').on('change',function(){
+
+                  $('.amountReceived').val(' ')
+                  $('.change').val(0)
+                  var total_value =0
+                  var selected = $('option:selected',this)
+                  var giftcerts =[]
+                  console.log(giftcerts)
+                  selected.each(function(){
+                      giftcerts.push({
+                      gc_value: parseInt(this.getAttribute('gc_value'))
+                    })
+                  })
+
+                  if(selected.length==0)
                   {
-                    $('.amountNeeded').val($('.totalPrice').val())
-                    $('#AmountNeeded').text('₱'+$('.totalPrice').val()+'')
-                    $('.gcTotal').val(0)
-                    $('#totalGCval').text(' ')
-                  }
-
-                  if($('#checkboxPoints')[0].checked==true && $('.checkboxPayment:checked').length==0)
-                  {
-                    $('.amountNeeded').val($('.totalPrice').val())
-                    $('#AmountNeeded').text('₱'+$('.totalPrice').val()+'')
-                    $('.gcTotal').val(0)
-                    $('#totalGCval').text(' ')
-                  }
-                  else if($('#checkboxPoints')[0].checked==true && $('.checkboxPayment:checked').length!=0)
-                  {
-                      var array = []
-                      var totalPrice = $('.totalPrice').val()
-                      var total =0
-                      $('.checkboxPayment:checked').each(function(){
-                        var id = $(this).val()
-                        array.push({
-                          id:id,
-                          newhalaga:$(`.newhalaga[id='${id}']`).val()
-                          })
-                      })
-
-                      for(var i=0;i<array.length;i++)
-                      {
-                        total += parseInt(array[i].newhalaga)
-                        var newtotal = parseInt(totalPrice) - total
-                      }
-                      $('.amountNeeded').val(newtotal)
-                      $('#AmountNeeded').text('₱'+newtotal+'')
-                    $('.gcTotal').val(0)
-                    $('#totalGCval').text(' ')
-
-                  }
-                }
-
-
-
-              for(var i=0;i<giftcerts.length;i++)
-              {
-
-                if($('.paid_stats').val() == 1 || $('.paid_stats').val() ==0 )
-                {
-                  if($('#checkboxPoints')[0].checked == true)
-                  {
-                    total_value = total_value + giftcerts[i].gc_value
-                    $('.gcTotal').val(total_value)
-                    
-                    var newTotal = amountNeeded - total_value
-                    if(newTotal < 0 )
+                    if($('.paid_stats').val() !=3)
                     {
-                      $('.amountNeeded').val(0)
-                      $('#AmountNeeded').text('₱'+0+'')
+                      if($('#checkboxPoints')[0].checked==false)
+                      {
+                        $('.amountNeeded').val($('.totalPrice').val())
+                        $('#AmountNeeded').text('₱'+$('.totalPrice').val())
+                        $('.gcTotal').val(0)
+                        $('#totalGCval').text(' ')
+                      }
+
+                      if($('#checkboxPoints')[0].checked==true && $('.checkboxPayment:checked').length==0)
+                      {
+                        $('.amountNeeded').val($('.totalPrice').val())
+                        $('#AmountNeeded').text('₱'+$('.totalPrice').val())
+                        $('.gcTotal').val(0)
+                        $('#totalGCval').text(' ')
+                      }
+                      else if($('#checkboxPoints')[0].checked==true && $('.checkboxPayment:checked').length!=0)
+                      {
+                          var array = []
+                          var totalPrice = $('.totalPrice').val()
+                          var total =0
+                          $('.checkboxPayment:checked').each(function(){
+                            var id = $(this).val()
+                            array.push({
+                              id:id,
+                              newhalaga:$(`.newhalaga[id='${id}']`).val()
+                              })
+                          })
+
+                          for(var i=0;i<array.length;i++)
+                          {
+                            total += parseFloat(array[i].newhalaga)
+                            var newtotal = parseFloat(totalPrice) - total
+                          }
+                          $('.amountNeeded').val(newtotal)
+                          $('#AmountNeeded').text('₱'+newtotal)
+                        $('.gcTotal').val(0)
+                        $('#totalGCval').text(' ')
+
+                      }
                     }
                     else
                     {
-                      $('.amountNeeded').val(newTotal)
-                      $('#AmountNeeded').text('₱'+newTotal+'')
-
+                      $('.amountNeeded').val($('.totalPrice').val())
+                        $('#AmountNeeded').text('₱'+$('.totalPrice').val())
+                        $('.gcTotal').val(0)
+                        $('#totalGCval').text(' ')
                     }
-                    $('#totalGCval').text('Total: ₱'+total_value+'')
-                    $('#TotalAmountReceived').text('₱'+total_value+'')
-                    $('.totalGCval').val(total_value)
-                    $('.totalAmountReceived').val(total_value)
+                  }
+
+
+
+                for(var i=0;i<giftcerts.length;i++)
+                {
+
+                  if($('.paid_stats').val() == 1 || $('.paid_stats').val() ==0 )
+                  {
+                    if($('#checkboxPoints')[0].checked == true)
+                    {
+                      total_value = total_value + giftcerts[i].gc_value
+                      $('.gcTotal').val(total_value)
+                      
+                      var newTotal = amountNeeded - total_value
+                      if(newTotal < 0 )
+                      {
+                        $('.amountNeeded').val(0)
+                        $('#AmountNeeded').text('₱'+0)
+                      }
+                      else
+                      {
+                        $('.amountNeeded').val(newTotal)
+                        $('#AmountNeeded').text('₱'+newTotal)
+
+                      }
+                      $('#totalGCval').text('Total: ₱'+total_value)
+                      $('#TotalAmountReceived').text('₱'+total_value)
+                      $('.totalGCval').val(total_value)
+                      $('.totalAmountReceived').val(total_value)
+                    }
+                    else
+                    {
+                      total_value = total_value + giftcerts[i].gc_value
+                      $('.gcTotal').val(total_value)
+                      
+                      var newTotal = amountNeeded - total_value
+                      console.log(newTotal)
+                      if(newTotal < 0 )
+                      {
+                        $('.amountNeeded').val(0)
+                        $('#AmountNeeded').text('₱'+0)
+                      }
+                      else
+                      {
+                        $('#AmountNeeded').text('₱'+newTotal)
+                        $('.amountNeeded').val(newTotal)
+                      }
+                      $('#totalGCval').text('Total: ₱'+total_value)
+                      $('#TotalAmountReceived').text('₱'+total_value)
+                      $('.totalGCval').val(total_value)
+                      $('.totalAmountReceived').val(total_value)
+                    }
                   }
                   else
                   {
                     total_value = total_value + giftcerts[i].gc_value
-                    $('.gcTotal').val(total_value)
-                    
-                    var newTotal = amountNeeded - total_value
-                    console.log(newTotal)
-                    if(newTotal < 0 )
-                    {
-                      $('.amountNeeded').val(0)
-                      $('#AmountNeeded').text('₱'+0+'')
-                    }
-                    else
-                    {
-                      $('#AmountNeeded').text('₱'+newTotal+'')
-                      $('.amountNeeded').val(newTotal)
-                    }
-                    $('#totalGCval').text('Total: ₱'+total_value+'')
-                    $('#TotalAmountReceived').text('₱'+total_value+'')
-                    $('.totalGCval').val(total_value)
-                    $('.totalAmountReceived').val(total_value)
-                  }
+                      $('.gcTotal').val(total_value)
+                      
+                      var newTotal = amountNeeded - total_value
+                      console.log(newTotal)
+                      if(newTotal < 0 )
+                      {
+                        $('.amountNeeded').val(0)
+                        $('#AmountNeeded').text('₱'+0)
+                      }
+                      else
+                      {
+                        $('#AmountNeeded').text('₱'+newTotal)
+                        $('.amountNeeded').val(newTotal)
+                      }
+                      $('#totalGCval').text('Total: ₱'+total_value)
+                      $('#TotalAmountReceived').text('₱'+total_value)
+                      $('.totalGCval').val(total_value)
+                      $('.totalAmountReceived').val(total_value)
+                  } 
                 }
-                else
-                {
-                  total_value = total_value + giftcerts[i].gc_value
-                    $('.gcTotal').val(total_value)
-                    
-                    var newTotal = amountNeeded - total_value
-                    console.log(newTotal)
-                    if(newTotal < 0 )
-                    {
-                      $('.amountNeeded').val(0)
-                      $('#AmountNeeded').text('₱'+0+'')
-                    }
-                    else
-                    {
-                      $('#AmountNeeded').text('₱'+newTotal+'')
-                      $('.amountNeeded').val(newTotal)
-                    }
-                    $('#totalGCval').text('Total: ₱'+total_value+'')
-                    $('#TotalAmountReceived').text('₱'+total_value+'')
-                    $('.totalGCval').val(total_value)
-                    $('.totalAmountReceived').val(total_value)
-                } 
-              }
 
-            })
+              })
 
-          }
-        }
-
-        else if(e.target.checked==false && $('.selectpickerGc').val().length !=0)
-        {
-          $('.selectpickerGc').attr('disabled',true)
-          $('.selectpickerGc').val(0);
-          $('.selectpickerGc').selectpicker("refresh");
-          $('#totalGCval').text(' ')
-          if($('.paid_stats').val()!=3)
-          {
-            if($('#checkboxPoints')[0].checked == false ) // IF PAYMENT USING POINTS IS UNCHECK
-            {
-              var totalPrice = $('.totalPrice').val()
-              var gc_total = $('.gcTotal').val()
-              var total = parseInt(gc_total) + parseInt(amountNeeded)
-              $('.amountNeeded').val(total)
-              $('#AmountNeeded').text('₱'+total+'')
-              $('.gcTotal').val(0)
-            }
-
-            if($('#checkboxPoints')[0].checked==true && $('.checkPayment:checked').length ==0)
-            {
-              var totalPrice = $('.totalPrice').val()
-              var gc_total = $('.gcTotal').val()
-              var total = parseInt(gc_total) + parseInt(amountNeeded)
-              $('.amountNeeded').val(total)
-              $('#AmountNeeded').text('₱'+total+'')
-              $('.gcTotal').val(0)
-            }
-            else if($('#checkboxPoints')[0].checked==true && $('.checkPayment:checked').length !=0)
-            {
-                  var array = []
-                  var totalPrice = $('.totalPrice').val()
-                  var total =0
-                  $('.checkboxPayment:checked').each(function(){
-                    var id = $(this).val()
-                    array.push({
-                      id:id,
-                      newhalaga:$(`.newhalaga[id='${id}']`).val()
-                      })
-                  })
-
-                  for(var i=0;i<array.length;i++)
-                  {
-                      total += parseInt(array[i].newhalaga)
-                    var newtotal = parseInt(totalPrice) - total
-                  }
-                  $('.amountNeeded').val(newtotal)
-                  $('#AmountNeeded').text('₱'+newtotal+'')
-                $('.gcTotal').val(0)
-                $('#totalGCval').text(' ')
             }
           }
-          else
-          {
-            var totalPrice = $('.totalPrice').val()
-            var gc_total = $('.gcTotal').val()
-            var total = parseInt(gc_total) + parseInt(amountNeeded)
-            $('.amountNeeded').val(total)
-            $('#AmountNeeded').text('₱'+total+'')
-            $('.gcTotal').val(0)
-          }
-        }
-        
-        else if(e.target.checked==false && $('.selectpickerGc').val().length==0)
-        {
-          if($('.paid_stats').val() != 3)
+
+          else if(e.target.checked==false && $('.selectpickerGc').val().length !=0)
           {
             $('.selectpickerGc').attr('disabled',true)
-            $('.selectpickerGc').val(0);
+            $('.selectpickerGc').val(null).trigger('change')
+            console.log('aaa', $('.selectpickerGc').length)
             $('.selectpickerGc').selectpicker("refresh");
             $('#totalGCval').text(' ')
-            if($('#checkboxPoints')[0].checked == false ) // IF PAYMENT USING POINTS IS UNCHECK
+            if($('.paid_stats').val() !=3)
             {
-              var totalPrice = $('.totalPrice').val()
-              $('.amountNeeded').val(totalPrice)
-              $('#AmountNeeded').text('₱'+totalPrice+'')
-              $('.gcTotal').val(0)
+              if($('#checkboxPoints')[0].checked == false ) // IF PAYMENT USING POINTS IS UNCHECK
+              {
+                var totalPrice = $('.totalPrice').val()
+                var gc_total = $('.gcTotal').val()
+                var total = parseFloat(gc_total) + parseFloat(amountNeeded)
+                $('.amountNeeded').val(total)
+                $('#AmountNeeded').text('₱'+total)
+                $('.gcTotal').val(0)
+              }
+
+              if($('#checkboxPoints')[0].checked==true && $('.checkPayment:checked').length ==0)
+              {
+                var totalPrice = $('.totalPrice').val()
+                var gc_total = $('.gcTotal').val()
+                var total = parseFloat(gc_total) + parseFloat(amountNeeded)
+                $('.amountNeeded').val(total)
+                $('#AmountNeeded').text('₱'+total)
+                $('.gcTotal').val(0)
+              }
+              else if($('#checkboxPoints')[0].checked==true && $('.checkPayment:checked').length !=0)
+              {
+                    var array = []
+                    var totalPrice = $('.totalPrice').val()
+                    var total =0
+                    $('.checkboxPayment:checked').each(function(){
+                      var id = $(this).val()
+                      array.push({
+                        id:id,
+                        newhalaga:$(`.newhalaga[id='${id}']`).val()
+                        })
+                    })
+
+                    for(var i=0;i<array.length;i++)
+                    {
+                        total += parseFloat(array[i].newhalaga)
+                      var newtotal = parseFloat(totalPrice) - total
+                    }
+                    $('.amountNeeded').val(newtotal)
+                    $('#AmountNeeded').text('₱'+newtotal)
+                  $('.gcTotal').val(0)
+                  $('#totalGCval').text(' ')
+              }
             }
             else
             {
+              var totalPrice = $('.totalPrice').val()
               var gc_total = $('.gcTotal').val()
-              var total = parseInt(gc_total) + parseInt(amountNeeded)
-              $('.amountNeeded').val(total)
-              $('#AmountNeeded').text('₱'+total+'')
+              var total = parseFloat(gc_total) + parseFloat(amountNeeded)
+               $('.amountNeeded').val($('.totalPrice').val())
+                $('#AmountNeeded').text('₱'+$('.totalPrice').val())
               $('.gcTotal').val(0)
             }
           }
-          else
+          
+          else if(e.target.checked==false && $('.selectpickerGc').val().length==0)
           {
-             var gc_total = $('.gcTotal').val()
-              var total = parseInt(gc_total) + parseInt(amountNeeded)
-              $('.amountNeeded').val(total)
-              $('#AmountNeeded').text('₱'+total+'')
-              $('.gcTotal').val(0)
+            if($('.paid_stats').val() != 3)
+            {
+              $('.selectpickerGc').attr('disabled',true)
+              $('.selectpickerGc').val(0);
+              $('.selectpickerGc').selectpicker("refresh");
+              $('#totalGCval').text(' ')
+              if($('#checkboxPoints')[0].checked == false ) // IF PAYMENT USING POINTS IS UNCHECK
+              {
+                var totalPrice = $('.totalPrice').val()
+                $('.amountNeeded').val(totalPrice)
+                $('#AmountNeeded').text('₱'+totalPrice)
+                $('.gcTotal').val(0)
+              }
+              else
+              {
+                var gc_total = $('.gcTotal').val()
+                var total = parseFloat(gc_total) + parseFloat(amountNeeded)
+                $('.amountNeeded').val(total)
+                $('#AmountNeeded').text('₱'+total)
+                $('.gcTotal').val(0)
+              }
+            }
+            else
+            {
+                var gc_total = $('.gcTotal').val()
+                var total = parseFloat(gc_total) + parseFloat(amountNeeded)
+                $('.amountNeeded').val($('.totalPrice').val())
+                $('#AmountNeeded').text('₱'+$('.totalPrice').val())
+                $('.gcTotal').val(0)
+                $('.selectpickerGc').attr('disabled',true)
+                $('.selectpickerGc').val(0);
+                $('.selectpickerGc').selectpicker("refresh");
+            }
           }
-        }
+        })
       })
-    })
   script.
     function recalculate(){
             var theFutureTime = moment($("#time").text(),"hh:mm A").format('YYYY-MM-DD HH:mm')
@@ -2544,10 +2581,10 @@ html(lang='en')
                                     }
                                   }
                                   
-                                  if(parseInt($('.amountReceived').val()) != 0 && $('#checkboxPoints')[0].checked == true && $('.checkboxGc')[0].checked==false)
+                                  if(parseFloat($('.amountReceived').val()) != 0 && $('#checkboxPoints')[0].checked == true && $('.checkboxGc')[0].checked==false)
                                   {
-                                    alert('pers')
-                                    if(parseInt($('.amountReceived').val()) < parseInt($('.amountNeeded').val()))
+                                    alert($('.hello').val())
+                                    if(parseFloat($('.amountReceived').val()) < parseFloat($('.amountNeeded').val()))
                                     {
                                       swal({
                                         title: "Amount Received is insufficient",
@@ -2558,7 +2595,6 @@ html(lang='en')
                                     {
                                       swal({
                                         title: "Are you sure?",
-                                        text: "(Cash & Points)",
                                         icon: 'info'
                                       }).then(function(sure){
                                         if(sure)
@@ -5795,5 +5831,9 @@ html(lang='en')
         })
       })
     })
-
+  script.
+    $(document).ready(function(){
+      $("#id_label_multiple").select2();
+  
+    })
 
