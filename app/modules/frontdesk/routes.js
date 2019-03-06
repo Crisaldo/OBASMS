@@ -49,7 +49,11 @@ router.get('/frontdesk/home',mid.frontdesknauthed,(req,res)=>{
   var dateLang= moment(new Date()).format('MMMM-DD-YYYY')
   const query = ` select * from customer_tbl where delete_stats=0;
   SELECT * FROM utilities_tbl;
-  SELECT * FROM vat_exempted_tbl;`
+  SELECT * FROM vat_exempted_tbl;
+  SELECT therapist_tbl.*, therapist_attendance_tbl.* 
+  FROM therapist_tbl JOIN therapist_attendance_tbl 
+  ON therapist_tbl.therapist_id = therapist_attendance_tbl.therapist_id
+  WHERE therapist_tbl.therapist_availability =0 AND therapist_tbl.delete_stats=0`
   db.query(query,(err,out) =>{
     req.session.utilities = out[1]
       res.render('frontdesk/registration',{
@@ -57,29 +61,44 @@ router.get('/frontdesk/home',mid.frontdesknauthed,(req,res)=>{
         reqSession: req.session,
         vatExempts: out[2]
       })
-      var closing_time = dateLang+' '+req.session.utilities[0].closing_time
-          closing_time = moment(closing_time).format('MMMM-DD-YYYY HH:mm')
-      var opening_time = dateLang+' '+req.session.utilities[0].opening_time
-          opening_time = moment(opening_time).format('MMMM-DD-YYYY HH:mm')
-          opening_time = moment(opening_time).subtract(6,'h').format('MMMM-DD-YYYY HH:mm')
-          // opening_time = moment(opening_time).format('MMMM-DD-YYYY hh:mm')
-          console.log('CLOSING TIME',closing_time)
-          console.log('DATE AND TIME',date_time)
-          console.log('OPENING TIME',opening_time)
-      console.log(moment(date_time).isSameOrAfter(closing_time) && moment(date_time).isSameOrBefore(opening_time))
-      if(moment(date_time).isSameOrAfter(closing_time) && moment(date_time).isSameOrBefore(opening_time))
-      {
-        const therapist_attendance = `UPDATE therapist_attendance_tbl 
-        SET therapist_datetime_in = NULL, 
-        availability = 0,
-        doneService_count = 0,
-         therapist_reserved =0`
-        
-        db.query(therapist_attendance,(err,out)=>{
-          console.log(therapist_attendance)
-            console.log(err)
-        })
+      for(var i=0;i<out[3].length;i++){
+        console.log(moment(out[3][i].therapist_datetime_in).format('MMMM-DD-YYYY'))
+        var therapist_date = moment(out[3][i].therapist_datetime_in).format('MMMM-DD-YYYY')
+        console.log(moment(therapist_date).isBefore(dateLang))
+        if(moment(therapist_date).isBefore(dateLang)){
+          const therapist_attendance = `UPDATE therapist_attendance_tbl 
+            SET therapist_datetime_in = NULL, 
+            availability = 0,
+            therapist_reserved =0 WHERE therapist_id= "${out[3][i].therapist_id}"`
+            
+            db.query(therapist_attendance,(err,out)=>{
+
+            })
+        }
       }
+      // var closing_time = dateLang+' '+req.session.utilities[0].closing_time
+      //     closing_time = moment(closing_time).format('MMMM-DD-YYYY HH:mm')
+      // var opening_time = dateLang+' '+req.session.utilities[0].opening_time
+      //     opening_time = moment(opening_time).format('MMMM-DD-YYYY HH:mm')
+      //     opening_time = moment(opening_time).subtract(6,'h').format('MMMM-DD-YYYY HH:mm')
+      //     // opening_time = moment(opening_time).format('MMMM-DD-YYYY hh:mm')
+      //     console.log('CLOSING TIME',closing_time)
+      //     console.log('DATE AND TIME',date_time)
+      //     console.log('OPENING TIME',opening_time)
+      // console.log(moment(date_time).isSameOrAfter(closing_time) && moment(date_time).isSameOrBefore(opening_time))
+      // if(moment(date_time).isSameOrAfter(closing_time) && moment(date_time).isSameOrBefore(opening_time))
+      // {
+      //   const therapist_attendance = `UPDATE therapist_attendance_tbl 
+      //   SET therapist_datetime_in = NULL, 
+      //   availability = 0,
+      //   doneService_count = 0,
+      //    therapist_reserved =0`
+        
+      //   db.query(therapist_attendance,(err,out)=>{
+      //     console.log(therapist_attendance)
+      //       console.log(err)
+      //   })
+      // }
     })
     
   })
@@ -132,9 +151,9 @@ router.post('/frontdesk/home/newCustomer',(req, res) => {
     var notSuccess = 0
     const query = `
     insert into 
-    customer_tbl(cust_fname,cust_mname, cust_lname, cust_birthMonth, cust_birthDate, cust_birthYear, cust_address,cust_contact_no, cust_gender, medical_history, delete_stats, cust_type) 
+    customer_tbl(cust_fname,cust_mname, cust_lname, cust_birthMonth, cust_birthDate, cust_birthYear, cust_address,cust_contact_no, cust_gender, medical_history, delete_stats, cust_type, vat_exempt_id,vat_exempt_id_no) 
     values("${req.body.firstname}","${req.body.middlename}","${req.body.lastname}", "${req.body.month}","${req.body.date}","${req.body.year}", 
-    "${req.body.address}","${req.body.contact_no}", "${req.body.gender}", "${req.body.medical_history}",0,0)
+    "${req.body.address}","${req.body.contact_no}", "${req.body.gender}", "${req.body.medical_history}",0,0,${req.body.vat_type_id},"${req.body.vat_id_no}")
     `
 
     db.query(query, (err, out) => {
@@ -1697,13 +1716,57 @@ router.post('/payment/Early',(req,res)=>{
   var datePicked = moment(req.body.date).format('YYYY-MM-DD')
   if(req.body.paid_stats==0)
   {
+    console.log('una')
     var amount = parseInt(req.body.amount) - parseInt(req.body.membership_fee)
     const query= `INSERT INTO walkin_queue_tbl(cust_id, walkin_start_time, walkin_end_time, walkin_total_amount, walkin_total_points,walkin_date,walkin_payment_status,walkin_indicator)
     values("${req.body.cust_id}","${req.body.timeStart}","${req.body.EndTime}","${amount}","${req.body.finalPoints}","${datePicked}",1,0)`
     db.query(query,(err,out)=>{
       var walkinId=out.insertId;
+      console.log('WALKIN ID', walkinId)
       var restype = req.body.restype
       console.log('RESTYPE',restype)
+      const query1 = `INSERT INTO services_availed_tbl(transaction_id) VALUE("${walkinId}")`
+      db.query(query1,(err,out)=>{
+        var service_availed_id = out.insertId
+        if(err){
+          console.log(err)
+          console.log(query)
+
+        }
+        else {
+          if(req.body.gift_certs.length != 0){
+            for(var i=0;i<req.body.gift_certs.length;i++){
+              const query = `INSERT INTO giftcert_payment_tbl(services_availed_id,payment_date,gc_id,cust_id)
+              VALUE("${service_availed_id}","${datePicked}","${req.body.gift_certs[i]}","${req.body.cust_id}");
+              UPDATE giftcertificate_tbl SET release_stats = 3 WHERE gc_id = "${req.body.gift_certs[i]}"`
+
+              db.query(query,(err,out)=>{
+              })
+            }
+          }
+          else{
+
+          }
+          if(req.body.amount_received != 0){
+            const query = `INSERT INTO payment_tbl(services_availed_id,payment_date,amount,cust_id)
+            VALUE("${service_availed_id}","${datePicked}","${req.body.amount_received}","${req.body.cust_id}")`
+
+            db.query(query,(err,out)=>{
+
+            })
+          }
+
+          if(req.body.cust_type == 1){
+            const query = `INSERT INTO points_payment_tbl(services_availed_id,payment_date,total_points,cust_id)
+            VALUE("${service_availed_id}","${datePicked}","${req.body.total_points}","${req.body.cust_id}");
+            UPDATE loyalty_tbl SET member_points = "${req.body.newPoints}" WHERE cust_id = "${req.body.cust_id}"`
+            
+            db.query(query,(err,out)=>{
+
+            })
+          }
+        }
+      })
       if(restype=='single')
       {
           console.log('Walkin Id',walkinId)
@@ -1952,15 +2015,74 @@ router.post('/payment/Early',(req,res)=>{
   }
   else if(req.body.paid_stats == 1)
   {
-
+    console.log('pangalawa')
     const query= `INSERT INTO walkin_queue_tbl(cust_id, walkin_start_time, walkin_end_time, walkin_total_amount, walkin_total_points,walkin_date,walkin_payment_status,walkin_indicator)
     values("${req.body.cust_id}","${req.body.timeStart}","${req.body.EndTime}","${req.body.amount}","${req.body.finalPoints}","${datePicked}",2,0)`
     db.query(query,(err,out)=>{
       var walkinId=out.insertId;
+      console.log('WALKIN ID', walkinId)
       var restype = req.body.restype
     console.log('RESTYPE',restype)
     if(restype=='single')
       {
+        const query1 = `INSERT INTO services_availed_tbl(transaction_id) VALUE("${walkinId}")`
+      db.query(query1,(err,out)=>{
+        var service_availed_id = out.insertId
+        console.log('SERVICE AVAILED ID',service_availed_id)
+        if(err){
+          console.log(err)
+          console.log(query)
+        }
+        else {
+          if(req.body.gift_certs.length != 0){
+            for(var i=0;i<req.body.gift_certs.length;i++){
+              const query = `INSERT INTO giftcert_payment_tbl(services_availed_id,payment_date,gc_id,cust_id)
+              VALUE("${service_availed_id}","${datePicked}","${req.body.gift_certs[i]}","${req.body.cust_id}");
+              UPDATE giftcertificate_tbl SET release_stats = 3 WHERE gc_id = "${req.body.gift_certs[i]}"`
+
+              db.query(query,(err,out)=>{
+                if(err){
+                  console.log(err)
+                  console.log('ERROR AT GC, SECOND')
+                }
+              })
+            }
+          }
+          else{
+
+          }
+          if(req.body.amount_received != 0){
+            const query = `INSERT INTO payment_tbl(services_availed_id,payment_date,amount,cust_id)
+            VALUE("${service_availed_id}","${datePicked}","${req.body.amount_received}","${req.body.cust_id}")`
+
+            db.query(query,(err,out)=>{
+              if(err){
+                console.log(err)
+                console.log('ERROR AT CASH PAYMENT, SECOND')
+              }
+            })
+          }
+          else {
+
+          }
+
+          if(req.body.cust_type == 1){
+            const query = `INSERT INTO points_payment_tbl(services_availed_id,payment_date,total_points,cust_id)
+            VALUE("${service_availed_id}","${datePicked}","${req.body.total_points}","${req.body.cust_id}");
+            UPDATE loyalty_tbl SET member_points = "${req.body.newPoints}" WHERE cust_id = "${req.body.cust_id}"`
+            
+            db.query(query,(err,out)=>{
+              if(err){
+                console.log(err)
+                console.log('ERROR AT POINTS PAYMENT, SECOND')
+              }
+            })
+          }
+          else {
+
+          }
+        }
+      })
         console.log('PASOK SA SINGLE')
         console.log(req.body.typeServ.length)
           for(var i=0;i<req.body.typeServ.length;i++)
@@ -2207,15 +2329,67 @@ router.post('/payment/Early',(req,res)=>{
   }
   else if(req.body.paid_stats == 3)
   {
+    console.log('pangatlo')
     var amount = parseInt(req.body.amount) - parseInt(req.body.membership_fee)
     const query= `INSERT INTO walkin_queue_tbl(cust_id, walkin_start_time, walkin_end_time, walkin_total_amount, walkin_total_points,walkin_date,walkin_payment_status,walkin_indicator)
     values("${req.body.cust_id}","${req.body.timeStart}","${req.body.EndTime}","${amount}","${req.body.finalPoints}","${datePicked}",2,0)`
     db.query(query,(err,out)=>{
-      walkinId=out.insertId;
+      var walkinId=out.insertId;
       var restype = req.body.restype
+      console.log('WALKIN ID', walkinId)
       console.log('RESTYPE',restype)
       if(restype=='single')
         {
+        const query1 = `INSERT INTO services_availed_tbl(transaction_id) VALUE("${walkinId}")`
+        db.query(query1,(err,out)=>{
+          var service_availed_id = out.insertId
+          if(err){
+            console.log(err)
+            console.log(query)
+
+        }
+        else {
+          console.log('GC',req.body.gift_certs)
+          if(req.body.gift_certs == undefined){
+
+          }
+          else if (req.body.gift_certs != undefined){
+            if(req.body.gift_certs.length != 0){
+              for(var i=0;i<req.body.gift_certs.length;i++){
+                const query = `INSERT INTO giftcert_payment_tbl(services_availed_id,payment_date,gc_id,cust_id)
+                VALUE("${service_availed_id}","${datePicked}","${req.body.gift_certs[i]}","${req.body.cust_id}");
+                UPDATE giftcertificate_tbl SET release_stats = 3 WHERE gc_id = "${req.body.gift_certs[i]}"`
+  
+                db.query(query,(err,out)=>{
+                })
+              }
+            }
+            else{
+  
+            }
+
+          }
+
+          if(req.body.amount_received != 0){
+            const query = `INSERT INTO payment_tbl(services_availed_id,payment_date,amount,cust_id)
+            VALUE("${service_availed_id}","${datePicked}","${req.body.amount_received}","${req.body.cust_id}")`
+
+            db.query(query,(err,out)=>{
+
+            })
+          }
+
+          if(req.body.cust_type == 1){
+            const query = `INSERT INTO points_payment_tbl(services_availed_id,payment_date,total_points,cust_id)
+            VALUE("${service_availed_id}","${datePicked}","${req.body.total_points}","${req.body.cust_id}");
+            UPDATE loyalty_tbl SET member_points = "${req.body.newPoints}" WHERE cust_id = "${req.body.cust_id}"`
+            
+            db.query(query,(err,out)=>{
+
+            })
+          }
+        }
+      })
           console.log('PASOK SA SINGLE')
           console.log(req.body.typeServ.length)
             for(var i=0;i<req.body.typeServ.length;i++)
@@ -2512,7 +2686,7 @@ router.post('/payment/Early',(req,res)=>{
 
 
 // [THERAPIST ATTENDANCE]
-router.get('/therapist', mid.frontdesknauthed,(req, res) => {
+router.get('/therapist',mid.frontdesknauthed, (req, res) => {
   const query = `SELECT * FROM utilities_tbl;
   SELECT therapist_tbl.*, therapist_attendance_tbl.* 
   FROM therapist_tbl JOIN therapist_attendance_tbl 
@@ -2529,33 +2703,53 @@ router.get('/therapist', mid.frontdesknauthed,(req, res) => {
     var current_date = moment(new Date()).format('MMMM-DD-YYYY')
     for(var i=0;i<out[1].length;i++)
     {
-      var therapist_date = moment(out[1][i].therapist_datetime_in).format('MMMM-DD-YYYY')
+      if(out[1][i].therapist_datetime_in == null){
+        console.log(out[1][i].therapist_fname)
+        const query = `UPDATE therapist_attendance_tbl 
+          SET availability = 0, therapist_datetime_in = NULL WHERE therapist_id='${out[1][i].therapist_id}'`
+
+          db.query(query,(err,out)=>{
+
+          })
+        }
+      else if (out[1][i].therapist_datetime_in != null){
+        var therapist_date = moment(out[1][i].therapist_datetime_in).format('MMMM-DD-YYYY')
+        console.log(out[1][i].therapist_lname)
+        if(moment(therapist_date).isBefore(current_date)){
+          const query = `UPDATE therapist_attendance_tbl 
+          SET availability = 0,therapist_datetime_in = NULL WHERE therapist_id='${out[1][i].therapist_id}'`
+
+          db.query(query,(err,out)=>{
+
+          })
+        }
+      }
       // console.log(therapist_date)
-      if(therapist_date=='Invalid date')
-      {
-        const query = `UPDATE therapist_attendance_tbl 
-        SET therapist_datetime_in = NULL, 
-        availability = 0,
-        doneService_count = 0,
-        therapist_reserved =0 WHERE therapist_datetime_in= NULL`
+      // if(therapist_date[i]=='Invalid date')
+      // {
+      //   const query = `UPDATE therapist_attendance_tbl 
+      //   SET therapist_datetime_in = NULL, 
+      //   availability = 0,
+      //   doneService_count = 0,
+      //   therapist_reserved =0 WHERE therapist_datetime_in= NULL`
 
-        db.query(query,(err,out)=>{
+      //   db.query(query,(err,out)=>{
 
-        })
-      }
+      //   })
+      // }
       
-      if(therapist_date !='Invalid date' && moment(therapist_date).isBefore(current_date))
-      {
-        const query = `UPDATE therapist_attendance_tbl 
-        SET therapist_datetime_in = NULL, 
-        availability = 0,
-        doneService_count = 0,
-        therapist_reserved =0`
+      // if(therapist_date[i] !='Invalid date' && moment(therapist_date).isBefore(current_date))
+      // {
+      //   const query = `UPDATE therapist_attendance_tbl 
+      //   SET therapist_datetime_in = NULL, 
+      //   availability = 0,
+      //   doneService_count = 0,
+      //   therapist_reserved =0`
 
-        db.query(query,(err,out)=>{
+      //   db.query(query,(err,out)=>{
           
-        })
-      }
+      //   })
+      // }
       console.log(moment(therapist_date).isBefore(current_date))
       console.log("-----------------------")
       console.log(current_date)
@@ -3174,5 +3368,25 @@ router.post('/payment/PayNow',(req,res)=>{
     db.query(query4,(err,out)=>{     
     })
   }
+})
+
+router.post('/checkVatID',(req,res)=>{
+  const query = `select * from customer_tbl where vat_exempt_id_no = "${req.body.input_val}"`
+
+  db.query(query,(err,out)=>{
+    if(err){
+      console.log("ERROR AT VALIDATING VAT ID")
+      console.log(err)
+      console.log(query)
+    } else {
+      if(out==undefined || out==0){
+        var results = 0 
+        res.send({results:results})
+      } else if (out != undefined || out != 0) {
+        var results = 1
+        res.send({results:results})
+      }
+    }
+  })
 })
 exports.frontdesk = router;

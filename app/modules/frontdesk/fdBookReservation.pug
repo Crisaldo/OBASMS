@@ -113,6 +113,13 @@ html(lang='en')
                   h4
                     strong#name= "Name: "+ customer.cust_fname+" "+customer.cust_mname+" "+customer.cust_lname
                     input(type="hidden" value=`${customer.cust_id}` id='customerId')
+                    input.cust_typeHidden(type='hidden' value=`${customer.cust_type}`)
+                    -if(customer.vat_exempt_id == null)
+                      input.vat_exempt_custHidden(type='hidden' value="0")
+                    
+                    -else if(customer.vat_exempt_id != null)
+                      input.vat_exempt_custHidden(type='hidden' value='1')
+                    
                     br
                     strong#gender= "Gender: "+ customer.cust_gender
                     br
@@ -330,6 +337,9 @@ html(lang='en')
                                             span.total(service_id=`${promo.promobundle_id}`) ₱0
                                         input(type='hidden' value=`${roomId}` id="roomId")
                 h4
+                  //- strong Original Price
+                  //-   a.originalPrice(style="display:none") 
+                  //- br
                   strong Total Price:  
                     a(id="grandtotal")  ₱0 
                     input.hiddenGrandTotal(type='hidden' value='')
@@ -472,8 +482,8 @@ html(lang='en')
                     
                     .row
                       .col-md-3#appendDito
-                        input.currentPoints(type='hidden' value='')
                         input.newPoints(type='hidden' value='')
+                        input.currentPoints(type='hidden' value='')
                       .col-md-3
                         .form-group.has-default.bmd-form-group
                           .row
@@ -610,8 +620,8 @@ html(lang='en')
   script.
     function calculate(){
       var totalPrice = $('.totalPrice').val()
-      var currentPoints = $('.currentPoints').val()
       var amountNeeded = $('.amountNeeded').val()
+      var currentPoints = $('.currentPoints').val()
       var pointsTotal = 0;
       var priceTotal = 0;
       var newPrice
@@ -627,16 +637,16 @@ html(lang='en')
         if($('#checkbox_gc')[0].checked==true)
         {
           priceTotal = eval(newhalaga+"+"+priceTotal)
-          newPrice = parseInt(amountNeeded) - parseInt(priceTotal)
+          newPrice = parseFloat(amountNeeded) - parseFloat(priceTotal)
           pointsTotal = eval(newPointsEq+'+'+pointsTotal)
-          newPoints = parseInt(currentPoints) - parseInt(pointsTotal)
+          newPoints = parseFloat(currentPoints) - parseFloat(pointsTotal)
         }
         else
         {
           priceTotal = eval(newhalaga+"+"+priceTotal)
-          newPrice = parseInt(totalPrice) - parseInt(priceTotal)
+          newPrice = parseFloat(totalPrice) - parseFloat(priceTotal)
           pointsTotal = eval(newPointsEq+'+'+pointsTotal)
-          newPoints = parseInt(currentPoints) - parseInt(pointsTotal)
+          newPoints = parseFloat(currentPoints) - parseFloat(pointsTotal)
         }
       })
         $('.newPoints').val(newPoints)
@@ -656,15 +666,15 @@ html(lang='en')
         {
           if(quantity ==1)
           {
-            var pricePerServ = parseInt(price) / parseInt(quantity)
-            var computed_price = parseInt(quantity) * parseInt(pricePerServ)
+            var pricePerServ = parseFloat(price) / parseFloat(quantity)
+            var computed_price = parseFloat(quantity) * parseFloat(pricePerServ)
             $(`.newhalaga[id='${id}']`).val(computed_price)
 
-            var pointsPerServ = parseInt(points) / parseInt(quantity)
-            var computed_points = parseInt(quantity) * parseInt(pointsPerServ)
+            var pointsPerServ = parseFloat(points) / parseFloat(quantity)
+            var computed_points = parseFloat(quantity) * parseFloat(pointsPerServ)
             $(`.newPointsEq[id='${id}']`).val(computed_points)
           }
-          else if(parseInt(quantity) > parseInt(1))
+          else if(parseFloat(quantity) > parseFloat(1))
           {
             swal({
               title: "How many "+name+" will pay using points?",
@@ -676,7 +686,7 @@ html(lang='en')
               },
             },
             }).then(function(value){
-              if(parseInt(value) > parseInt(quantity))
+              if(parseFloat(value) > parseFloat(quantity))
               {
                 swal({
                   title: "ERROR",
@@ -688,12 +698,12 @@ html(lang='en')
               }
               else
               {
-                var pricePerServ = parseInt(price) / parseInt(quantity)
-                var computed_price = parseInt(value) * parseInt(pricePerServ)
+                var pricePerServ = parseFloat(price) / parseFloat(quantity)
+                var computed_price = parseFloat(value) * parseFloat(pricePerServ)
                 $(`.newhalaga[id='${id}']`).val(computed_price)
 
-                var pointsPerServ = parseInt(points) / parseInt(quantity)
-                var computed_points = parseInt(value) * parseInt(pointsPerServ)
+                var pointsPerServ = parseFloat(points) / parseFloat(quantity)
+                var computed_points = parseFloat(value) * parseFloat(pointsPerServ)
                 $(`.newPointsEq[id='${id}']`).val(computed_points)
                 
               }
@@ -719,14 +729,14 @@ html(lang='en')
             var amountNeeded = $('.amountNeeded').val()
             var total = eval(amountNeeded+"+"+newhalaga)
 
-            newhalaga -= parseInt(newhalaga)
+            newhalaga -= parseFloat(newhalaga)
             $(`.newhalaga[id='${id}']`).val(newhalaga)
             $('.amountNeeded').val(total)
             $('#AmountNeeded').text('₱'+total+'')
 
             var pointsTotal = eval(newPoints+'+'+newPointsEq)
             $('.newPoints').val(pointsTotal)
-            newPointsEq -= parseInt(newPointsEq)
+            newPointsEq -= parseFloat(newPointsEq)
             $(`.newPointsEq[id='${id}']`).val(newPointsEq)
           }
           else
@@ -738,14 +748,14 @@ html(lang='en')
             var amountNeeded = $('.amountNeeded').val()
             var total = eval(amountNeeded+"+"+newhalaga)
 
-            newhalaga -= parseInt(newhalaga)
+            newhalaga -= parseFloat(newhalaga)
             $(`.newhalaga[id='${id}']`).val(newhalaga)
             $('.amountNeeded').val(total)
             $('#AmountNeeded').text('₱'+total+'')
 
             var pointsTotal = eval(newPoints+'+'+newPointsEq)
             $('.newPoints').val(pointsTotal)
-            newPointsEq -= parseInt(newPointsEq)
+            newPointsEq -= parseFloat(newPointsEq)
             $(`.newPointsEq[id='${id}']`).val(newPointsEq)
 
           }
@@ -758,8 +768,8 @@ html(lang='en')
   script.
     $(document).ready(function(){
       $(document).on('change.bootstrapSwitch','#checkboxPoints',function(e){
-        var currentPoints = $('.currentPoints').val()
         var paid_stats = $('.paid_stats').val()
+        var currentPoints = $('.currentPoints').val()
         var newhalagaArray = []
 
         if(e.target.checked==true)
@@ -856,15 +866,15 @@ html(lang='en')
 
             for(var i=0;i<array.length;i++)
             {
-              total += parseInt(array[i].newhalaga)
+              total += parseFloat(array[i].newhalaga)
               $(`.newhalaga[id='${array[i].id}']`).val(0)
               $(`.newPointsEq[id='${array[i].id}']`).val(0)
             }
-            total = parseInt(amountNeeded)+parseInt(total)
+            total = parseFloat(amountNeeded)+parseFloat(total)
             $('.amountNeeded').val(total)
             $('#AmountNeeded').text('₱'+total+'')
-            $('.newPoints').val($('.currentPoints').val())
           $('.checkboxPayment').prop('checked',false)
+            $('.newPoints').val($('.currentPoints').val())
           $('.checkboxPayment').css('display','none')
         }
 
@@ -897,30 +907,30 @@ html(lang='en')
                 if($('#checkbox_gc')[0].checked == false && $('#checkboxPoints')[0].checked == false) // CASH ONLY
                 {
                     console.log('CASH ONLY')
-                    var change = parseInt(input) - parseInt(totalPrice)
+                    var change = parseFloat(input) - parseFloat(totalPrice)
                     $('.change').val(change)
                 }
                 else if ($('#checkbox_gc')[0].checked == false && $('#checkboxPoints')[0].checked == true && pointsChecked.length !=0) // CASH AND POINTS
                 {
                   
-                  var change = parseInt(input) - parseInt(amountNeeded)
+                  var change = parseFloat(input) - parseFloat(amountNeeded)
                   $('.change').val(change)
                 }
                 else if($('#checkbox_gc')[0].checked == false && $('#checkboxPoints')[0].checked == true && pointsChecked.length ==0)
                 {
-                  var change = parseInt(input) - parseInt(amountNeeded)
+                  var change = parseFloat(input) - parseFloat(amountNeeded)
                   $('.change').val(change)
                   $('#checkboxPoints').prop('checked',false)
                 }
                 else if ($('#checkbox_gc')[0].checked == true && giftcertSelected.length !=0 && $('#checkboxPoints')[0].checked == false) // CASH AND GC
                 {
                   
-                  var change = parseInt(input) - parseInt(amountNeeded)
+                  var change = parseFloat(input) - parseFloat(amountNeeded)
                   $('.change').val(change)
                 }
                 else if($('#checkbox_gc')[0].checked == true && giftcertSelected.length ==0 && $('#checkboxPoints')[0].checked == false)
                 {
-                  var change = parseInt(input) - parseInt(amountNeeded)
+                  var change = parseFloat(input) - parseFloat(amountNeeded)
                   $('.change').val(change)
                   $('#checkbox_gc').prop('checked',false)
                 }
@@ -930,20 +940,20 @@ html(lang='en')
                 {
                   console.log('ALL')
                   var amountNeeded = $('.amountNeeded').val()
-                  var change = parseInt(input) - parseInt(amountNeeded)
+                  var change = parseFloat(input) - parseFloat(amountNeeded)
                   $('.change').val(change)
                 }
                 else if($('#checkbox_gc')[0].checked == true  && giftcertSelected.length != 0 && $('#checkboxPoints')[0].checked == true && pointsChecked.length ==0)
                 {
                   var amountNeeded = $('.amountNeeded').val()
-                  var change = parseInt(input) - parseInt(amountNeeded)
+                  var change = parseFloat(input) - parseFloat(amountNeeded)
                   $('.change').val(change)
                   $('#checkboxPoints').prop('checked',false)
                 }
                 else if($('#checkbox_gc')[0].checked == true  && giftcertSelected.length == 0 && $('#checkboxPoints')[0].checked == true && pointsChecked.length !=0)
                 {
                   var amountNeeded = $('.amountNeeded').val()
-                  var change = parseInt(input) - parseInt(amountNeeded)
+                  var change = parseFloat(input) - parseFloat(amountNeeded)
                   $('.change').val(change)
                   $('#checkbox_gc').prop('checked',false)
                 }
@@ -969,18 +979,18 @@ html(lang='en')
                 if($('#checkbox_gc')[0].checked == false ) // CASH ONLY
                 {
                     console.log('CASH ONLY')
-                    var change = parseInt(input) - parseInt(totalPrice)
+                    var change = parseFloat(input) - parseFloat(totalPrice)
                     $('.change').val(change)
                 }
                 else if ($('#checkbox_gc')[0].checked == true && giftcertSelected.length !=0 ) // CASH AND GC
                 {
                   
-                  var change = parseInt(input) - parseInt(amountNeeded)
+                  var change = parseFloat(input) - parseFloat(amountNeeded)
                   $('.change').val(change)
                 }
                 else if($('#checkbox_gc')[0].checked == true && giftcertSelected.length ==0 )
                 {
-                  var change = parseInt(input) - parseInt(amountNeeded)
+                  var change = parseFloat(input) - parseFloat(amountNeeded)
                   $('.change').val(change)
                   $('#checkbox_gc').prop('checked',false)
                 }
@@ -990,14 +1000,14 @@ html(lang='en')
                 {
                   console.log('ALL')
                   var amountNeeded = $('.amountNeeded').val()
-                  var change = parseInt(input) - parseInt(amountNeeded)
+                  var change = parseFloat(input) - parseFloat(amountNeeded)
                   $('.change').val(change)
 
                 }
                 else if($('#checkbox_gc')[0].checked == true  && giftcertSelected.length == 0 )
                 {
                   var amountNeeded = $('.amountNeeded').val()
-                  var change = parseInt(input) - parseInt(amountNeeded)
+                  var change = parseFloat(input) - parseFloat(amountNeeded)
                   $('.change').val(change)
                   $('#checkbox_gc').prop('checked',false)
                 }
@@ -1045,7 +1055,7 @@ html(lang='en')
                   $('.checkboxGC').prop('checked',false)
                 })
             }
-            else if(parseInt($('.amountReceived').val()) >= $('.amountNeeded').val())
+            else if(parseFloat($('.amountReceived').val()) >= $('.amountNeeded').val())
             {
               swal({
                   title: 'The balance is 0',
@@ -1075,7 +1085,7 @@ html(lang='en')
                   console.log(giftcerts)
                   selected.each(function(){
                       giftcerts.push({
-                      gc_value: parseInt(this.getAttribute('gc_value'))
+                      gc_value: parseFloat(this.getAttribute('gc_value'))
                     })
                   })
 
@@ -1327,6 +1337,9 @@ html(lang='en')
             var newHours = 0
             var newMin = 0
             var highest = 0
+            var scriptSession = !{JSON.stringify(reqSession)};
+            var vat= scriptSession.utilities[0].vat
+                vat = parseFloat(vat) / parseFloat(100)
       
           for (var i=1;i<=pagelength;i++){
             
@@ -1335,6 +1348,15 @@ html(lang='en')
             var quantity =$(`.quantity[service_id='${id}']`).text()
             var restype = $('.restype[id="restype"]').val()
             var totals = $(`.hiddenTotal[id='${id}'`).val()
+            var vat_totals = totals * vat
+                if($('.vat_exempt_custHidden').val() == 1){
+                totals = totals - vat_totals
+                var origTotal = totals + vat_totals
+                //- $('.originalPrice').css('display','block')
+                //- $('.originalPrice').text('₱'+origTotal)
+                } else {
+                  
+                }
             var points = $(`.points[id='${id}']`).val()
             points = points * quantity
             if(restype=='single')
@@ -1347,7 +1369,7 @@ html(lang='en')
                 $(`.bagongDuration[id='${id}']`).val(moment().hour(hours).minute(minutes).format('hh:mm'))
                 $('#totalDuration').text(moment(theFutureTime).format('hh:mm A'))
               }
-                //- sum += parseInt(points)
+                //- sum += parseFloat(points)
             else if(restype=='multiple')
               {
                 var minutes = $(`.duration[id='${id}']`).val();
@@ -1359,6 +1381,7 @@ html(lang='en')
                 longest.push($(`.bagongDuration[id='${id}']`).val())  
 
               }
+
               pinakaTotal = eval(pinakaTotal+"+"+totals);
               $('#grandtotal').text('₱'+pinakaTotal.toLocaleString()+'')
               $('.hiddenGrandTotal').val(pinakaTotal)
@@ -1381,7 +1404,7 @@ html(lang='en')
                     //- console.log("MINUTES: "+newMin)
 
                   }
-                else if(parseInt(longest[j]) > parseInt(highest))
+                else if(parseFloat(longest[j]) > parseFloat(highest))
                   {
 
                     highest = longest[j];
@@ -1744,7 +1767,7 @@ html(lang='en')
                               else
                               {
                                 var buo = $('.RateOfRoom').val()
-                                    buo = parseInt(buo) + parseInt(hidden_finalTotal)
+                                    buo = parseFloat(buo) + parseFloat(hidden_finalTotal)
                                 $('#TotalPrice').append(`Total: ₱${buo}`)
                                 $('.totalPrice').val(`${buo}`)
                                 $('.totalAmountPoints').val(finalPoints)
@@ -1767,8 +1790,8 @@ html(lang='en')
                             else
                             {
                                 $('.hello').addClass('hidden')
-                                $('.currentPoints').val(data[0].member_points)
                                 $('.newPoints').val(data[0].member_points)
+                                $('.currentPoints').val(data[0].member_points)
                                 $('#appendDito').append(`
                                   <div class="form-group has-default bmd-form-group">
                                   <label> Current Points: ${data[0].member_points}
@@ -1796,7 +1819,7 @@ html(lang='en')
                                       var hiddenTotal = $(`.hiddenTotal[id='${id}']`).val()
                                       var bagongDuration=$(`.bagongDuration[id='${id}']`).val()
                                       var service_equivalentPoints = $(`.eqPoints[id='${id}']`).val()
-                                      var total_equivalentPoints = parseInt(quantity) * parseInt(service_equivalentPoints)
+                                      var total_equivalentPoints = parseFloat(quantity) * parseFloat(service_equivalentPoints)
                                       if($('.RateOfRoom').val()==0)
                                       {
                                         $('.amountNeeded').val(hidden_finalTotal)
@@ -1805,7 +1828,7 @@ html(lang='en')
                                       else
                                       {
                                         var totalNew = $('.RateOfRoom').val()
-                                            totalNew = parseInt(totalNew) + parseInt(hidden_finalTotal)
+                                            totalNew = parseFloat(totalNew) + parseFloat(hidden_finalTotal)
                                         $('.amountNeeded').val(totalNew)
                                         $('#AmountNeeded').text('₱'+totalNew+'')
                                       }
@@ -1857,11 +1880,94 @@ html(lang='en')
                       
                               // [DONE - PAYMENT - SUBMIT]
                               $('.buttonDone').click(function(){
-
-
+                                console.log('BUTTON PAYNOW DONE')
                                 // FIRST VALIDATION
                                 if($('.paid_stats').val() !=3)
                                 {
+                                if($('.checkboxGC')[0].checked== true && $('#checkboxPoints')[0].checked==true && $('.amountReceived').val()==0){
+                                if($('.amountNeeded').val() != 0 && $('.checkboxGC')[0].checked== false && $('#checkboxPoints')[0].checked==false) // [CASH ONLY SCENE 1 ] if amount received = 0
+                                {
+                                    swal({
+                                      title: "Amount Received is 0",
+                                      icon: 'warning'
+                                    })
+                                } else if($('.amountNeeded').val() != 0 && $('.checkboxGC')[0].checked== true && $('#checkboxPoints')[0].checked==true){
+                                  swal({
+                                    title: "Amount Received is insufficient",
+                                    icon: 'warning'
+                                  })
+                                } else if($('.amountNeeded').val() == 0 && $('.checkboxGC')[0].checked== true && $('#checkboxPoints')[0].checked==true){
+                                  swal({
+                                    title: "Are you sure?",
+                                    text: "(Points & Gift Certificate)",
+                                    icon: 'info'
+                                  }).then(function(sure){
+                                    if(sure)
+                                    {
+                                      console.log($('.selectpickerGc').val())
+                                      console.log($('.walkin_id').val())
+                                      console.log($('.totalPrice').val())
+                                      console.log($('.cust_typeHidden').val())
+                                      console.log($('.customer_id').val())
+                                    var newPoints = parseInt($('.newPoints').val()) + parseInt($('.totalAmountPoints').val()) 
+                                    var total_points = parseFloat($('.currentPoints').val()) - parseFloat($('.newPoints').val())
+                                    //- alert(total_points)
+                                  //-  var newPoints = parseInt($('.newPoints').val()) + parseInt($('.totalAmountPoints').val()) 
+                                        $.post('/payment/Early',{
+                                          total_points,
+                                          gift_certs : $('.selectpickerGc').val(),
+                                          cust_type : $('.cust_typeHidden').val(),
+                                          newPoints,
+                                          restype,
+                                          typeServ,
+                                          amount: $('.totalPrice').val(),
+                                          amount_received: $('.amountreceived').val(),
+                                          cust_id: $('.hello').val(),
+                                          serviceId: idService,
+                                          serviceQuantity: serviceQuantity,
+                                          serviceNewDuration: serviceNewDuration,
+                                          serviceTotal: serviceTotal,
+                                          bed_quantity: bed_quantity,
+                                          packageId: idPackage,
+                                          packageQuantity: packageQuantity,
+                                          packageNewDuration: packageNewDuration,
+                                          packageTotal: packageTotal,
+                                          promoId: idPromo,
+                                          promoQuantity: promoQuantity,
+                                          promoNewDuration: promoNewDuration,
+                                          promoTotal: promoTotal,
+                                          therapist_id: $('#selected_therapist').val(),
+                                          timeStart : $('#timeStart').val(),
+                                          paid_stats: $('.paid_stats').val(),
+                                          membership_fee,
+                                          EndTime,
+                                          date : $('#dateRes').val(),
+                                          finalPoints : $('#finalPoints').text().replace(/,/g,''),
+                                          roomId :$('#roomId').val()
+                                          }).done(function(data){
+                                            if(data.alertDesc==0)
+                                              {
+                                                swal({
+                                                  title: "Success",
+                                                  icon: 'success'
+                                                }).then(function(){
+                                                  location.href='/frontdesk/home'
+                                                })
+                                              }
+                                            else
+                                              {
+                                                swal({
+                                                  title: "ERROR",
+                                                  icon: 'error'
+                                                })
+                                              }
+                                          
+                                          })
+                                        
+                                    }
+                                  })
+                                }
+                              }
                                   if($('.checkboxGC')[0].checked== false && $('#checkboxPoints')[0].checked==false) // IF PAYMENT [CASH ONLY SCENE 1]
                                   {
                                     if($('.amountReceived').val()==0) // [CASH ONLY SCENE 1 ] if amount received = 0
@@ -1871,14 +1977,14 @@ html(lang='en')
                                           icon: 'warning'
                                         })
                                     }
-                                    else if(parseInt($('.amountReceived').val()) < parseInt($('.totalPrice').val())) // [CASH ONLY SCENE 1 ] if amount received is less than total price
+                                    else if(parseFloat($('.amountReceived').val()) < parseFloat($('.totalPrice').val())) // [CASH ONLY SCENE 1 ] if amount received is less than total price
                                     {
                                       swal({
                                         title: "Amount Received is insufficient",
                                         icon: 'warning'
                                       })
                                     }
-                                    else if(parseInt($('.amountReceived').val()) >= parseInt($('.totalPrice').val())) // [CASH ONLY SCENE 1 ] if SUCCESS
+                                    else if(parseFloat($('.amountReceived').val()) >= parseFloat($('.totalPrice').val())) // [CASH ONLY SCENE 1 ] if SUCCESS
                                     {
                                       swal({
                                         title: "Are you sure?",
@@ -1887,14 +1993,19 @@ html(lang='en')
                                       }).then(function(sure){
                                         if(sure)
                                         {
+                                          var payment_type = 0
+                                          console.log('CASH, CASE 1')
                                           
-                                        var newPoints = parseInt($('.newPoints').val()) + parseInt($('.totalAmountPoints').val()) 
+                                        var newPoints = parseFloat($('.newPoints').val()) + parseFloat($('.totalAmountPoints').val()) 
                                         $.post('/payment/Early',{
                                           newPoints,
                                           restype,
+                                          amount_received: $('.amountreceived').val(),
                                           amount: $('.totalPrice').val(),
                                           cust_id: $('.hello').val(),
                                           typeServ,
+                                          gift_certs : [],
+                                          cust_type : $('.cust_typeHidden').val(),
                                           serviceId: idService,
                                           serviceQuantity: serviceQuantity,
                                           serviceNewDuration: serviceNewDuration,
@@ -1948,14 +2059,14 @@ html(lang='en')
                                           icon: 'warning'
                                         })
                                     }
-                                    else if(parseInt($('.amountReceived').val()) < parseInt($('.totalPrice').val())) // [CASH ONLY SCENE 2 ] if amount received is less than total price
+                                    else if(parseFloat($('.amountReceived').val()) < parseFloat($('.totalPrice').val())) // [CASH ONLY SCENE 2 ] if amount received is less than total price
                                     {
                                       swal({
                                         title: "Amount Received is insufficient",
                                         icon: 'warning'
                                       })
                                     }
-                                    else if(parseInt($('.amountReceived').val()) >= parseInt($('.totalPrice').val())) // [CASH ONLY SCENE 2 ] if SUCCESS
+                                    else if(parseFloat($('.amountReceived').val()) >= parseFloat($('.totalPrice').val())) // [CASH ONLY SCENE 2 ] if SUCCESS
                                     {
                                       swal({
                                         title: "Are you sure?",
@@ -1964,11 +2075,15 @@ html(lang='en')
                                       }).then(function(sure){
                                         if(sure)
                                         {
-                                          
-                                        var newPoints = parseInt($('.newPoints').val()) + parseInt($('.totalAmountPoints').val()) 
+                                          var payment_type = 0
+                                          console.log('CASH, CASE 2')
+                                        var newPoints = parseFloat($('.newPoints').val()) + parseFloat($('.totalAmountPoints').val()) 
                                         $.post('/payment/Early',{
                                           newPoints,
                                           restype,
+                                          amount_received: $('.amountreceived').val(),
+                                          gift_certs : [],
+                                          cust_type : $('.cust_typeHidden').val(),
                                           amount: $('.totalPrice').val(),
                                           cust_id: $('.hello').val(),
                                           typeServ,
@@ -2019,7 +2134,7 @@ html(lang='en')
 
                                   if($('.checkboxGC')[0].checked== true && $('#checkboxPoints')[0].checked==false && $('.amountReceived').val()==0) // IF PAYMENT [GIFT CERTIFICATE ONLY SCENE 1]
                                   {
-                                    if(parseInt($('.amountNeeded').val()) !=0 ) // [GIFT CERTIFICATE ONLY SCENE 2] if amount needed val is not equal to 0
+                                    if(parseFloat($('.amountNeeded').val()) !=0 ) // [GIFT CERTIFICATE ONLY SCENE 2] if amount needed val is not equal to 0
                                     {
                                       swal({
                                         title: "Amount Received is insufficient",
@@ -2028,7 +2143,7 @@ html(lang='en')
                                     }
                                     else
                                     {
-                                      if(parseInt($('.gcTotal').val()) > parseInt($('.totalPrice').val()))
+                                      if(parseFloat($('.gcTotal').val()) > parseFloat($('.totalPrice').val()))
                                       {
                                         swal({
                                         title: "The Gift certificate will not return any change",
@@ -2037,12 +2152,17 @@ html(lang='en')
                                       }).then(function(sure){
                                         if(sure)
                                         {
-                                            
-                                          var newPoints = parseInt($('.newPoints').val()) + parseInt($('.totalAmountPoints').val()) 
+                                          var payment_type = 1
+                                            console.log('GC, CASE 1')
+                                          //- var newPoints = parseFloat($('.newPoints').val()) + parseFloat($('.totalAmountPoints').val()) 
+                                           var newPoints = parseInt($('.newPoints').val()) + parseInt($('.totalAmountPoints').val()) 
+                                          var total_points = parseFloat($('.currentPoints').val()) - parseFloat($('.newPoints').val())
                                           $.post('/payment/Early',{
                                             newPoints,
                                             restype,
                                             typeServ,
+                                            cust_type : $('.cust_typeHidden').val(),
+                                            gift_certs : $('.selectpickerGc').val(),
                                             amount: $('.totalPrice').val(),
                                             cust_id: $('.hello').val(),
                                             serviceId: idService,
@@ -2098,12 +2218,15 @@ html(lang='en')
                                         }).then(function(sure){
                                           if(sure)
                                           {
-                                            
-                                          var newPoints = parseInt($('.newPoints').val()) + parseInt($('.totalAmountPoints').val()) 
+                                            var payment_type = 1
+                                            console.log('GC, CASE 2')
+                                          var newPoints = parseFloat($('.newPoints').val()) + parseFloat($('.totalAmountPoints').val()) 
                                           $.post('/payment/Early',{
                                             newPoints,
                                             restype,
                                             typeServ,
+                                            cust_type : $('.cust_typeHidden').val(),
+                                            gift_certs : $('.selectpickerGc').val(),
                                             amount: $('.totalPrice').val(),
                                             cust_id: $('.hello').val(),
                                             serviceId: idService,
@@ -2153,7 +2276,7 @@ html(lang='en')
                                   }
                                   else if($('.checkboxGC')[0].checked== true && $('#checkboxPoints')[0].checked==true && $('.checkboxPayment:checked').length==0 && $('.amountReceived').val()==0) // IF PAYMENT [GIFT CERTIFICATE ONLY SCENE 2]
                                   {
-                                    if(parseInt($('.amountNeeded').val()) !=0 ) // [GIFT CERTIFICATE ONLY SCENE 2] if amount needed val is not equal to 0
+                                    if(parseFloat($('.amountNeeded').val()) !=0 ) // [GIFT CERTIFICATE ONLY SCENE 2] if amount needed val is not equal to 0
                                     {
                                       swal({
                                         title: "Amount Received is insufficient",
@@ -2162,7 +2285,7 @@ html(lang='en')
                                     }
                                     else
                                     {
-                                      if(parseInt($('.gcTotal').val()) > parseInt($('.totalPrice').val()))
+                                      if(parseFloat($('.gcTotal').val()) > parseFloat($('.totalPrice').val()))
                                       {
                                         swal({
                                         title: "The Gift certificate will not return any change",
@@ -2171,13 +2294,16 @@ html(lang='en')
                                       }).then(function(sure){
                                         if(sure)
                                         {
-                                            
-                                          var newPoints = parseInt($('.newPoints').val()) + parseInt($('.totalAmountPoints').val()) 
+                                          var payment_type = 1
+                                            console.log('GC, CASE 3')
+                                          var newPoints = parseFloat($('.newPoints').val()) + parseFloat($('.totalAmountPoints').val()) 
                                     
                                           $.post('/payment/Early',{
                                             newPoints,
                                             restype,
                                             typeServ,
+                                            cust_type : $('.cust_typeHidden').val(),
+                                            gift_certs : $('.selectpickerGc').val(),
                                             amount: $('.totalPrice').val(),
                                             cust_id: $('.hello').val(),
                                             serviceId: idService,
@@ -2233,13 +2359,16 @@ html(lang='en')
                                         }).then(function(sure){
                                           if(sure)
                                           {
-                                            
-                                          var newPoints = parseInt($('.newPoints').val()) + parseInt($('.totalAmountPoints').val()) 
+                                            var payment_type = 1
+                                            console.log('GC, CASE 4')
+                                          var newPoints = parseFloat($('.newPoints').val()) + parseFloat($('.totalAmountPoints').val()) 
                                     
                                           $.post('/payment/Early',{
                                             newPoints,
                                             restype,
                                             typeServ,
+                                            cust_type : $('.cust_typeHidden').val(),
+                                            gift_certs : $('.selectpickerGc').val(),
                                             amount: $('.totalPrice').val(),
                                             cust_id: $('.hello').val(),
                                             serviceId: idService,
@@ -2288,10 +2417,10 @@ html(lang='en')
                                     }
                                   }
 
-                                  console.log( $('.amountReceived').val())
-                                  if($('#checkboxPoints')[0].checked == true && $('.checkboxGc')[0].checked == false && parseInt($('.amountReceived').val().length)==0 ) // IF PAYMENT [POINTS ONLY SCENE 1]
+
+                                  if($('#checkboxPoints')[0].checked == true && $('.checkboxGc')[0].checked == false && parseFloat($('.amountReceived').val().length)==0 ) // IF PAYMENT [POINTS ONLY SCENE 1]
                                   {
-                                    if(parseInt($('.amountNeeded').val()) !=0 )// [POINTS ONLY SCENE 1] if amount needed is not equal to 0 
+                                    if(parseFloat($('.amountNeeded').val()) !=0 )// [POINTS ONLY SCENE 1] if amount needed is not equal to 0 
                                     {
                                       swal({
                                         title: "Amount Received is insufficient",
@@ -2307,13 +2436,18 @@ html(lang='en')
                                       }).then(function(sure){
                                         if(sure)
                                         {
-                                          
-                                        var newPoints = parseInt($('.newPoints').val()) + parseInt($('.totalAmountPoints').val()) 
-                                        alert('DONE')
+                                          var payment_type = 2
+                                          console.log('POINTS, CASE 1')
+                                        var newPoints = parseFloat($('.newPoints').val()) + parseFloat($('.totalAmountPoints').val()) 
+                                        var total_points = parseFloat($('.currentPoints').val()) - parseFloat($('.newPoints').val())
+                                        console.log('DONE')
                                         $.post('/payment/Early',{
                                           newPoints,
                                           restype,
+                                          total_points,
                                           typeServ,
+                                          gift_certs : [],
+                                          cust_type : $('.cust_typeHidden').val(),
                                           amount: $('.totalPrice').val(),
                                           cust_id: $('.hello').val(),
                                           serviceId: idService,
@@ -2362,7 +2496,7 @@ html(lang='en')
                                   }
                                   else if($('#checkboxPoints')[0].checked == true && $('.checkboxGc')[0].checked == true && $('.selectpickerGc').val().length == 0 && $('.amountReceived').val()==0) // IF PAYMENT [POINTS ONLY SCENE 2]
                                   {
-                                    if(parseInt($('.amountNeeded').val()) !=0 )// [POINTS ONLY SCENE 2] if amount needed is not equal to 0 
+                                    if(parseFloat($('.amountNeeded').val()) !=0 )// [POINTS ONLY SCENE 2] if amount needed is not equal to 0 
                                     {
                                       swal({
                                         title: "Amount Received is insufficient",
@@ -2378,15 +2512,17 @@ html(lang='en')
                                       }).then(function(sure){
                                         if(sure)
                                         {
-                                          
-                                        var newPoints = parseInt($('.newPoints').val()) + parseInt($('.totalAmountPoints').val()) 
-                                  
-
-                                      
+                                          var payment_type = 2
+                                         console.log('POINTS, CASE 2') 
+                                        var newPoints = parseFloat($('.newPoints').val()) + parseFloat($('.totalAmountPoints').val()) 
+                                        var total_points = parseFloat($('.currentPoints').val()) - parseFloat($('.newPoints').val())
                                         $.post('/payment/Early',{
                                           newPoints,
                                           restype,
                                           typeServ,
+                                          total_points,
+                                          gift_certs : [],
+                                          cust_type : $('.cust_typeHidden').val(),
                                           amount: $('.totalPrice').val(),
                                           cust_id: $('.hello').val(),
                                           serviceId: idService,
@@ -2434,9 +2570,9 @@ html(lang='en')
                                     }
                                   }
                                   
-                                  if(parseInt($('.amountReceived').val().length) != 0 && $('.checkboxGc')[0].checked==true && $('#checkboxPoints')[0].checked==false)
+                                  if(parseFloat($('.amountReceived').val().length) != 0 && $('.checkboxGc')[0].checked==true && $('#checkboxPoints')[0].checked==false)
                                   {
-                                    if(parseInt($('.amountReceived').val()) < parseInt($('.amountNeeded').val()))
+                                    if(parseFloat($('.amountReceived').val()) < parseFloat($('.amountNeeded').val()))
                                     {
                                       swal({
                                         title: "Amount Received is insufficient",
@@ -2452,15 +2588,16 @@ html(lang='en')
                                       }).then(function(sure){
                                         if(sure)
                                         {
-                                          
-                                        var newPoints = parseInt($('.newPoints').val()) + parseInt($('.totalAmountPoints').val()) 
-                                  
-
-          
+                                          var payment_type= 3
+                                          console.log('CASH AND GC, CASE 1')
+                                        var newPoints = parseFloat($('.newPoints').val()) + parseFloat($('.totalAmountPoints').val()) 
                                         $.post('/payment/Early',{
                                           newPoints,
+                                          amount_received: $('.amountreceived').val(),
                                           restype,
                                           typeServ,
+                                          cust_type : $('.cust_typeHidden').val(),
+                                          gift_certs : $('.selectpickerGc').val(),
                                           amount: $('.totalPrice').val(),
                                           cust_id: $('.hello').val(),
                                           serviceId: idService,
@@ -2507,9 +2644,9 @@ html(lang='en')
                                       })
                                     }
                                   }
-                                  else if(parseInt($('.amountReceived').val().length) != 0 && $('.checkboxGc')[0].checked==true && $('#checkboxPoints')[0].checked==true && $('.checkboxPayment:checked').length ==0)
+                                  else if(parseFloat($('.amountReceived').val().length) != 0 && $('.checkboxGc')[0].checked==true && $('#checkboxPoints')[0].checked==true && $('.checkboxPayment:checked').length ==0)
                                   {
-                                    if(parseInt($('.amountReceived').val()) < parseInt($('.amountNeeded').val()))
+                                    if(parseFloat($('.amountReceived').val()) < parseFloat($('.amountNeeded').val()))
                                     {
                                       swal({
                                         title: "Amount Received is insufficient",
@@ -2525,17 +2662,18 @@ html(lang='en')
                                       }).then(function(sure){
                                         if(sure)
                                         {
-                                          
-                                        var newPoints = parseInt($('.newPoints').val()) + parseInt($('.totalAmountPoints').val()) 
-                                  
-
-                                  
+                                          var payment_type= 3
+                                          console.log('CASH AND GC, CASE 2')
+                                        var newPoints = parseFloat($('.newPoints').val()) + parseFloat($('.totalAmountPoints').val()) 
                                         $.post('/payment/Early',{
                                           newPoints,
+                                          amount_received: $('.amountreceived').val(),
                                           restype,
                                           typeServ,
+                                          gift_certs : $('.selectpickerGc').val(),
                                           amount: $('.totalPrice').val(),
                                           cust_id: $('.hello').val(),
+                                          cust_type : $('.cust_typeHidden').val(),
                                           serviceId: idService,
                                           serviceQuantity: serviceQuantity,
                                           serviceNewDuration: serviceNewDuration,
@@ -2583,7 +2721,6 @@ html(lang='en')
                                   
                                   if(parseFloat($('.amountReceived').val()) != 0 && $('#checkboxPoints')[0].checked == true && $('.checkboxGc')[0].checked==false)
                                   {
-                                    alert($('.hello').val())
                                     if(parseFloat($('.amountReceived').val()) < parseFloat($('.amountNeeded').val()))
                                     {
                                       swal({
@@ -2595,19 +2732,21 @@ html(lang='en')
                                     {
                                       swal({
                                         title: "Are you sure?",
+                                        text: 'Cash and Points',
                                         icon: 'info'
                                       }).then(function(sure){
                                         if(sure)
                                         {
-                                          
-                                        var newPoints = parseInt($('.newPoints').val()) + parseInt($('.totalAmountPoints').val()) 
-                                  
-
-                                    
+                                          var payment_type = 4
+                                        var newPoints = parseFloat($('.newPoints').val()) + parseFloat($('.totalAmountPoints').val()) 
+                                        var total_points = parseFloat($('.currentPoints').val()) - parseFloat($('.newPoints').val())
                                         $.post('/payment/Early',{
                                           newPoints,
                                           restype,
+                                          amount_received: $('.amountreceived').val(),
                                           typeServ,
+                                          total_points,
+                                          cust_type : $('.cust_typeHidden').val(),
                                           amount: $('.totalPrice').val(),
                                           cust_id: $('.hello').val(),
                                           serviceId: idService,
@@ -2654,10 +2793,9 @@ html(lang='en')
                                       })
                                     }
                                   }
-                                  else if(parseInt($('.amountReceived').val().length) != 0 && $('#checkboxPoints')[0].checked == true && $('.checkboxGc')[0].checked==true && $('.selectpickerGc').val().length ==0)
+                                  else if(parseFloat($('.amountReceived').val().length) != 0 && $('#checkboxPoints')[0].checked == true && $('.checkboxGc')[0].checked==true && $('.selectpickerGc').val().length ==0)
                                   {
-                                    alert('secs')
-                                    if(parseInt($('.amountReceived').val()) < parseInt($('.amountNeeded').val()))
+                                    if(parseFloat($('.amountReceived').val()) < parseFloat($('.amountNeeded').val()))
                                     {
                                       swal({
                                         title: "Amount Received is insufficient",
@@ -2673,15 +2811,17 @@ html(lang='en')
                                       }).then(function(sure){
                                         if(sure)
                                         {
-                                          
-                                        var newPoints = parseInt($('.newPoints').val()) + parseInt($('.totalAmountPoints').val()) 
-                                  
-
-                          
+                                          var payment_type= 4
+                                          console.log('CASH AND POINTS, CASE 1')
+                                        var newPoints = parseFloat($('.newPoints').val()) + parseFloat($('.totalAmountPoints').val()) 
+                                        var total_points = parseFloat($('.currentPoints').val()) - parseFloat($('.newPoints').val())
                                         $.post('/payment/Early',{
                                           newPoints,
                                           restype,
+                                          amount_received: $('.amountreceived').val(),
                                           typeServ,
+                                          total_points,
+                                          cust_type : $('.cust_typeHidden').val(),
                                           amount: $('.totalPrice').val(),
                                           cust_id: $('.hello').val(),
                                           serviceId: idService,
@@ -2729,9 +2869,9 @@ html(lang='en')
                                     }
                                   }
 
-                                  if(parseInt($('.amountReceived').val().length) != 0 && $('.checkboxGc')[0].checked==true && $('#checkboxPoints')[0].checked==true)
+                                  if(parseFloat($('.amountReceived').val().length) != 0 && $('.checkboxGc')[0].checked==true && $('#checkboxPoints')[0].checked==true)
                                   {
-                                    if(parseInt($('.amountReceived').val()) < parseInt($('.amountNeeded').val()))
+                                    if(parseFloat($('.amountReceived').val()) < parseFloat($('.amountNeeded').val()))
                                     {
                                       swal({
                                         title: "Amount Received is insufficient",
@@ -2747,14 +2887,17 @@ html(lang='en')
                                       }).then(function(sure){
                                         if(sure)
                                         {
-                                          
-                                        var newPoints = parseInt($('.newPoints').val()) + parseInt($('.totalAmountPoints').val()) 
-                                  
-
+                                          console.log('POINTS, GC, AND CASH, CASE 1')
+                                        var newPoints = parseFloat($('.newPoints').val()) + parseFloat($('.totalAmountPoints').val()) 
+                                        var total_points = parseFloat($('.currentPoints').val()) - parseFloat($('.newPoints').val())
                                         $.post('/payment/Early',{
                                           newPoints,
                                           restype,
+                                          amount_received: $('.amountreceived').val(),
                                           typeServ,
+                                          gift_certs : $('.selectpickerGc').val(),
+                                          total_points,
+                                          cust_type : $('.cust_typeHidden').val(),
                                           amount: $('.totalPrice').val(),
                                           cust_id: $('.hello').val(),
                                           serviceId: idService,
@@ -2826,6 +2969,90 @@ html(lang='en')
 
                                 else
                                 {
+                                  if($('.checkboxGC')[0].checked== true && $('#checkboxPoints')[0].checked==true && $('.amountReceived').val()==0){
+                                if($('.amountNeeded').val() != 0 && $('.checkboxGC')[0].checked== false && $('#checkboxPoints')[0].checked==false) // [CASH ONLY SCENE 1 ] if amount received = 0
+                                {
+                                    swal({
+                                      title: "Amount Received is 0",
+                                      icon: 'warning'
+                                    })
+                                } else if($('.amountNeeded').val() != 0 && $('.checkboxGC')[0].checked== true && $('#checkboxPoints')[0].checked==true){
+                                  swal({
+                                    title: "Amount Received is insufficient",
+                                    icon: 'warning'
+                                  })
+                                } else if($('.amountNeeded').val() == 0 && $('.checkboxGC')[0].checked== true && $('#checkboxPoints')[0].checked==true){
+                                  swal({
+                                    title: "Are you sure?",
+                                    text: "(Points & Gift Certificate)",
+                                    icon: 'info'
+                                  }).then(function(sure){
+                                    if(sure)
+                                    {
+                                      console.log($('.selectpickerGc').val())
+                                      console.log($('.walkin_id').val())
+                                      console.log($('.totalPrice').val())
+                                      console.log($('.cust_typeHidden').val())
+                                      console.log($('.customer_id').val())
+                                    var newPoints = parseInt($('.newPoints').val()) + parseInt($('.totalAmountPoints').val()) 
+                                    var total_points = parseFloat($('.currentPoints').val()) - parseFloat($('.newPoints').val())
+                                    //- alert(total_points)
+                                  //-  var newPoints = parseInt($('.newPoints').val()) + parseInt($('.totalAmountPoints').val()) 
+                                        $.post('/payment/Early',{
+                                          total_points,
+                                          gift_certs : $('.selectpickerGc').val(),
+                                          cust_type : $('.cust_typeHidden').val(),
+                                          newPoints,
+                                          restype,
+                                          typeServ,
+                                          amount: $('.totalPrice').val(),
+                                          amount_received: $('.amountreceived').val(),
+                                          cust_id: $('.hello').val(),
+                                          serviceId: idService,
+                                          serviceQuantity: serviceQuantity,
+                                          serviceNewDuration: serviceNewDuration,
+                                          serviceTotal: serviceTotal,
+                                          bed_quantity: bed_quantity,
+                                          packageId: idPackage,
+                                          packageQuantity: packageQuantity,
+                                          packageNewDuration: packageNewDuration,
+                                          packageTotal: packageTotal,
+                                          promoId: idPromo,
+                                          promoQuantity: promoQuantity,
+                                          promoNewDuration: promoNewDuration,
+                                          promoTotal: promoTotal,
+                                          therapist_id: $('#selected_therapist').val(),
+                                          timeStart : $('#timeStart').val(),
+                                          paid_stats: $('.paid_stats').val(),
+                                          membership_fee,
+                                          EndTime,
+                                          date : $('#dateRes').val(),
+                                          finalPoints : $('#finalPoints').text().replace(/,/g,''),
+                                          roomId :$('#roomId').val()
+                                          }).done(function(data){
+                                            if(data.alertDesc==0)
+                                              {
+                                                swal({
+                                                  title: "Success",
+                                                  icon: 'success'
+                                                }).then(function(){
+                                                  location.href='/frontdesk/home'
+                                                })
+                                              }
+                                            else
+                                              {
+                                                swal({
+                                                  title: "ERROR",
+                                                  icon: 'error'
+                                                })
+                                              }
+                                          
+                                          })
+                                        
+                                    }
+                                  })
+                                }
+                              }
                                     if($('.checkboxGC')[0].checked== false) // IF PAYMENT [CASH ONLY SCENE 1]
                                   {
                                     if($('.amountReceived').val()==0) // [CASH ONLY SCENE 1 ] if amount received = 0
@@ -2835,14 +3062,14 @@ html(lang='en')
                                           icon: 'warning'
                                         })
                                     }
-                                    else if(parseInt($('.amountReceived').val()) < parseInt($('.totalPrice').val())) // [CASH ONLY SCENE 1 ] if amount received is less than total price
+                                    else if(parseFloat($('.amountReceived').val()) < parseFloat($('.totalPrice').val())) // [CASH ONLY SCENE 1 ] if amount received is less than total price
                                     {
                                       swal({
                                         title: "Amount Received is insufficient",
                                         icon: 'warning'
                                       })
                                     }
-                                    else if(parseInt($('.amountReceived').val()) >= parseInt($('.totalPrice').val())) // [CASH ONLY SCENE 1 ] if SUCCESS
+                                    else if(parseFloat($('.amountReceived').val()) >= parseFloat($('.totalPrice').val())) // [CASH ONLY SCENE 1 ] if SUCCESS
                                     {
                                       swal({
                                         title: "Are you sure?",
@@ -2851,12 +3078,16 @@ html(lang='en')
                                       }).then(function(sure){
                                         if(sure)
                                         {
-                                          
-                                        var newPoints = parseInt($('.newPoints').val()) + parseInt($('.totalAmountPoints').val()) 
+                                          var payment_type = 0
+                                        console.log('CASH ONLY, ELSE IF')
+                                        var newPoints = parseFloat($('.newPoints').val()) + parseFloat($('.totalAmountPoints').val()) 
                                         $.post('/payment/Early',{
                                           newPoints,
+                                          amount_received: $('.amountreceived').val(),
                                           restype,
+                                          gift_certs : [],
                                           typeServ,
+                                          cust_type : $('.cust_typeHidden').val(),
                                           amount: $('.totalPrice').val(),
                                           cust_id: $('.hello').val(),
                                           serviceId: idService,
@@ -2912,14 +3143,14 @@ html(lang='en')
                                           icon: 'warning'
                                         })
                                     }
-                                    else if(parseInt($('.amountReceived').val()) < parseInt($('.totalPrice').val())) // [CASH ONLY SCENE 2 ] if amount received is less than total price
+                                    else if(parseFloat($('.amountReceived').val()) < parseFloat($('.totalPrice').val())) // [CASH ONLY SCENE 2 ] if amount received is less than total price
                                     {
                                       swal({
                                         title: "Amount Received is insufficient",
                                         icon: 'warning'
                                       })
                                     }
-                                    else if(parseInt($('.amountReceived').val()) >= parseInt($('.totalPrice').val())) // [CASH ONLY SCENE 2 ] if SUCCESS
+                                    else if(parseFloat($('.amountReceived').val()) >= parseFloat($('.totalPrice').val())) // [CASH ONLY SCENE 2 ] if SUCCESS
                                     {
                                       swal({
                                         title: "Are you sure?",
@@ -2928,12 +3159,16 @@ html(lang='en')
                                       }).then(function(sure){
                                         if(sure)
                                         {
-                                          
-                                        var newPoints = parseInt($('.newPoints').val()) + parseInt($('.totalAmountPoints').val()) 
+                                          var payment_type = 0 
+                                          console.log('CASH ONLY, CASE 2 ELSE IF')
+                                        var newPoints = parseFloat($('.newPoints').val()) + parseFloat($('.totalAmountPoints').val()) 
                                         $.post('/payment/Early',{
                                           newPoints,
                                           restype,
+                                          amount_received: $('.amountreceived').val(),
                                           typeServ,
+                                          gift_certs : [],
+                                          cust_type : $('.cust_typeHidden').val(),
                                           amount: $('.totalPrice').val(),
                                           cust_id: $('.hello').val(),
                                           serviceId: idService,
@@ -2983,7 +3218,7 @@ html(lang='en')
 
                                   if($('.checkboxGC')[0].checked== true  && $('.amountReceived').val()==0) // IF PAYMENT [GIFT CERTIFICATE ONLY SCENE 1]
                                   {
-                                    if(parseInt($('.amountNeeded').val()) !=0 ) // [GIFT CERTIFICATE ONLY SCENE 2] if amount needed val is not equal to 0
+                                    if(parseFloat($('.amountNeeded').val()) !=0 ) // [GIFT CERTIFICATE ONLY SCENE 2] if amount needed val is not equal to 0
                                     {
                                       swal({
                                         title: "Amount Received is insufficient",
@@ -2992,7 +3227,7 @@ html(lang='en')
                                     }
                                     else
                                     {
-                                      if(parseInt($('.gcTotal').val()) > parseInt($('.totalPrice').val()))
+                                      if(parseFloat($('.gcTotal').val()) > parseFloat($('.totalPrice').val()))
                                       {
                                         swal({
                                         title: "The Gift certificate will not return any change",
@@ -3001,12 +3236,14 @@ html(lang='en')
                                       }).then(function(sure){
                                         if(sure)
                                         {
-                                            
-                                          var newPoints = parseInt($('.newPoints').val()) + parseInt($('.totalAmountPoints').val()) 
+                                            var payment_type = 1
+                                          var newPoints = parseFloat($('.newPoints').val()) + parseFloat($('.totalAmountPoints').val()) 
                                           $.post('/payment/Early',{
                                             newPoints,
                                             restype,
+                                            gift_certs : $('.selectpickerGc').val(),
                                             typeServ,
+                                            cust_type : $('.cust_typeHidden').val(),
                                             amount: $('.totalPrice').val(),
                                             cust_id: $('.hello').val(),
                                             serviceId: idService,
@@ -3062,12 +3299,14 @@ html(lang='en')
                                         }).then(function(sure){
                                           if(sure)
                                           {
-                                            
-                                          var newPoints = parseInt($('.newPoints').val()) + parseInt($('.totalAmountPoints').val()) 
+                                            var payment_type = 1
+                                          var newPoints = parseFloat($('.newPoints').val()) + parseFloat($('.totalAmountPoints').val()) 
                                           $.post('/payment/Early',{
                                             newPoints,
                                             restype,
                                             typeServ,
+                                            cust_type : $('.cust_typeHidden').val(),
+                                            gift_certs : $('.selectpickerGc').val(),
                                             amount: $('.totalPrice').val(),
                                             cust_id: $('.hello').val(),
                                             serviceId: idService,
@@ -3117,7 +3356,7 @@ html(lang='en')
                                   }
                                   else if($('.checkboxGC')[0].checked== true && $('.amountReceived').val()==0) // IF PAYMENT [GIFT CERTIFICATE ONLY SCENE 2]
                                   {
-                                    if(parseInt($('.amountNeeded').val()) !=0 ) // [GIFT CERTIFICATE ONLY SCENE 2] if amount needed val is not equal to 0
+                                    if(parseFloat($('.amountNeeded').val()) !=0 ) // [GIFT CERTIFICATE ONLY SCENE 2] if amount needed val is not equal to 0
                                     {
                                       swal({
                                         title: "Amount Received is insufficient",
@@ -3126,7 +3365,7 @@ html(lang='en')
                                     }
                                     else
                                     {
-                                      if(parseInt($('.gcTotal').val()) > parseInt($('.totalPrice').val()))
+                                      if(parseFloat($('.gcTotal').val()) > parseFloat($('.totalPrice').val()))
                                       {
                                         swal({
                                         title: "The Gift certificate will not return any change",
@@ -3135,13 +3374,15 @@ html(lang='en')
                                       }).then(function(sure){
                                         if(sure)
                                         {
-                                            
-                                          var newPoints = parseInt($('.newPoints').val()) + parseInt($('.totalAmountPoints').val()) 
+                                            var payment_type = 1
+                                          var newPoints = parseFloat($('.newPoints').val()) + parseFloat($('.totalAmountPoints').val()) 
                                     
                                           $.post('/payment/Early',{
                                             newPoints,
                                             restype,
                                             typeServ,
+                                            cust_type : $('.cust_typeHidden').val(),
+                                            gift_certs : $('.selectpickerGc').val(),
                                             amount: $('.totalPrice').val(),
                                             cust_id: $('.hello').val(),
                                             serviceId: idService,
@@ -3197,13 +3438,15 @@ html(lang='en')
                                         }).then(function(sure){
                                           if(sure)
                                           {
-                                            
-                                          var newPoints = parseInt($('.newPoints').val()) + parseInt($('.totalAmountPoints').val()) 
+                                            var payment_type = 1
+                                          var newPoints = parseFloat($('.newPoints').val()) + parseFloat($('.totalAmountPoints').val()) 
                                     
                                           $.post('/payment/Early',{
                                             newPoints,
                                             restype,
                                             typeServ,
+                                            cust_type : $('.cust_typeHidden').val(),
+                                            gift_certs : $('.selectpickerGc').val(),
                                             amount: $('.totalPrice').val(),
                                             cust_id: $('.hello').val(),
                                             serviceId: idService,
@@ -3255,9 +3498,9 @@ html(lang='en')
                                   
                                   
                                   
-                                  if(parseInt($('.amountReceived').val().length) != 0 && $('.checkboxGc')[0].checked==true )
+                                  if(parseFloat($('.amountReceived').val().length) != 0 && $('.checkboxGc')[0].checked==true )
                                   {
-                                    if(parseInt($('.amountReceived').val()) < parseInt($('.amountNeeded').val()))
+                                    if(parseFloat($('.amountReceived').val()) < parseFloat($('.amountNeeded').val()))
                                     {
                                       swal({
                                         title: "Amount Received is insufficient",
@@ -3273,15 +3516,15 @@ html(lang='en')
                                       }).then(function(sure){
                                         if(sure)
                                         {
-                                          
-                                        var newPoints = parseInt($('.newPoints').val()) + parseInt($('.totalAmountPoints').val()) 
-                                  
-
-          
+                                          var payment_type= 3
+                                        var newPoints = parseFloat($('.newPoints').val()) + parseFloat($('.totalAmountPoints').val()) 
                                         $.post('/payment/Early',{
                                           newPoints,
                                           restype,
+                                          amount_received: $('.amountreceived').val(),
                                           typeServ,
+                                          cust_type : $('.cust_typeHidden').val(),
+                                          gift_certs : $('.selectpickerGc').val(),
                                           amount: $('.totalPrice').val(),
                                           cust_id: $('.hello').val(),
                                           serviceId: idService,
@@ -3328,9 +3571,9 @@ html(lang='en')
                                       })
                                     }
                                   }
-                                  else if(parseInt($('.amountReceived').val().length) != 0 && $('.checkboxGc')[0].checked==true )
+                                  else if(parseFloat($('.amountReceived').val().length) != 0 && $('.checkboxGc')[0].checked==true )
                                   {
-                                    if(parseInt($('.amountReceived').val()) < parseInt($('.amountNeeded').val()))
+                                    if(parseFloat($('.amountReceived').val()) < parseFloat($('.amountNeeded').val()))
                                     {
                                       swal({
                                         title: "Amount Received is insufficient",
@@ -3346,15 +3589,15 @@ html(lang='en')
                                       }).then(function(sure){
                                         if(sure)
                                         {
-                                          
-                                        var newPoints = parseInt($('.newPoints').val()) + parseInt($('.totalAmountPoints').val()) 
-                                  
-
-                                  
+                                          var payment_type= 3
+                                        var newPoints = parseFloat($('.newPoints').val()) + parseFloat($('.totalAmountPoints').val()) 
                                         $.post('/payment/Early',{
                                           newPoints,
+                                          amount_received: $('.amountreceived').val(),
                                           restype,
+                                          cust_type : $('.cust_typeHidden').val(),
                                           typeServ,
+                                          gift_certs : $('.selectpickerGc').val(),
                                           amount: $('.totalPrice').val(),
                                           cust_id: $('.hello').val(),
                                           serviceId: idService,
@@ -3403,9 +3646,9 @@ html(lang='en')
                                   }
                                  
 
-                                  if(parseInt($('.amountReceived').val().length) != 0 && $('.checkboxGc')[0].checked==true )
+                                  if(parseFloat($('.amountReceived').val().length) != 0 && $('.checkboxGc')[0].checked==true )
                                   {
-                                    if(parseInt($('.amountReceived').val()) < parseInt($('.amountNeeded').val()))
+                                    if(parseFloat($('.amountReceived').val()) < parseFloat($('.amountNeeded').val()))
                                     {
                                       swal({
                                         title: "Amount Received is insufficient",
@@ -3422,13 +3665,16 @@ html(lang='en')
                                         if(sure)
                                         {
                                           
-                                        var newPoints = parseInt($('.newPoints').val()) + parseInt($('.totalAmountPoints').val()) 
-                                  
-
+                                        var newPoints = parseFloat($('.newPoints').val()) + parseFloat($('.totalAmountPoints').val()) 
+                                        var total_points = parseFloat($('.currentPoints').val()) - parseFloat($('.newPoints').val())
                                         $.post('/payment/Early',{
                                           newPoints,
                                           restype,
+                                          amount_received: $('.amountreceived').val(),
                                           typeServ,
+                                          cust_type : $('.cust_typeHidden').val(),
+                                          gift_certs : $('.selectpickerGc').val(),
+                                          total_points,
                                           amount: $('.totalPrice').val(),
                                           cust_id: $('.hello').val(),
                                           serviceId: idService,
@@ -3604,7 +3850,7 @@ html(lang='en')
                               else
                               {
                                 var buo = $('.RateOfRoom').val()
-                                    buo = parseInt(buo) + parseInt(hidden_finalTotal)
+                                    buo = parseFloat(buo) + parseFloat(hidden_finalTotal)
                                 $('#TotalPrice').append(`Total: ₱${buo}`)
                                 $('.totalPrice').val(`${buo}`)
                                 $('.totalAmountPoints').val(finalPoints)
@@ -3613,7 +3859,7 @@ html(lang='en')
                             }
                             else if (data[0].paid_status==0)
                             {
-                              hidden_finalTotal=parseInt(hidden_finalTotal) + parseInt(membership_fee) 
+                              hidden_finalTotal=parseFloat(hidden_finalTotal) + parseFloat(membership_fee) 
                               $('#TotalPrice').append(`Total: ₱${hidden_finalTotal}`)
                               $('.totalPrice').val(`${hidden_finalTotal}`)
                               $('.totalAmountPoints').val(finalPoints)
@@ -3632,7 +3878,7 @@ html(lang='en')
                               else
                               {
                                 var buo = $('.RateOfRoom').val()
-                                    buo = parseInt(buo) + parseInt(hidden_finalTotal)
+                                    buo = parseFloat(buo) + parseFloat(hidden_finalTotal)
                                 $('#TotalPrice').append(`Total: ₱${buo}`)
                                 $('.totalPrice').val(`${buo}`)
                                 $('.totalAmountPoints').val(finalPoints)
@@ -3655,8 +3901,8 @@ html(lang='en')
                             else
                             {
                                 $('.hello').addClass('hidden')
-                                $('.currentPoints').val(data[0].member_points)
                                 $('.newPoints').val(data[0].member_points)
+                                $('.currentPoints').val(data[0].member_points)
                                 $('#appendDito').append(`
                                   <div class="form-group has-default bmd-form-group">
                                   <label> Current Points: ${data[0].member_points}
@@ -3684,7 +3930,7 @@ html(lang='en')
                                       var hiddenTotal = $(`.hiddenTotal[id='${id}']`).val()
                                       var bagongDuration=$(`.bagongDuration[id='${id}']`).val()
                                       var service_equivalentPoints = $(`.eqPoints[id='${id}']`).val()
-                                      var total_equivalentPoints = parseInt(quantity) * parseInt(service_equivalentPoints)
+                                      var total_equivalentPoints = parseFloat(quantity) * parseFloat(service_equivalentPoints)
                                       if($('.RateOfRoom').val()==0)
                                       {
                                         $('.amountNeeded').val(hidden_finalTotal)
@@ -3693,7 +3939,7 @@ html(lang='en')
                                       else
                                       {
                                         var totalNew = $('.RateOfRoom').val()
-                                            totalNew = parseInt(totalNew) + parseInt(hidden_finalTotal)
+                                            totalNew = parseFloat(totalNew) + parseFloat(hidden_finalTotal)
                                         $('.amountNeeded').val(totalNew)
                                         $('#AmountNeeded').text('₱'+totalNew+'')
                                       }
@@ -3746,10 +3992,94 @@ html(lang='en')
                               // [DONE - PAYMENT - SUBMIT]
                               $('.buttonDone').click(function(){
 
-
+                                console.log('BUTTON')
                                 // FIRST VALIDATION
                                 if($('.paid_stats').val() !=3)
                                 {
+                                  if($('.checkboxGC')[0].checked== true && $('#checkboxPoints')[0].checked==true && $('.amountReceived').val()==0){
+                                if($('.amountNeeded').val() != 0 && $('.checkboxGC')[0].checked== false && $('#checkboxPoints')[0].checked==false) // [CASH ONLY SCENE 1 ] if amount received = 0
+                                {
+                                    swal({
+                                      title: "Amount Received is 0",
+                                      icon: 'warning'
+                                    })
+                                } else if($('.amountNeeded').val() != 0 && $('.checkboxGC')[0].checked== true && $('#checkboxPoints')[0].checked==true){
+                                  swal({
+                                    title: "Amount Received is insufficient",
+                                    icon: 'warning'
+                                  })
+                                } else if($('.amountNeeded').val() == 0 && $('.checkboxGC')[0].checked== true && $('#checkboxPoints')[0].checked==true){
+                                  swal({
+                                    title: "Are you sure?",
+                                    text: "(Points & Gift Certificate)",
+                                    icon: 'info'
+                                  }).then(function(sure){
+                                    if(sure)
+                                    {
+                                      console.log($('.selectpickerGc').val())
+                                      console.log($('.walkin_id').val())
+                                      console.log($('.totalPrice').val())
+                                      console.log($('.cust_typeHidden').val())
+                                      console.log($('.customer_id').val())
+                                    var newPoints = parseInt($('.newPoints').val()) + parseInt($('.totalAmountPoints').val()) 
+                                    var total_points = parseFloat($('.currentPoints').val()) - parseFloat($('.newPoints').val())
+                                    //- alert(total_points)
+                                  //-  var newPoints = parseInt($('.newPoints').val()) + parseInt($('.totalAmountPoints').val()) 
+                                        $.post('/payment/Early',{
+                                          total_points,
+                                          gift_certs : $('.selectpickerGc').val(),
+                                          cust_type : $('.cust_typeHidden').val(),
+                                          newPoints,
+                                          restype,
+                                          typeServ,
+                                          amount: $('.totalPrice').val(),
+                                          amount_received: $('.amountreceived').val(),
+                                          cust_id: $('.hello').val(),
+                                          serviceId: idService,
+                                          serviceQuantity: serviceQuantity,
+                                          serviceNewDuration: serviceNewDuration,
+                                          serviceTotal: serviceTotal,
+                                          bed_quantity: bed_quantity,
+                                          packageId: idPackage,
+                                          packageQuantity: packageQuantity,
+                                          packageNewDuration: packageNewDuration,
+                                          packageTotal: packageTotal,
+                                          promoId: idPromo,
+                                          promoQuantity: promoQuantity,
+                                          promoNewDuration: promoNewDuration,
+                                          promoTotal: promoTotal,
+                                          therapist_id: $('#selected_therapist').val(),
+                                          timeStart : $('#timeStart').val(),
+                                          paid_stats: $('.paid_stats').val(),
+                                          membership_fee,
+                                          EndTime,
+                                          date : $('#dateRes').val(),
+                                          finalPoints : $('#finalPoints').text().replace(/,/g,''),
+                                          roomId :$('#roomId').val()
+                                          }).done(function(data){
+                                            if(data.alertDesc==0)
+                                              {
+                                                swal({
+                                                  title: "Success",
+                                                  icon: 'success'
+                                                }).then(function(){
+                                                  location.href='/frontdesk/home'
+                                                })
+                                              }
+                                            else
+                                              {
+                                                swal({
+                                                  title: "ERROR",
+                                                  icon: 'error'
+                                                })
+                                              }
+                                          
+                                          })
+                                        
+                                    }
+                                  })
+                                }
+                              }
                                   if($('.checkboxGC')[0].checked== false && $('#checkboxPoints')[0].checked==false) // IF PAYMENT [CASH ONLY SCENE 1]
                                   {
                                     if($('.amountReceived').val()==0) // [CASH ONLY SCENE 1 ] if amount received = 0
@@ -3759,14 +4089,14 @@ html(lang='en')
                                           icon: 'warning'
                                         })
                                     }
-                                    else if(parseInt($('.amountReceived').val()) < parseInt($('.totalPrice').val())) // [CASH ONLY SCENE 1 ] if amount received is less than total price
+                                    else if(parseFloat($('.amountReceived').val()) < parseFloat($('.totalPrice').val())) // [CASH ONLY SCENE 1 ] if amount received is less than total price
                                     {
                                       swal({
                                         title: "Amount Received is insufficient",
                                         icon: 'warning'
                                       })
                                     }
-                                    else if(parseInt($('.amountReceived').val()) >= parseInt($('.totalPrice').val())) // [CASH ONLY SCENE 1 ] if SUCCESS
+                                    else if(parseFloat($('.amountReceived').val()) >= parseFloat($('.totalPrice').val())) // [CASH ONLY SCENE 1 ] if SUCCESS
                                     {
                                       swal({
                                         title: "Are you sure?",
@@ -3775,11 +4105,14 @@ html(lang='en')
                                       }).then(function(sure){
                                         if(sure)
                                         {
-                                          
-                                        var newPoints = parseInt($('.newPoints').val()) + parseInt($('.totalAmountPoints').val()) 
+                                         var payment_type = 0 
+                                        var newPoints = parseFloat($('.newPoints').val()) + parseFloat($('.totalAmountPoints').val()) 
                                         $.post('/payment/Early',{
                                           newPoints,
+                                          amount_received: $('.amountreceived').val(),
                                           restype,
+                                          gift_certs : [],
+                                          cust_type : $('.cust_typeHidden').val(),
                                           amount: $('.totalPrice').val(),
                                           cust_id: $('.hello').val(),
                                           typeServ,
@@ -3836,14 +4169,14 @@ html(lang='en')
                                           icon: 'warning'
                                         })
                                     }
-                                    else if(parseInt($('.amountReceived').val()) < parseInt($('.totalPrice').val())) // [CASH ONLY SCENE 2 ] if amount received is less than total price
+                                    else if(parseFloat($('.amountReceived').val()) < parseFloat($('.totalPrice').val())) // [CASH ONLY SCENE 2 ] if amount received is less than total price
                                     {
                                       swal({
                                         title: "Amount Received is insufficient",
                                         icon: 'warning'
                                       })
                                     }
-                                    else if(parseInt($('.amountReceived').val()) >= parseInt($('.totalPrice').val())) // [CASH ONLY SCENE 2 ] if SUCCESS
+                                    else if(parseFloat($('.amountReceived').val()) >= parseFloat($('.totalPrice').val())) // [CASH ONLY SCENE 2 ] if SUCCESS
                                     {
                                       swal({
                                         title: "Are you sure?",
@@ -3852,14 +4185,17 @@ html(lang='en')
                                       }).then(function(sure){
                                         if(sure)
                                         {
-                                          
-                                        var newPoints = parseInt($('.newPoints').val()) + parseInt($('.totalAmountPoints').val()) 
+                                         var payment_type = 0 
+                                        var newPoints = parseFloat($('.newPoints').val()) + parseFloat($('.totalAmountPoints').val()) 
                                         $.post('/payment/Early',{
                                           newPoints,
+                                          amount_received: $('.amountreceived').val(),
                                           restype,
                                           amount: $('.totalPrice').val(),
                                           cust_id: $('.hello').val(),
                                           typeServ,
+                                          gift_certs : [],
+                                          cust_type : $('.cust_typeHidden').val(),
                                           serviceId: idService,
                                           serviceQuantity: serviceQuantity,
                                           serviceNewDuration: serviceNewDuration,
@@ -3907,7 +4243,7 @@ html(lang='en')
 
                                   if($('.checkboxGC')[0].checked== true && $('#checkboxPoints')[0].checked==false && $('.amountReceived').val()==0) // IF PAYMENT [GIFT CERTIFICATE ONLY SCENE 1]
                                   {
-                                    if(parseInt($('.amountNeeded').val()) !=0 ) // [GIFT CERTIFICATE ONLY SCENE 2] if amount needed val is not equal to 0
+                                    if(parseFloat($('.amountNeeded').val()) !=0 ) // [GIFT CERTIFICATE ONLY SCENE 2] if amount needed val is not equal to 0
                                     {
                                       swal({
                                         title: "Amount Received is insufficient",
@@ -3916,7 +4252,7 @@ html(lang='en')
                                     }
                                     else
                                     {
-                                      if(parseInt($('.gcTotal').val()) > parseInt($('.totalPrice').val()))
+                                      if(parseFloat($('.gcTotal').val()) > parseFloat($('.totalPrice').val()))
                                       {
                                         swal({
                                         title: "The Gift certificate will not return any change",
@@ -3925,11 +4261,13 @@ html(lang='en')
                                       }).then(function(sure){
                                         if(sure)
                                         {
-                                            
-                                          var newPoints = parseInt($('.newPoints').val()) + parseInt($('.totalAmountPoints').val()) 
+                                            var payment_type = 1
+                                          var newPoints = parseFloat($('.newPoints').val()) + parseFloat($('.totalAmountPoints').val()) 
                                           $.post('/payment/Early',{
                                             newPoints,
                                             restype,
+                                            cust_type : $('.cust_typeHidden').val(),
+                                            gift_certs : $('.selectpickerGc').val(),
                                             typeServ,
                                             amount: $('.totalPrice').val(),
                                             cust_id: $('.hello').val(),
@@ -3986,12 +4324,14 @@ html(lang='en')
                                         }).then(function(sure){
                                           if(sure)
                                           {
-                                            
-                                          var newPoints = parseInt($('.newPoints').val()) + parseInt($('.totalAmountPoints').val()) 
+                                            var payment_type = 1
+                                          var newPoints = parseFloat($('.newPoints').val()) + parseFloat($('.totalAmountPoints').val()) 
                                           $.post('/payment/Early',{
                                             newPoints,
                                             restype,
                                             typeServ,
+                                            cust_type : $('.cust_typeHidden').val(),
+                                            gift_certs : $('.selectpickerGc').val(),
                                             amount: $('.totalPrice').val(),
                                             cust_id: $('.hello').val(),
                                             serviceId: idService,
@@ -4041,7 +4381,7 @@ html(lang='en')
                                   }
                                   else if($('.checkboxGC')[0].checked== true && $('#checkboxPoints')[0].checked==true && $('.checkboxPayment:checked').length==0 && $('.amountReceived').val()==0) // IF PAYMENT [GIFT CERTIFICATE ONLY SCENE 2]
                                   {
-                                    if(parseInt($('.amountNeeded').val()) !=0 ) // [GIFT CERTIFICATE ONLY SCENE 2] if amount needed val is not equal to 0
+                                    if(parseFloat($('.amountNeeded').val()) !=0 ) // [GIFT CERTIFICATE ONLY SCENE 2] if amount needed val is not equal to 0
                                     {
                                       swal({
                                         title: "Amount Received is insufficient",
@@ -4050,7 +4390,7 @@ html(lang='en')
                                     }
                                     else
                                     {
-                                      if(parseInt($('.gcTotal').val()) > parseInt($('.totalPrice').val()))
+                                      if(parseFloat($('.gcTotal').val()) > parseFloat($('.totalPrice').val()))
                                       {
                                         swal({
                                         title: "The Gift certificate will not return any change",
@@ -4059,13 +4399,15 @@ html(lang='en')
                                       }).then(function(sure){
                                         if(sure)
                                         {
-                                            
-                                          var newPoints = parseInt($('.newPoints').val()) + parseInt($('.totalAmountPoints').val()) 
+                                            var payment_type = 1
+                                          var newPoints = parseFloat($('.newPoints').val()) + parseFloat($('.totalAmountPoints').val()) 
                                     
                                           $.post('/payment/Early',{
                                             newPoints,
                                             restype,
+                                            cust_type : $('.cust_typeHidden').val(),
                                             typeServ,
+                                            gift_certs : $('.selectpickerGc').val(),
                                             amount: $('.totalPrice').val(),
                                             cust_id: $('.hello').val(),
                                             serviceId: idService,
@@ -4121,13 +4463,15 @@ html(lang='en')
                                         }).then(function(sure){
                                           if(sure)
                                           {
-                                            
-                                          var newPoints = parseInt($('.newPoints').val()) + parseInt($('.totalAmountPoints').val()) 
+                                            var payment_type = 1
+                                          var newPoints = parseFloat($('.newPoints').val()) + parseFloat($('.totalAmountPoints').val()) 
                                     
                                           $.post('/payment/Early',{
                                             newPoints,
                                             restype,
                                             typeServ,
+                                            cust_type : $('.cust_typeHidden').val(),
+                                            gift_certs : $('.selectpickerGc').val(),
                                             amount: $('.totalPrice').val(),
                                             cust_id: $('.hello').val(),
                                             serviceId: idService,
@@ -4177,9 +4521,9 @@ html(lang='en')
                                   }
 
                                   console.log( $('.amountReceived').val())
-                                  if($('#checkboxPoints')[0].checked == true && $('.checkboxGc')[0].checked == false && parseInt($('.amountReceived').val().length)==0 ) // IF PAYMENT [POINTS ONLY SCENE 1]
+                                  if($('#checkboxPoints')[0].checked == true && $('.checkboxGc')[0].checked == false && parseFloat($('.amountReceived').val().length)==0 ) // IF PAYMENT [POINTS ONLY SCENE 1]
                                   {
-                                    if(parseInt($('.amountNeeded').val()) !=0 )// [POINTS ONLY SCENE 1] if amount needed is not equal to 0 
+                                    if(parseFloat($('.amountNeeded').val()) !=0 )// [POINTS ONLY SCENE 1] if amount needed is not equal to 0 
                                     {
                                       swal({
                                         title: "Amount Received is insufficient",
@@ -4195,11 +4539,15 @@ html(lang='en')
                                       }).then(function(sure){
                                         if(sure)
                                         {
-                                          
-                                        var newPoints = parseInt($('.newPoints').val()) + parseInt($('.totalAmountPoints').val()) 
-                                        alert('DONE')
+                                          var payment_type = 2
+                                        var newPoints = parseFloat($('.newPoints').val()) + parseFloat($('.totalAmountPoints').val()) 
+                                        console.log('DONE')
+                                        var total_points = parseFloat($('.currentPoints').val()) - parseFloat($('.newPoints').val())
                                         $.post('/payment/Early',{
                                           newPoints,
+                                          total_points,
+                                          gift_certs : [],
+                                          cust_type : $('.cust_typeHidden').val(),
                                           restype,
                                           typeServ,
                                           amount: $('.totalPrice').val(),
@@ -4250,7 +4598,7 @@ html(lang='en')
                                   }
                                   else if($('#checkboxPoints')[0].checked == true && $('.checkboxGc')[0].checked == true && $('.selectpickerGc').val().length == 0 && $('.amountReceived').val()==0) // IF PAYMENT [POINTS ONLY SCENE 2]
                                   {
-                                    if(parseInt($('.amountNeeded').val()) !=0 )// [POINTS ONLY SCENE 2] if amount needed is not equal to 0 
+                                    if(parseFloat($('.amountNeeded').val()) !=0 )// [POINTS ONLY SCENE 2] if amount needed is not equal to 0 
                                     {
                                       swal({
                                         title: "Amount Received is insufficient",
@@ -4266,15 +4614,16 @@ html(lang='en')
                                       }).then(function(sure){
                                         if(sure)
                                         {
-                                          
-                                        var newPoints = parseInt($('.newPoints').val()) + parseInt($('.totalAmountPoints').val()) 
-                                  
-
-                                      
+                                          var payment_type = 2
+                                        var newPoints = parseFloat($('.newPoints').val()) + parseFloat($('.totalAmountPoints').val()) 
+                                        var total_points = parseFloat($('.currentPoints').val()) - parseFloat($('.newPoints').val())
                                         $.post('/payment/Early',{
                                           newPoints,
                                           restype,
                                           typeServ,
+                                          total_points,
+                                          gift_certs : [],
+                                          cust_type : $('.cust_typeHidden').val(),
                                           amount: $('.totalPrice').val(),
                                           cust_id: $('.hello').val(),
                                           serviceId: idService,
@@ -4322,9 +4671,9 @@ html(lang='en')
                                     }
                                   }
                                   
-                                  if(parseInt($('.amountReceived').val().length) != 0 && $('.checkboxGc')[0].checked==true && $('#checkboxPoints')[0].checked==false)
+                                  if(parseFloat($('.amountReceived').val().length) != 0 && $('.checkboxGc')[0].checked==true && $('#checkboxPoints')[0].checked==false)
                                   {
-                                    if(parseInt($('.amountReceived').val()) < parseInt($('.amountNeeded').val()))
+                                    if(parseFloat($('.amountReceived').val()) < parseFloat($('.amountNeeded').val()))
                                     {
                                       swal({
                                         title: "Amount Received is insufficient",
@@ -4340,15 +4689,18 @@ html(lang='en')
                                       }).then(function(sure){
                                         if(sure)
                                         {
-                                          
-                                        var newPoints = parseInt($('.newPoints').val()) + parseInt($('.totalAmountPoints').val()) 
+                                          var payment_type= 3
+                                        var newPoints = parseFloat($('.newPoints').val()) + parseFloat($('.totalAmountPoints').val()) 
                                   
 
           
                                         $.post('/payment/Early',{
                                           newPoints,
+                                          amount_received: $('.amountreceived').val(),
                                           restype,
+                                          cust_type : $('.cust_typeHidden').val(),
                                           typeServ,
+                                          gift_certs : $('.selectpickerGc').val(),
                                           amount: $('.totalPrice').val(),
                                           cust_id: $('.hello').val(),
                                           serviceId: idService,
@@ -4395,9 +4747,9 @@ html(lang='en')
                                       })
                                     }
                                   }
-                                  else if(parseInt($('.amountReceived').val().length) != 0 && $('.checkboxGc')[0].checked==true && $('#checkboxPoints')[0].checked==true && $('.checkboxPayment:checked').length ==0)
+                                  else if(parseFloat($('.amountReceived').val().length) != 0 && $('.checkboxGc')[0].checked==true && $('#checkboxPoints')[0].checked==true && $('.checkboxPayment:checked').length ==0)
                                   {
-                                    if(parseInt($('.amountReceived').val()) < parseInt($('.amountNeeded').val()))
+                                    if(parseFloat($('.amountReceived').val()) < parseFloat($('.amountNeeded').val()))
                                     {
                                       swal({
                                         title: "Amount Received is insufficient",
@@ -4413,17 +4765,20 @@ html(lang='en')
                                       }).then(function(sure){
                                         if(sure)
                                         {
-                                          
-                                        var newPoints = parseInt($('.newPoints').val()) + parseInt($('.totalAmountPoints').val()) 
+                                          var payment_type= 3
+                                        var newPoints = parseFloat($('.newPoints').val()) + parseFloat($('.totalAmountPoints').val()) 
                                   
 
                                   
                                         $.post('/payment/Early',{
                                           newPoints,
                                           restype,
+                                          amount_received: $('.amountreceived').val(),
+                                          cust_type : $('.cust_typeHidden').val(),
                                           typeServ,
                                           amount: $('.totalPrice').val(),
                                           cust_id: $('.hello').val(),
+                                          gift_certs : $('.selectpickerGc').val(),
                                           serviceId: idService,
                                           serviceQuantity: serviceQuantity,
                                           serviceNewDuration: serviceNewDuration,
@@ -4469,10 +4824,10 @@ html(lang='en')
                                     }
                                   }
                                   
-                                  if(parseInt($('.amountReceived').val()) != 0 && $('#checkboxPoints')[0].checked == true && $('.checkboxGc')[0].checked==false)
+                                  if(parseFloat($('.amountReceived').val()) != 0 && $('#checkboxPoints')[0].checked == true && $('.checkboxGc')[0].checked==false)
                                   {
-                                    alert('pers')
-                                    if(parseInt($('.amountReceived').val()) < parseInt($('.amountNeeded').val()))
+                                    console.log('pers')
+                                    if(parseFloat($('.amountReceived').val()) < parseFloat($('.amountNeeded').val()))
                                     {
                                       swal({
                                         title: "Amount Received is insufficient",
@@ -4488,14 +4843,18 @@ html(lang='en')
                                       }).then(function(sure){
                                         if(sure)
                                         {
-                                          
-                                        var newPoints = parseInt($('.newPoints').val()) + parseInt($('.totalAmountPoints').val()) 
-                                  
+                                          var payment_type= 4
+                                        var newPoints = parseFloat($('.newPoints').val()) + parseFloat($('.totalAmountPoints').val()) 
+                                        var total_points = parseFloat($('.currentPoints').val()) - parseFloat($('.newPoints').val())
 
                                     
                                         $.post('/payment/Early',{
                                           newPoints,
                                           restype,
+                                          total_points,
+                                          amount_received: $('.amountreceived').val(),
+                                          gift_certs : [],
+                                          cust_type : $('.cust_typeHidden').val(),
                                           typeServ,
                                           amount: $('.totalPrice').val(),
                                           cust_id: $('.hello').val(),
@@ -4543,10 +4902,10 @@ html(lang='en')
                                       })
                                     }
                                   }
-                                  else if(parseInt($('.amountReceived').val().length) != 0 && $('#checkboxPoints')[0].checked == true && $('.checkboxGc')[0].checked==true && $('.selectpickerGc').val().length ==0)
+                                  else if(parseFloat($('.amountReceived').val().length) != 0 && $('#checkboxPoints')[0].checked == true && $('.checkboxGc')[0].checked==true && $('.selectpickerGc').val().length ==0)
                                   {
-                                    alert('secs')
-                                    if(parseInt($('.amountReceived').val()) < parseInt($('.amountNeeded').val()))
+                                    console.log('secs')
+                                    if(parseFloat($('.amountReceived').val()) < parseFloat($('.amountNeeded').val()))
                                     {
                                       swal({
                                         title: "Amount Received is insufficient",
@@ -4562,15 +4921,19 @@ html(lang='en')
                                       }).then(function(sure){
                                         if(sure)
                                         {
-                                          
-                                        var newPoints = parseInt($('.newPoints').val()) + parseInt($('.totalAmountPoints').val()) 
-                                  
+                                          var payment_type= 4
+                                        var newPoints = parseFloat($('.newPoints').val()) + parseFloat($('.totalAmountPoints').val()) 
+                                        var total_points = parseFloat($('.currentPoints').val()) - parseFloat($('.newPoints').val())
 
                           
                                         $.post('/payment/Early',{
                                           newPoints,
                                           restype,
+                                          total_points,
+                                          amount_received: $('.amountreceived').val(),
                                           typeServ,
+                                          gift_certs : [],
+                                          cust_type : $('.cust_typeHidden').val(),
                                           amount: $('.totalPrice').val(),
                                           cust_id: $('.hello').val(),
                                           serviceId: idService,
@@ -4618,9 +4981,9 @@ html(lang='en')
                                     }
                                   }
 
-                                  if(parseInt($('.amountReceived').val().length) != 0 && $('.checkboxGc')[0].checked==true && $('#checkboxPoints')[0].checked==true)
+                                  if(parseFloat($('.amountReceived').val().length) != 0 && $('.checkboxGc')[0].checked==true && $('#checkboxPoints')[0].checked==true)
                                   {
-                                    if(parseInt($('.amountReceived').val()) < parseInt($('.amountNeeded').val()))
+                                    if(parseFloat($('.amountReceived').val()) < parseFloat($('.amountNeeded').val()))
                                     {
                                       swal({
                                         title: "Amount Received is insufficient",
@@ -4637,12 +5000,16 @@ html(lang='en')
                                         if(sure)
                                         {
                                           
-                                        var newPoints = parseInt($('.newPoints').val()) + parseInt($('.totalAmountPoints').val()) 
-                                  
+                                        var newPoints = parseFloat($('.newPoints').val()) + parseFloat($('.totalAmountPoints').val()) 
+                                        var total_points = parseFloat($('.currentPoints').val()) - parseFloat($('.newPoints').val())
 
                                         $.post('/payment/Early',{
                                           newPoints,
+                                          total_points,
                                           restype,
+                                          amount_received: $('.amountreceived').val(),
+                                          cust_type : $('.cust_typeHidden').val(),
+                                          gift_certs : $('.selectpickerGc').val(),
                                           typeServ,
                                           amount: $('.totalPrice').val(),
                                           cust_id: $('.hello').val(),
@@ -4724,14 +5091,14 @@ html(lang='en')
                                           icon: 'warning'
                                         })
                                     }
-                                    else if(parseInt($('.amountReceived').val()) < parseInt($('.totalPrice').val())) // [CASH ONLY SCENE 1 ] if amount received is less than total price
+                                    else if(parseFloat($('.amountReceived').val()) < parseFloat($('.totalPrice').val())) // [CASH ONLY SCENE 1 ] if amount received is less than total price
                                     {
                                       swal({
                                         title: "Amount Received is insufficient",
                                         icon: 'warning'
                                       })
                                     }
-                                    else if(parseInt($('.amountReceived').val()) >= parseInt($('.totalPrice').val())) // [CASH ONLY SCENE 1 ] if SUCCESS
+                                    else if(parseFloat($('.amountReceived').val()) >= parseFloat($('.totalPrice').val())) // [CASH ONLY SCENE 1 ] if SUCCESS
                                     {
                                       swal({
                                         title: "Are you sure?",
@@ -4740,15 +5107,18 @@ html(lang='en')
                                       }).then(function(sure){
                                         if(sure)
                                         {
-                                          
-                                        var newPoints = parseInt($('.newPoints').val()) + parseInt($('.totalAmountPoints').val()) 
+                                          var payment_type =0
+                                        var newPoints = parseFloat($('.newPoints').val()) + parseFloat($('.totalAmountPoints').val()) 
                                         $.post('/payment/Early',{
                                           newPoints,
                                           restype,
                                           typeServ,
+                                          amount_received: $('.amountreceived').val(),
                                           amount: $('.totalPrice').val(),
                                           cust_id: $('.hello').val(),
                                           serviceId: idService,
+                                          gift_certs : [],
+                                          cust_type : $('.cust_typeHidden').val(),	
                                           serviceQuantity: serviceQuantity,
                                           serviceNewDuration: serviceNewDuration,
                                           serviceTotal: serviceTotal,
@@ -4801,14 +5171,14 @@ html(lang='en')
                                           icon: 'warning'
                                         })
                                     }
-                                    else if(parseInt($('.amountReceived').val()) < parseInt($('.totalPrice').val())) // [CASH ONLY SCENE 2 ] if amount received is less than total price
+                                    else if(parseFloat($('.amountReceived').val()) < parseFloat($('.totalPrice').val())) // [CASH ONLY SCENE 2 ] if amount received is less than total price
                                     {
                                       swal({
                                         title: "Amount Received is insufficient",
                                         icon: 'warning'
                                       })
                                     }
-                                    else if(parseInt($('.amountReceived').val()) >= parseInt($('.totalPrice').val())) // [CASH ONLY SCENE 2 ] if SUCCESS
+                                    else if(parseFloat($('.amountReceived').val()) >= parseFloat($('.totalPrice').val())) // [CASH ONLY SCENE 2 ] if SUCCESS
                                     {
                                       swal({
                                         title: "Are you sure?",
@@ -4817,12 +5187,15 @@ html(lang='en')
                                       }).then(function(sure){
                                         if(sure)
                                         {
-                                          
-                                        var newPoints = parseInt($('.newPoints').val()) + parseInt($('.totalAmountPoints').val()) 
+                                          var payment_type = 0
+                                        var newPoints = parseFloat($('.newPoints').val()) + parseFloat($('.totalAmountPoints').val()) 
                                         $.post('/payment/Early',{
                                           newPoints,
                                           restype,
+                                          amount_received: $('.amountreceived').val(),
                                           typeServ,
+                                          gift_certs : [],
+                                          cust_type : $('.cust_typeHidden').val(),	
                                           amount: $('.totalPrice').val(),
                                           cust_id: $('.hello').val(),
                                           serviceId: idService,
@@ -4872,7 +5245,7 @@ html(lang='en')
 
                                   if($('.checkboxGC')[0].checked== true  && $('.amountReceived').val()==0) // IF PAYMENT [GIFT CERTIFICATE ONLY SCENE 1]
                                   {
-                                    if(parseInt($('.amountNeeded').val()) !=0 ) // [GIFT CERTIFICATE ONLY SCENE 2] if amount needed val is not equal to 0
+                                    if(parseFloat($('.amountNeeded').val()) !=0 ) // [GIFT CERTIFICATE ONLY SCENE 2] if amount needed val is not equal to 0
                                     {
                                       swal({
                                         title: "Amount Received is insufficient",
@@ -4881,7 +5254,7 @@ html(lang='en')
                                     }
                                     else
                                     {
-                                      if(parseInt($('.gcTotal').val()) > parseInt($('.totalPrice').val()))
+                                      if(parseFloat($('.gcTotal').val()) > parseFloat($('.totalPrice').val()))
                                       {
                                         swal({
                                         title: "The Gift certificate will not return any change",
@@ -4890,11 +5263,13 @@ html(lang='en')
                                       }).then(function(sure){
                                         if(sure)
                                         {
-                                            
-                                          var newPoints = parseInt($('.newPoints').val()) + parseInt($('.totalAmountPoints').val()) 
+                                            var payment_type = 1
+                                          var newPoints = parseFloat($('.newPoints').val()) + parseFloat($('.totalAmountPoints').val()) 
                                           $.post('/payment/Early',{
                                             newPoints,
+                                            gift_certs : $('.selectpickerGc').val(),
                                             restype,
+                                            cust_type : $('.cust_typeHidden').val(),
                                             typeServ,
                                             amount: $('.totalPrice').val(),
                                             cust_id: $('.hello').val(),
@@ -4951,12 +5326,14 @@ html(lang='en')
                                         }).then(function(sure){
                                           if(sure)
                                           {
-                                            
-                                          var newPoints = parseInt($('.newPoints').val()) + parseInt($('.totalAmountPoints').val()) 
+                                            var payment_type = 1
+                                          var newPoints = parseFloat($('.newPoints').val()) + parseFloat($('.totalAmountPoints').val()) 
                                           $.post('/payment/Early',{
                                             newPoints,
                                             restype,
                                             typeServ,
+                                            cust_type : $('.cust_typeHidden').val(),
+                                            gift_certs : $('.selectpickerGc').val(),
                                             amount: $('.totalPrice').val(),
                                             cust_id: $('.hello').val(),
                                             serviceId: idService,
@@ -5006,7 +5383,7 @@ html(lang='en')
                                   }
                                   else if($('.checkboxGC')[0].checked== true && $('.amountReceived').val()==0) // IF PAYMENT [GIFT CERTIFICATE ONLY SCENE 2]
                                   {
-                                    if(parseInt($('.amountNeeded').val()) !=0 ) // [GIFT CERTIFICATE ONLY SCENE 2] if amount needed val is not equal to 0
+                                    if(parseFloat($('.amountNeeded').val()) !=0 ) // [GIFT CERTIFICATE ONLY SCENE 2] if amount needed val is not equal to 0
                                     {
                                       swal({
                                         title: "Amount Received is insufficient",
@@ -5015,7 +5392,7 @@ html(lang='en')
                                     }
                                     else
                                     {
-                                      if(parseInt($('.gcTotal').val()) > parseInt($('.totalPrice').val()))
+                                      if(parseFloat($('.gcTotal').val()) > parseFloat($('.totalPrice').val()))
                                       {
                                         swal({
                                         title: "The Gift certificate will not return any change",
@@ -5024,13 +5401,15 @@ html(lang='en')
                                       }).then(function(sure){
                                         if(sure)
                                         {
-                                            
-                                          var newPoints = parseInt($('.newPoints').val()) + parseInt($('.totalAmountPoints').val()) 
+                                            var payment_type = 1
+                                          var newPoints = parseFloat($('.newPoints').val()) + parseFloat($('.totalAmountPoints').val()) 
                                     
                                           $.post('/payment/Early',{
                                             newPoints,
                                             restype,
+                                            cust_type : $('.cust_typeHidden').val(),
                                             typeServ,
+                                            gift_certs : $('.selectpickerGc').val(),
                                             amount: $('.totalPrice').val(),
                                             cust_id: $('.hello').val(),
                                             serviceId: idService,
@@ -5086,13 +5465,15 @@ html(lang='en')
                                         }).then(function(sure){
                                           if(sure)
                                           {
-                                            
-                                          var newPoints = parseInt($('.newPoints').val()) + parseInt($('.totalAmountPoints').val()) 
+                                            var payment_type = 1
+                                          var newPoints = parseFloat($('.newPoints').val()) + parseFloat($('.totalAmountPoints').val()) 
                                     
                                           $.post('/payment/Early',{
                                             newPoints,
                                             restype,
                                             typeServ,
+                                            cust_type : $('.cust_typeHidden').val(),
+                                            gift_certs : $('.selectpickerGc').val(),
                                             amount: $('.totalPrice').val(),
                                             cust_id: $('.hello').val(),
                                             serviceId: idService,
@@ -5144,9 +5525,9 @@ html(lang='en')
                                   
                                   
                                   
-                                  if(parseInt($('.amountReceived').val().length) != 0 && $('.checkboxGc')[0].checked==true )
+                                  if(parseFloat($('.amountReceived').val().length) != 0 && $('.checkboxGc')[0].checked==true )
                                   {
-                                    if(parseInt($('.amountReceived').val()) < parseInt($('.amountNeeded').val()))
+                                    if(parseFloat($('.amountReceived').val()) < parseFloat($('.amountNeeded').val()))
                                     {
                                       swal({
                                         title: "Amount Received is insufficient",
@@ -5162,8 +5543,8 @@ html(lang='en')
                                       }).then(function(sure){
                                         if(sure)
                                         {
-                                          
-                                        var newPoints = parseInt($('.newPoints').val()) + parseInt($('.totalAmountPoints').val()) 
+                                          var payment_type= 3
+                                        var newPoints = parseFloat($('.newPoints').val()) + parseFloat($('.totalAmountPoints').val()) 
                                   
 
           
@@ -5171,6 +5552,10 @@ html(lang='en')
                                           newPoints,
                                           restype,
                                           typeServ,
+                                          amount_received: $('.amountreceived').val(),
+                                          amount_received: $('.amountreceived').val(),
+                                          cust_type : $('.cust_typeHidden').val(),
+                                          gift_certs : $('.selectpickerGc').val(),
                                           amount: $('.totalPrice').val(),
                                           cust_id: $('.hello').val(),
                                           serviceId: idService,
@@ -5217,9 +5602,9 @@ html(lang='en')
                                       })
                                     }
                                   }
-                                  else if(parseInt($('.amountReceived').val().length) != 0 && $('.checkboxGc')[0].checked==true )
+                                  else if(parseFloat($('.amountReceived').val().length) != 0 && $('.checkboxGc')[0].checked==true )
                                   {
-                                    if(parseInt($('.amountReceived').val()) < parseInt($('.amountNeeded').val()))
+                                    if(parseFloat($('.amountReceived').val()) < parseFloat($('.amountNeeded').val()))
                                     {
                                       swal({
                                         title: "Amount Received is insufficient",
@@ -5235,15 +5620,18 @@ html(lang='en')
                                       }).then(function(sure){
                                         if(sure)
                                         {
-                                          
-                                        var newPoints = parseInt($('.newPoints').val()) + parseInt($('.totalAmountPoints').val()) 
+                                          var payment_type= 3
+                                        var newPoints = parseFloat($('.newPoints').val()) + parseFloat($('.totalAmountPoints').val()) 
                                   
 
                                   
                                         $.post('/payment/Early',{
                                           newPoints,
                                           restype,
+                                          amount_received: $('.amountreceived').val(),
+                                          cust_type : $('.cust_typeHidden').val(),
                                           typeServ,
+                                          gift_certs : $('.selectpickerGc').val(),
                                           amount: $('.totalPrice').val(),
                                           cust_id: $('.hello').val(),
                                           serviceId: idService,
@@ -5292,9 +5680,9 @@ html(lang='en')
                                   }
                                  
 
-                                  if(parseInt($('.amountReceived').val().length) != 0 && $('.checkboxGc')[0].checked==true )
+                                  if(parseFloat($('.amountReceived').val().length) != 0 && $('.checkboxGc')[0].checked==true )
                                   {
-                                    if(parseInt($('.amountReceived').val()) < parseInt($('.amountNeeded').val()))
+                                    if(parseFloat($('.amountReceived').val()) < parseFloat($('.amountNeeded').val()))
                                     {
                                       swal({
                                         title: "Amount Received is insufficient",
@@ -5311,13 +5699,17 @@ html(lang='en')
                                         if(sure)
                                         {
                                           
-                                        var newPoints = parseInt($('.newPoints').val()) + parseInt($('.totalAmountPoints').val()) 
-                                  
+                                        var newPoints = parseFloat($('.newPoints').val()) + parseFloat($('.totalAmountPoints').val()) 
+                                        var total_points = parseFloat($('.currentPoints').val()) - parseFloat($('.newPoints').val())
 
                                         $.post('/payment/Early',{
                                           newPoints,
+                                          amount_received: $('.amountreceived').val(),
+                                          total_points,
                                           restype,
                                           typeServ,
+                                          cust_type : $('.cust_typeHidden').val(),
+                                          gift_certs : $('.selectpickerGc').val(),
                                           amount: $('.totalPrice').val(),
                                           cust_id: $('.hello').val(),
                                           serviceId: idService,

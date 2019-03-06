@@ -99,11 +99,11 @@ html(lang='en')
                       .card-content
                         center
                           h2 Registered Guests
-                        button.btn.btn-info.btn-fill.btn-wd(data-toggle='modal', data-target='#addNewService', style='margin-left: 20px')
+                        button.btn.btn-info.btn-fill.btn-wd.registrationModal(type="button", style='margin-left: 20px')
                           span.btn-label
                             i.fa.fa-plus
                           |                                                 New Guest
-                  #addNewService.modal.fade(tabindex='-1', role='dialog')
+                  #registrationModal.modal.fade(tabindex='-1', role='dialog')
                     .modal-dialog.modal-lg(role='document')
                       .modal-content
                         .modal-header
@@ -178,9 +178,18 @@ html(lang='en')
                                       .col-md-4
                                         input.form-control.datepicker(type='text' name='birthday' id="calendar")
                                       .col-md-4
-                                        select.selectpicker(title='Select', data-style='btn-info', data-size='7' id='person_exempt' aria-label='true')
+                                        select.selectpicker(title='Select', data-style='btn-info', data-size='7' id='person_exempt' aria-label='true', disabled='true')
                                           each vatExempt in vatExempts
                                             option(value=`${vatExempt.vat_exempt_id}`)= vatExempt.vat_exempt_desc
+                                    .row.vat_id(style="display:none")
+                                      .col-md-4
+                                        .form-group
+                                          p.control-label
+                                            strong
+                                              | ID No.
+                                              star *
+                                          input.form-control(type='text', name='vat_id_no', id='vat_id_no'  placeholder='ID No.' required='')
+                                          p.appendResults
                                     br
                                     .row
                                       .col-md-7
@@ -687,14 +696,41 @@ html(lang='en')
   script(src='/assets/paperDashboardPro/js/demo.js')
   script.
     $(document).ready(function(){
-       $(document).on('change.bootstrapSwitch','#vatExempt', function(e){
+      $('#vat_id_no').on('keyup',function(){
+        var input_val = this.value
+        $.post('./checkVatID',{
+          input_val
+        }).done(function(data){
+          if(data.results == 0){
+            $('.appendResults').empty()
+            $('#vat_id_no').css('border-color','green')
+            $('.btn-next').prop('disabled',false)
+          }
+          else {
+            $('#vat_id_no').css('border-color','red')
+            $('.appendResults').empty()
+            $('.appendResults').append('<p style="color:red"> ID NO is already exist </p>')
+            $('.btn-next').prop('disabled',true)
+          }
+        })
+      })
+    })
+  script.
+    $(document).ready(function(){
+      $('.registrationModal').click(function(){
+        $("#registrationModal").modal('show')
+        $(document).on('change.bootstrapSwitch', '#vatExempt',function(e){
          if(e.target.checked == true){
-           $('#person_exempt').attr('disabled',false)
+            $('.vat_id').css('display','block')
+            $('#person_exempt').attr('disabled',false)
+            $('#person_exempt').selectpicker('refresh')
          } else if(e.target.checked == false) {
-           $('#person_exempt').attr('disabled',true)
-           $('#person_exempt').prop('disabled',true)
+            $('.vat_id').css('display','none')
+            $('#person_exempt').attr('disabled',true)
+            $('#person_exempt').selectpicker('refresh')
          }
        })
+      })
     })
   //- PASSWORD VALIDATION
   script.
@@ -1297,53 +1333,63 @@ html(lang='en')
         } 
       });
       })
+
+
       $('.submitButton').click(function(){
         if($("#checkbox1").is(':checked'))
         {
-        var newDate= $('#calendar').val()
-        var vals = newDate.split('-');
-        var year = vals[2];
-        var month = vals[0];
-        var date = vals[1];
-        var dateNow = new Date()
-        var scriptSession = !{JSON.stringify(reqSession)};
-        var membership_validity= scriptSession.utilities.membership_validity
-        console.log(scriptSession)
-        var membershipDate = moment(dateNow).add(membership_validity,'months').format('MMMM DD, YYYY')
-        $.post('/frontdesk/Home/newCustomer/Loyalty',{
-          firstname:$('#firstname').val(),
-          lastname:$('#lastname').val(),
-          middlename:$('#middlename').val(),
-          gender:$("input[name='gender']:checked").val(),
-          contact_no:$('#contact_no').val(),
-          address:$('#address').val(),
-          medical_history:$('#medical_history').val(),
-          username:$('#username').val(),
-          password:$('#password').val(),
-          newDate, year, month, date, membershipDate
-        }).done(function(data){
-          if(data.alertSuccess == 1)
-          {
-            swal({
-              title:'Success', 
-              text:'New guest added.', 
-              icon:'success'
-              }).then(function(){
-                location.reload()
-              })
-          }
-          else
-            {
-              swal({
-                title:'Not Success', 
-                text:'Customer already exist.', 
-                icon:'warning'
-                })
-            }
-        })
+        //- var newDate= $('#calendar').val()
+        //- var vals = newDate.split('-');
+        //- var year = vals[2];
+        //- var month = vals[0];
+        //- var date = vals[1];
+        //- var dateNow = new Date()
+        //- var scriptSession = !{JSON.stringify(reqSession)};
+        //- var membership_validity= scriptSession.utilities.membership_validity
+        //- console.log(scriptSession)
+        //- var membershipDate = moment(dateNow).add(membership_validity,'months').format('MMMM DD, YYYY')
+        //- $.post('/frontdesk/Home/newCustomer/Loyalty',{
+        //-   firstname:$('#firstname').val(),
+        //-   lastname:$('#lastname').val(),
+        //-   middlename:$('#middlename').val(),
+        //-   gender:$("input[name='gender']:checked").val(),
+        //-   contact_no:$('#contact_no').val(),
+        //-   address:$('#address').val(),
+        //-   medical_history:$('#medical_history').val(),
+        //-   username:$('#username').val(),
+        //-   password:$('#password').val(),
+        //-   newDate, year, month, date, membershipDate
+        //- }).done(function(data){
+        //-   if(data.alertSuccess == 1)
+        //-   {
+        //-     swal({
+        //-       title:'Success', 
+        //-       text:'New guest added.', 
+        //-       icon:'success'
+        //-       }).then(function(){
+        //-         location.reload()
+        //-       })
+        //-   }
+        //-   else
+        //-     {
+        //-       swal({
+        //-         title:'Not Success', 
+        //-         text:'Customer already exist.', 
+        //-         icon:'warning'
+        //-         })
+        //-     }
+        //- })
         }
         else
         {
+          if($('#vatExempt').is(':checked')){
+           var vat_type_id = $('#person_exempt').val()
+           var vat_id_no = $('#vat_id_no').val()
+          }
+          else{
+            var vat_type_id = "NULL"
+            var vat_id_no = ""
+          }
           var newDate= $('#calendar').val()
           var vals = newDate.split('-');
           var year = vals[2];
@@ -1357,7 +1403,7 @@ html(lang='en')
             contact_no:$('#contact_no').val(),
             address:$('#address').val(),
             medical_history:$('#medical_history').val(),
-            newDate, year, month, date
+            newDate, year, month, date, vat_type_id, vat_id_no
           }).done(function(data){
             if(data.alertSuccess==1)
             {
