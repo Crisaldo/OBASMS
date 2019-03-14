@@ -11,8 +11,19 @@ router.get('/sample',(req, res) => {
 
 // LANDING PAGE
 router.get('/customer',(req, res) => {
-	res.render('customer/landing')
+  const query = `SELECT * FROM utilities_tbl;
+  SELECT * FROM services_tbl JOIN service_duration_tbl ON services_tbl.service_duration_id = service_duration_tbl.service_duration_id
+  JOIN service_type_tbl ON services_tbl.service_type_id = service_type_tbl.service_type_id
+  WHERE services_tbl.delete_stats = 0`
+
+  db.query(query,(err,out)=>{
+    req.session.utilities= out[0]
+    res.render('customer/landing',{
+      reqSession: req.session,
+      services : out[1]
+    })
   })
+})
 
 router.get('/login',(req, res) => {
   res.render('customer/login')

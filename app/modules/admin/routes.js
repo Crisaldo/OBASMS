@@ -1694,14 +1694,15 @@ router.post('/adminFreebies/Delete',(req, res)=>{
 //        > R E A D
   router.get('/utilities',mid.adminnauthed,(req, res) => {
     const query =`SELECT * FROM utilities_tbl;
+    SELECT * FROM utilities_tbl;
     SELECT * FROM vat_exempted_tbl`
 
     db.query(query,(err,out)=>{
       req.session.utilities = out[0]
       res.render('admin/utilities/utilities',{
-        results: out[0],
+        results: out[1],
         reqSession: req.session,
-        vatExempts: out[1]
+        vatExempts: out[2]
       })
     })
   })
@@ -1746,6 +1747,7 @@ router.post('/utilities/updateLogo',upload.single('company_logo'),(req,res)=>{
   // var company_logo = req.file.filename;
   const query =`UPDATE utilities_tbl SET
   company_name="${req.body.company_name}",
+  company_address="${req.body.company_address}",
   opening_time="${req.body.opening_time}",
   closing_time="${req.body.closing_time}",
   max_guest="${req.body.max_guest}",
@@ -1839,7 +1841,7 @@ router.get('/commission',mid.adminnauthed, (req, res) => {
 
 //QUERIES
 
-router.get('/customerList',(req, res) => {
+router.get('/customerList',mid.adminnauthed,(req, res) => {
   const query = `SELECT * FROM customer_tbl WHERE delete_stats = 0;
   SELECT * FROM utilities_tbl`
 
@@ -1856,7 +1858,7 @@ router.get('/customerList',(req, res) => {
   })
 })
 
-router.get('/loyaltyMembers',(req, res) => {
+router.get('/loyaltyMembers',mid.adminnauthed,(req, res) => {
   const query = `SELECT * FROM customer_tbl 
   JOIN loyalty_tbl ON customer_tbl.cust_id = loyalty_tbl.cust_id
   WHERE customer_tbl.delete_stats= 0;
@@ -1871,7 +1873,7 @@ router.get('/loyaltyMembers',(req, res) => {
   })
 })
 
-router.get('/servicesList',(req, res) => {
+router.get('/servicesList',mid.adminnauthed,(req, res) => {
   const query =`select *
   from services_tbl join service_duration_tbl on services_tbl.service_duration_id = service_duration_tbl.service_duration_id
   join service_type_tbl on services_tbl.service_type_id = service_type_tbl.service_type_id where services_tbl.delete_stats = 0;
@@ -1886,23 +1888,78 @@ router.get('/servicesList',(req, res) => {
   })
 })
 
-router.get('/packagesList',(req, res) => {
-  res.render('admin/queries/packagesList')
+router.get('/packagesList',mid.adminnauthed,(req, res) => {
+  const query = `SELECT package_tbl.*, services_tbl.* FROM package_tbl 
+  JOIN service_in_package_tbl ON service_in_package_tbl.package_id = package_tbl.package_id
+  JOIN services_tbl ON services_tbl.service_id = service_in_package_tbl.service_id 
+  WHERE package_tbl.delete_stats=0
+  GROUP BY package_tbl.package_id;
+  SELECT * FROM utilities_tbl`
+
+  db.query(query,(err,out)=>{
+    req.session.utilities = out[1]
+    res.render('admin/queries/packagesList',{
+      packages: out[0],
+      reqSession: req.session
+    })
+  })
 })
 
-router.get('/promoList',(req, res) => {
-  res.render('admin/queries/promoList')
+router.get('/promoList',mid.adminnauthed,(req, res) => {
+  const query = `SELECT * FROM promo_bundle_tbl 
+  JOIN service_in_promo_tbl ON promo_bundle_tbl.promobundle_id = service_in_promo_tbl.promobundle_id
+  JOIN services_tbl ON services_tbl.service_id = service_in_promo_tbl.service_id 
+  WHERE promo_bundle_tbl.delete_stats=0 
+  GROUP BY promo_bundle_tbl.promobundle_id;
+  SELECT * FROM utilities_tbl`
+  
+  db.query(query,(err,out)=>{
+    req.session.utilities = out[1]
+    for(var i=0;i<out[0].length;i++)
+    {
+      out[0][i].promobundle_valid_from = moment(out[0][i].promobundle_valid_from).format('MMMM DD, YYYY')
+      out[0][i].promobundle_valid_until = moment(out[0][i].promobundle_valid_until).format('MMMM DD, YYYY')
+    }
+    res.render('admin/queries/promoList',{
+      promos: out[0],
+      reqSession: req.session
+    })
+  })
 })
 
-router.get('/therapistList',(req, res) => {
-  res.render('admin/queries/therapistList')
+router.get('/therapistList',mid.adminnauthed,(req, res) => {
+  const query = `SELECT * FROM therapist_tbl WHERE delete_stats= 0;
+  SELECT * FROM utilities_tbl`
+  
+  db.query(query,(err,out)=>{
+    req.session.utilities = out[1]
+    for(var i=0;i<out[0].length;i++)
+    {
+      out[0][i].therapist_birthYear = moment().diff(out[0][i].therapist_birthYear,'years')
+    }
+    res.render('admin/queries/therapistList',{
+      theras : out[0],
+      reqSession : req.session
+    })
+  })
 })
 
-router.get('/roomList',(req, res) => {
-  res.render('admin/queries/roomList')
+router.get('/roomList',mid.adminnauthed,(req, res) => {
+  const query = `SELECT room_tbl.*, room_type_tbl.room_type_desc from room_tbl 
+  JOIN room_type_tbl ON room_tbl.room_type_id = room_type_tbl.room_type_id 
+  WHERE room_tbl.delete_stats=0;
+  SELECT * FROM utilities_tbl`
+
+  db.query(query,(err,out)=>{
+    req.session.utilities = out[1]
+    res.render('admin/queries/roomList',{
+      rooms: out[0],
+      reqSession : req.session
+    })
+  })
 })
 
-router.get('/freebiesList',(req, res) => {
+router.get('/freebiesList',mid.adminnauthed,(req, res) => {
   res.render('admin/queries/freebiesList')
 })
 
@@ -1910,12 +1967,23 @@ router.get('/freebiesList',(req, res) => {
 
 
 //REPORTS
-router.get('/servicesReport',(req, res) => {
-  res.render('admin/reports/servicesReport')
+router.get('/salesReport',(req, res) => {
+  var monthNow = moment(new Date()).format('MM')
+  const query = `SELECT *, SUM(walkin_total_amount) AS total_amount FROM walkin_queue_tbl
+  WHERE MONTH(walkin_date) = "${monthNow}" AND walkin_indicator = 2 AND walkin_payment_status = 1;
+  SELECT * FROM utilities_tbl`
+
+  db.query(query,(err,out)=>{
+    req.session.utilities = out[1]
+    res.render('admin/reports/salesReport',{
+      salesReports : out[0],
+      reqSession : req.session
+    })
+  })
 })
 
 router.post('/ChangeReport',(req,res)=>{
-  if(req.body.report_type == 'loyalty')
+  if(req.body.report_type == 0)
   {
     const query =`SELECT *,SUM(payment_amount) As Total  FROM payment_loyalty_trans_tbl 
     GROUP BY payment_date`
@@ -1924,7 +1992,7 @@ router.post('/ChangeReport',(req,res)=>{
       res.send(out)
     })
   }
-  else if(req.body.report_type == 'amenity')
+  else if(req.body.report_type == 1)
   {
     const query =`SELECT *,SUM(total_fee) As Total, date_only AS payment_date FROM amenities_reservation_tbl WHERE paid_status = 1 
     GROUP BY date_only
@@ -1934,9 +2002,19 @@ router.post('/ChangeReport',(req,res)=>{
       res.send(out)
     })
   }
-  else if(req.body.report_type == 'reservation')
+  else if(req.body.report_type == 2)
   {
-    
+    var monthNow = moment(new Date()).format('MM')
+    const query = `SELECT *, SUM(walkin_total_amount) AS total_amount FROM walkin_queue_tbl
+    WHERE MONTH(walkin_date) = "${monthNow}" AND walkin_indicator = 2 AND walkin_payment_status = 1`
+
+    db.query(query,(err,out)=>{
+      for(var i= 0; i<out.length; i++){
+        out[i].walkin_date = moment(out[i].walkin_date).format('MMMM')
+        out[i].total_amount = (out[i].total_amount).toFixed(2)
+      }
+      res.send(out)
+    })
   }
 })
 

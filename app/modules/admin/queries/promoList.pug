@@ -170,10 +170,10 @@ html(lang='en')
                   b.caret
               #queries.collapse.in
                 ul.nav
-                  li(style="margin-left: 30px;")
-                    a(href='./customerList')
-                      span.sidebar-mini 
-                      span.sidebar-normal Customers
+                  //- li(style="margin-left: 30px;")
+                  //-   a(href='./customerList')
+                  //-     span.sidebar-mini 
+                  //-     span.sidebar-normal Customers
                   li(style="margin-left: 30px;")
                     a(href='./loyaltyMembers')
                       span.sidebar-mini 
@@ -198,10 +198,10 @@ html(lang='en')
                     a(href='./roomList')
                       span.sidebar-mini 
                       span.sidebar-normal Rooms    
-                  li(style="margin-left: 30px;")
-                    a(href='./freebiesList')
-                      span.sidebar-mini 
-                      span.sidebar-normal Freebies
+                  //- li(style="margin-left: 30px;")
+                  //-   a(href='./freebiesList')
+                  //-     span.sidebar-mini 
+                  //-     span.sidebar-normal Freebies
                 //-   li
                 //-     a(href='./List')
                 //-       span.sidebar-mini 
@@ -251,8 +251,12 @@ html(lang='en')
               .col-md-12
                 .card
                   .row
+                    center
+                      h4 PROMO
+                  .row
                     .col-md-6
                       .card-content
+                        button.btn.btn-info.btn-fill.btn-wd#button-a Create Querie Report
                           
                   
                   .content
@@ -271,24 +275,20 @@ html(lang='en')
                                     tr
                                       th.disabled-sorting Promo Name
                                       th.disabled-sorting Promo Price
-                                      th.disabled-sorting Services Included
                                       th.disabled-sorting Promo Duration
                                       th.disabled-sorting Points
-                                      th.disabled-sorting Available For
                                       th.disabled-sorting Valid From
                                       th.disabled-sorting Valid Until
                                  
                                   tbody
-                                    
+                                    each promo in promos
                                       tr
-                                        td
-                                        td
-                                        td
-                                        td
-                                        td
-                                        td
-                                        td
-                                        td
+                                        td= promo.promobundle_name
+                                        td= '₱'+(promo.promobundle_price).toFixed(2)
+                                        td= promo.promobundle_duration+' minutes'
+                                        td= promo.promobundle_points
+                                        td= promo.promobundle_valid_from
+                                        td= promo.promobundle_valid_until
                                         //-   .dropdown.pull-right(style="right: 138px")
                                         //-     button.btn.btn-simple.btn-info.btn-rotate(href='#', data-toggle='dropdown' style='left: auto; right: 13px')
                                         //-       i.ti-settings
@@ -358,6 +358,23 @@ html(lang='en')
   script(src='/assets/paperDashboardPro/js/jquery.sharrre.js')
   // Paper Dashboard PRO DEMO methods, don't include it in your project!
   script(src='/assets/paperDashboardPro/js/demo.js')
+  script(src='/assets/SheetJS/FileSaver.js')
+  script(src='/assets/SheetJS/xlsx.full.min.js')
+  
+  script.
+    $(document).ready(function() {  
+      var wb = XLSX.utils.table_to_book($('#datatables')[0], {sheet:"Sheet JS"});
+      var wbout = XLSX.write(wb, {bookType:'xlsx', bookSST:true, type: 'binary'});
+      function s2ab(s) {
+        var buf = new ArrayBuffer(s.length);
+        var view = new Uint8Array(buf);
+        for (var i=0; i<s.length; i++) view[i] = s.charCodeAt(i) & 0xFF;
+        return buf;
+      }
+      $("#button-a").click(function(){
+        saveAs(new Blob([s2ab(wbout)],{type:"application/octet-stream"}), 'PromoList.xlsx');
+      });
+    });
  
     
   script(type='text/javascript').
@@ -365,18 +382,7 @@ html(lang='en')
     demo.initOverviewDashboard();
     demo.initCirclePercentage();
     });
-  script(type='text/javascript').
-    $(document).ready(function() {
-    $('#datatables').DataTable({
-    "pagingType": "full_numbers",
-    "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
-    responsive: true,
-    language: {
-    search: "_INPUT_",
-    searchPlaceholder: "Search records",
-    }
-    });
-    })
+
   script.
     $().ready(function(){
       $('#registerFormValidation').validate();

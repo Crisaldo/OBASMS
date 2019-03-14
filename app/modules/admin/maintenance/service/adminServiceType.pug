@@ -161,10 +161,6 @@ html(lang='en')
               #queries.collapse
                 ul.nav
                   li(style="margin-left: 30px;")
-                    a(href='./customerList')
-                      span.sidebar-mini 
-                      span.sidebar-normal Customers
-                  li(style="margin-left: 30px;")
                     a(href='./loyaltyMembers')
                       span.sidebar-mini 
                       span.sidebar-normal Loyalty Members
@@ -198,13 +194,17 @@ html(lang='en')
               #reports.collapse
                 ul.nav
                   li(style="margin-left: 30px;")
-                    a(href='./servicesReport')
+                    a(href='./salesReport')
                       span.sidebar-mini 
-                      span.sidebar-normal Daily
+                      span.sidebar-normal Sales
                   li(style="margin-left: 30px;")
                     a(href='./packagesReport')
                       span.sidebar-mini 
-                      span.sidebar-normal Monthly
+                      span.sidebar-normal Packages
+                  li(style="margin-left: 30px;")
+                    a(href='./promosReport')
+                      span.sidebar-mini 
+                      span.sidebar-normal Promos
       .main-panel
         nav.navbar.navbar-default
           .container-fluid

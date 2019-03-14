@@ -3,9 +3,9 @@ html(lang='en')
   head
     meta(charset='utf-8')
     link(rel='apple-touch-icon', sizes='76x76', href='/assets/paperDashboardPro/img/apple-icon.png')
-    link(rel='icon', type='image/png', sizes='96x96', href=`/upload/${reqSession.utilities.company_logo}`)
+    link(rel='icon', type='image/png', sizes='96x96', href=`/upload/${reqSession.utilities[0].company_logo}`)
     meta(http-equiv='X-UA-Compatible', content='IE=edge,chrome=1')
-    title #{reqSession.utilities.company_name}
+    title #{reqSession.utilities[0].company_name}
     // Bootstrap core CSS
     link(href='/assets/paperDashboardPro/css/bootstrap.min.css', rel='stylesheet')
     // Paper Dashboard core CSS
@@ -25,7 +25,7 @@ html(lang='en')
         .logo
           a.simple-text.logo-mini(href='')
           a.simple-text.logo-normal(href='' style='margin-right:10em')
-            | #{reqSession.utilities.company_name}
+            | #{reqSession.utilities[0].company_name}
         .sidebar-wrapper
           .user
             .info
@@ -161,10 +161,6 @@ html(lang='en')
               #queries.collapse
                 ul.nav
                   li(style="margin-left: 30px;")
-                    a(href='./customerList')
-                      span.sidebar-mini 
-                      span.sidebar-normal Customers
-                  li(style="margin-left: 30px;")
                     a(href='./loyaltyMembers')
                       span.sidebar-mini 
                       span.sidebar-normal Loyalty Members
@@ -187,11 +183,7 @@ html(lang='en')
                   li(style="margin-left: 30px;")
                     a(href='./roomList')
                       span.sidebar-mini 
-                      span.sidebar-normal Rooms    
-                  li(style="margin-left: 30px;")
-                    a(href='./freebiesList')
-                      span.sidebar-mini 
-                      span.sidebar-normal Freebies           
+                      span.sidebar-normal Rooms               
             li
               a(data-toggle='collapse', href='#reports')
                 i.ti-bar-chart-alt
@@ -201,9 +193,9 @@ html(lang='en')
               #reports.collapse
                 ul.nav
                   li(style="margin-left: 30px;")
-                    a(href='./servicesReport')
+                    a(href='./salesReport')
                       span.sidebar-mini 
-                      span.sidebar-normal Services
+                      span.sidebar-normal Sales
                   li(style="margin-left: 30px;")
                     a(href='./packagesReport')
                       span.sidebar-mini 
@@ -212,18 +204,6 @@ html(lang='en')
                     a(href='./promosReport')
                       span.sidebar-mini 
                       span.sidebar-normal Promos
-                  li(style="margin-left: 30px;")
-                    a(href='./roomsReport')
-                      span.sidebar-mini 
-                      span.sidebar-normal Rooms 
-                  li(style="margin-left: 30px;")
-                    a(href='./freebiesReport')
-                      span.sidebar-mini 
-                      span.sidebar-normal Freebies
-                  li(style="margin-left: 30px;")
-                    a(href='./gcReports')
-                      span.sidebar-mini 
-                      span.sidebar-normal Gift Certificate
       .main-panel
         nav.navbar.navbar-default
           .container-fluid
@@ -257,6 +237,9 @@ html(lang='en')
                       .form-group.has-default.bmd-form-group
                         label Company Name
                         input.form-control(type='text', placeholder='Company Name' value=`${utilities.company_name}` id='company_name')
+                      .form-group.has-default.bmd-form-group
+                        label Company Address
+                        textarea.form-control(type='text', placeholder='Company Address' id='company_address')= utilities.company_address
                     .col-md-5
                       .form-group.has-default.bmd-form-group
                         h6.strong Company Logo
@@ -281,7 +264,7 @@ html(lang='en')
                                 .row
                                   .col-md-1
                                   .col-md-2
-                                      img.card(src=`/upload/${reqSession.utilities.company_logo}` id="viewImage" style='margin-left:25px; width: 30em')
+                                      img.card(src=`/upload/${reqSession.utilities[0].company_logo}` id="viewImage" style='margin-left:25px; width: 30em')
                                 .row
                               .modal-footer
                                 button.btn.btn-secondary.pull-left.btn.btn-danger.btn-fill.btn-wd(type='button', data-dismiss='modal') Cancel        
@@ -656,9 +639,10 @@ html(lang='en')
         
 
         var opening = moment($('#opening_time').val(), 'hh:mm A').format('HH:mm')
-       
+       console.log($('#company_address').val())
         $.post('./utilities',{
           company_name:$('#company_name').val(),
+          company_address: $('#company_address').val(),
           opening_time: opening,
           closing_time:$('#closing_time').val(),
           max_guest:$('#max_guest').val(),

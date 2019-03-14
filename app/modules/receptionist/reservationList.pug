@@ -219,9 +219,10 @@ html(lang='en')
           var id = $(this).val()
           $.post('/receptionist/home/queue/viewServices',{id:id})
             .done(data=>{
+              console.log(data)
                 $('#title').append(`<h5> ${data.out2.cust_fname} ${data.out2.cust_mname} ${data.out2.cust_lname}`)
                 $('#therapist').append(`Therapist: 
-                <a>${data.out1[0].therapist_fname} ${data.out1[0].therapist_mname} ${data.out1[0].therapist_lname}`)
+                <a style='text-transform: capitalize'>${data.out2.therapist_fname} ${data.out2.therapist_mname} ${data.out2.therapist_lname}`)
               for(var i=0; i<data.out1.length;i++){
                 var total_duration = moment.duration(data.out1[i].service_total_duration).asMinutes()
                   $('#viewServicesAvailed').append(` 

@@ -265,7 +265,7 @@ html(lang='en')
                         resourceId: 'common',
                         title: "Remaining Bed",
                         title2: title2save,
-                        description: 'WALA',
+                        //- description: ,
                         start: moment(array[t].dateTime).format(),
                         end: moment(array[t].dateTime).add(5,'m').format()
                         },true)
@@ -290,30 +290,52 @@ html(lang='en')
 
                     //- BACKGROUND COLOR 
                     $.post('selectTime/addResource',{id:data[i].room_id,datePick:date.date}).done(data=>{
-                      var newQnty = data[0].bed_qty - data[0].occupied
+                      if(data[0].room_gender == 1){
+                        var newQnty = data[0].bed_qty - data[0].boys_occupied
+                        //- console.log('NEW QUANTITY',newQnty)
+                      } else if(data[0].room_gender ==2){
+                        var newQnty = data[0].bed_qty - data[0].girls_occupied
+                        //- console.log('NEW QUANTITY',newQnty)
+                      } else if(data[0].room_gender == 3){
+                        var total_occupied = data[0].boys_occupied + data[0].girls_occupied
+                        var newQnty = data[0].bed_qty - total_occupied
+                        //- console.log('NEW QUANTITY',newQnty)
+                      }
+                      //- var newQnty = data[0].bed_qty - data[0].occupied
                       var color = '#FF232'
+                      //- console.log('DATA FROM BG COLOR')
+                      //- console.log(data)
                       for(var i=0; i<data.length;i++)
                         {
-
-                          var occupied = data[i].bed_occupied
+                          if(data[i].room_gender == 1){
+                            var occupied = data[i].boys_occupied
+                            //- console.log('TOTAL_OCCUPIED',occupied)
+                          } else if(data[i].room_gender == 2){
+                            var occupied = data[i].girls_occupied
+                            //- console.log('TOTAL_OCCUPIED',occupied)
+                          } else if(data[i].room_gender == 3){
+                            var occupied = data[i].boys_occupied + data[i].girls_occupied
+                            //- console.log('TOTAL_OCCUPIED',occupied) 
+                          }
+                          //- var occupied = data[i].bed_occupied
                           var bed_qnty = data[i].bed_qty
-                          console.log('BED_QNTY '+bed_qnty)
+                          //- console.log('BED_QNTY '+bed_qnty)
                           var test = data[i].walkin_date+' '+data[i].walkin_start_time;
                       if(i>0)
                         {
                           var test2 = data[i-1].walkin_date+' '+data[i-1].walkin_end_time;
-                          console.log('TEST: '+test+' TEST2: '+test2)
-                          console.log(moment(test).isSameOrAfter(test2))
+                          //- console.log('TEST: '+test+' TEST2: '+test2)
+                          //- console.log(moment(test).isSameOrAfter(test2))
                           if(moment(test).isSameOrAfter(test2))
                             {
                               newQnty = eval(data[0].bed_qty+'-'+occupied)
-                              console.log('OCCUPIED '+occupied)
+                              //- console.log('OCCUPIEDs '+newQnty)
                             }
                           else
                             {
-                              console.log('pasok dito')
+                              //- console.log('pasok dito')
                               newQnty = eval(newQnty+'-'+occupied)
-                              console.log(newQnty)
+                              //- console.log(newQnty)
                             }
                         if(newQnty<=16){
                           color = '#ffe6b3' //kunwari red
@@ -375,30 +397,49 @@ html(lang='en')
 
                     //- YUNG EVENT MISMO
                     $.post('selectTime/addResource',{id:data[i].room_id,datePick:date.date}).done(data=>{
-                      var newQnty = data[0].bed_qty - data[0].occupied
+                      console.log('EVENT MISMO')
+                      console.log(data)
+                      if(data[0].room_gender == 1){
+                        var newQnty = data[0].bed_qty - data[0].boys_occupied
+
+                      } else if(data[0].room_gender == 2){
+                        var newQnty = data[0].bed_qty - data[0].girls_occupied
+                      } else if(data[0].room_gender == 3){
+                        var total_occupied = data[0].boys_occupied + data[0].girls_occupied
+                        var newQnty = data[0].bed_qty - total_occupied
+                      }
+                      console.log(newQnty)
+                      //- var newQnty = data[0].bed_qty - data[0].boys_occupied
                       
                       var color = '#FF232' // kunwari blue
-                      for(var i=0; i<data.length;i++)
+                      for(let i=0; i<data.length;i++)
                         {
-                          var occupied = data[i].bed_occupied
+                          if(data[i].room_gender ==1){
+                            var occupied = data[i].boys_occupied
+                          } else if(data[i].room_gender ==2){
+                            var occupied = data[i].girls_occupied
+                          } else if(data[i].room_gender == 3){
+                            var occupied = data[i].boys_occupied + data[i].girls_occupied
+                          }
+                          //- var occupied = data[i].boys_occupied
                           var bed_qnty = data[i].bed_qty
                           console.log('BED_QNTY '+bed_qnty)
                           var test = data[i].walkin_date+' '+data[i].walkin_start_time;
                       if(i>0)
                         {
                           var test2 = data[i-1].walkin_date+' '+data[i-1].walkin_end_time;
-                          console.log('TEST: '+test+' TEST2: '+test2)
+                          //- console.log('TEST: '+test+' TEST2: '+test2)
                           console.log(moment(test).isSameOrAfter(test2))
                           if(moment(test).isSameOrAfter(test2))
                             {
                               newQnty = eval(data[0].bed_qty+'-'+occupied)
-                              console.log('OCCUPIED '+occupied)
+                              console.log('NEW QNTY'+newQnty)
                             }
                           else
                             {
-                              console.log('pasok dito')
+                              //- console.log('pasok dito')
                               newQnty = eval(newQnty+'-'+occupied)
-                              console.log(newQnty)
+                              //- console.log(newQnty)
                             }
                         if(newQnty<=16){
                           color = '#ffb31a' //kunwari red
@@ -435,7 +476,7 @@ html(lang='en')
                           },true)
                         }
                       }
-                      console.log(color)
+                      //- console.log(color)
                     })
                   }
 

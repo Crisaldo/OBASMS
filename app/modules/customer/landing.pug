@@ -4,8 +4,9 @@ html(lang='en')
     meta(charset='utf-8')
     meta(name='viewport', content='width=device-width, initial-scale=1, maximum-scale=1')
     meta(name='description', content='Businnes, Portfolio, Corporate')
+    link(rel='icon', type='image/png', href=`/upload/${reqSession.utilities.company_logo}`)
     meta(name='Author', content='WebThemez')
-    title Life Spa Bootstrap 4 Website Template
+    title #{reqSession.utilities.company_name}
     link(rel='stylesheet', href='/assets/life-spa/css/normalize.css')
     link(rel='stylesheet', href='/assets/life-spa/css/bootstrap.min.css')
     link(rel='stylesheet', href='/assets/life-spa/css/font-awesome/css/font-awesome.min.css')
@@ -149,21 +150,21 @@ html(lang='en')
               .col-md-4.col-sm-4.col-xs-12.text-xs-center.wow.fadeInDown(data-wow-delay='.1s')
                 .service-box
                   .icon
-                    i.icon_star-half_alt
+                    
                     h3 Thai Massage
                   p
                     | "Thai massage" or "Thai yoga massage" is an ancient healing system combining acupressure, Indian Ayurvedic principles, and assisted yoga postures.
               .col-md-4.col-sm-4.col-xs-12.text-xs-center.wow.fadeInDown(data-wow-delay='.1s')
                 .service-box
                   .icon
-                    i.icon_music
+                    
                     h3 Shiatsu Massage
                   p
                     | Shiatsu Massage is an alternative technique that involves manual pressure applied to specific points on the body in an attempt to relieve tension and pain.
               .col-md-4.col-sm-4.col-xs-12.text-xs-center.wow.fadeInDown(data-wow-delay='.1s')
                 .service-box
                   .icon
-                    i.icon_cog
+                    
                     h3 Body Scrub
                   p
                     | A body scrub is a popular body treatment that is basically a facial for the body: it exfoliates and hydrates your skin, leaving it smooth and soft.
@@ -178,62 +179,63 @@ html(lang='en')
         .menus-container
           // menu
           .menu
-            .row
-              .col-md-12.wow.fadeInDown(style='visibility: visible; animation-name: fadeInRight;')
-                .food
-                  .food-desc
-                    h6.food-name Swedish Massage 60 minutes/90 minutes/120 minutes
-                    .dots
-                    .food-price
-                      span 750.00/1,000.00/1,300.00
-                    // /food-price
-                  // /food-desc
-                  .food-details
-                  // /food-details
-                // /food
-            // /row
-            .row
-              .col-md-12.wow.fadeInDown(style='visibility: visible; animation-name: fadeInRight;')
-                .food
-                  .food-desc
-                    h6.food-name Deep Tissue Massage 60 minutes/90 minutes/120 minutes
-                    .dots
-                    .food-price
-                      span 750.00/1,100.00/1,450.00
-                    // /food-price
-                  // /food-desc
-                  .food-details
-                  // /food-details
-                // /food
-            // /row
-            .row
-              .col-md-12.wow.fadeInDown(style='visibility: visible; animation-name: fadeInRight;')
-                .food
-                  .food-desc
-                    h6.food-name Shiatsu Tissue Massage 60 minutes/90 minutes/120 minutes
-                    .dots
-                    .food-price
-                      span 750.00/1,100.00/1,450.00
-                    // /food-price
-                  // /food-desc
-                  .food-details
-                  // /food-details
-                // /food
-            // /row
-            .row
-              .col-md-12.wow.fadeInDown(style='visibility: visible; animation-name: fadeInRight;')
-                .food
-                  .food-desc
-                    h6.food-name Stone Massage 60 minutes/90 minutes/120 minutes
-                    .dots
-                    .food-price
-                      span 750.00/1,100.00/1,450.00
-                    // /food-price
-                  // /food-desc
-                  .food-details
-                  // /food-details
-                // /food
-            // /row
+            each service in services
+              .row
+                .col-md-12.wow.fadeInDown(style='visibility: visible; animation-name: fadeInRight;')
+                  .food
+                    .food-desc
+                      h6.food-name= service.service_name
+                      .dots
+                      .food-price
+                        span= service.service_price
+            //-         // /food-price
+            //-       // /food-desc
+            //-       .food-details
+            //-       // /food-details
+            //-     // /food
+            //- // /row
+            //- .row
+            //-   .col-md-12.wow.fadeInDown(style='visibility: visible; animation-name: fadeInRight;')
+            //-     .food
+            //-       .food-desc
+            //-         h6.food-name Deep Tissue Massage 60 minutes/90 minutes/120 minutes
+            //-         .dots
+            //-         .food-price
+            //-           span 750.00/1,100.00/1,450.00
+            //-         // /food-price
+            //-       // /food-desc
+            //-       .food-details
+            //-       // /food-details
+            //-     // /food
+            //- // /row
+            //- .row
+            //-   .col-md-12.wow.fadeInDown(style='visibility: visible; animation-name: fadeInRight;')
+            //-     .food
+            //-       .food-desc
+            //-         h6.food-name Shiatsu Tissue Massage 60 minutes/90 minutes/120 minutes
+            //-         .dots
+            //-         .food-price
+            //-           span 750.00/1,100.00/1,450.00
+            //-         // /food-price
+            //-       // /food-desc
+            //-       .food-details
+            //-       // /food-details
+            //-     // /food
+            //- // /row
+            //- .row
+            //-   .col-md-12.wow.fadeInDown(style='visibility: visible; animation-name: fadeInRight;')
+            //-     .food
+            //-       .food-desc
+            //-         h6.food-name Stone Massage 60 minutes/90 minutes/120 minutes
+            //-         .dots
+            //-         .food-price
+            //-           span 750.00/1,100.00/1,450.00
+            //-         // /food-price
+            //-       // /food-desc
+            //-       .food-details
+            //-       // /food-details
+            //-     // /food
+            //- // /row
           // /menu-carousel
       // /menus-container
       // /container

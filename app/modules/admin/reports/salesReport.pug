@@ -173,10 +173,6 @@ html(lang='en')
               #queries.collapse
                 ul.nav
                   li(style="margin-left: 30px;")
-                    a(href='./customerList')
-                      span.sidebar-mini 
-                      span.sidebar-normal Customers
-                  li(style="margin-left: 30px;")
                     a(href='./loyaltyMembers')
                       span.sidebar-mini 
                       span.sidebar-normal Loyalty Members
@@ -200,14 +196,7 @@ html(lang='en')
                     a(href='./roomList')
                       span.sidebar-mini 
                       span.sidebar-normal Rooms    
-                  li(style="margin-left: 30px;")
-                    a(href='./freebiesList')
-                      span.sidebar-mini 
-                      span.sidebar-normal Freebies
-                //-   li
-                //-     a(href='./List')
-                //-       span.sidebar-mini 
-                //-       span.sidebar-normal         
+      
             li.active
               a(data-toggle='collapse', href='#reports')
                 i.ti-bar-chart-alt
@@ -216,14 +205,18 @@ html(lang='en')
                   b.caret
               #reports.collapse.in
                 ul.nav
-                  li(style="margin-left: 30px;")
-                    a(href='./servicesReport')
+                  li.active(style="margin-left: 30px;")
+                    a(href='./salesReport')
                       span.sidebar-mini 
-                      span.sidebar-normal Daily
+                      span.sidebar-normal Sales
                   li(style="margin-left: 30px;")
                     a(href='./packagesReport')
                       span.sidebar-mini 
-                      span.sidebar-normal Monthly  
+                      span.sidebar-normal Packages
+                  li(style="margin-left: 30px;")
+                    a(href='./promosReport')
+                      span.sidebar-mini 
+                      span.sidebar-normal Promos   
       .main-panel
         nav.navbar.navbar-default
           
@@ -254,16 +247,17 @@ html(lang='en')
                   .row
                     .col-md-6
                       .card-content
+                        button.btn.btn-info.btn-fill.btn-wd#button-a Generate Report
                           
                   
                   .content
                     .container-fluid
                       .row
-                        .col-md-2
+                        .col-md-2(style='float: right')
                            select.selectpicker.selectpickerChange(name='' title='Reports'  data-style='btn-info' )
-                                option(value='loyalty') Loyalty Registration
-                                option(value='amenity') Amenity
-                                option(value='reservation') Reservation
+                                option(value='0') Daily
+                                option(value='1') Weekly
+                                option(value='2') Monthly
                         //- .col-md-3
                         //-   select.selectpicker(multiple='', title='Filter', data-style='btn-info', data-size='7' )
                         //-       option(value='Service Type') Service Type
@@ -280,11 +274,9 @@ html(lang='en')
                                 table#datatables.table.table-no-bordered.table-hover(cellspacing='0', width='100%', style='width:100%')
                                   thead
                                     tr
-                                      th.disabled-sorting  Daily Report
+                                      th.disabled-sorting Report
                                       th.disabled-sorting  
                                       th.disabled-sorting  
-                                        center
-                                          h3#Name
                                       th.disabled-sorting  
                                       th.disabled-sorting  Total
                                       th.disabled-sorting  
@@ -355,6 +347,9 @@ html(lang='en')
   script(src='/assets/paperDashboardPro/js/vfs_fonts.js')
   script(src='/assets/paperDashboardPro/js/jspdf.js')
   //- script(src='/assets/paperDashboardPro/js/jquery-3.3.1.js')
+  script(src='/assets/SheetJS/FileSaver.js')
+  script(src='/assets/SheetJS/xlsx.full.min.js')
+  
   
     
   script(type='text/javascript').
@@ -369,71 +364,45 @@ html(lang='en')
         var report_type = $(this).val()
         $.post('./ChangeReport',{report_type}).done(function(data){
           console.log(data)
-          if(report_type == 'loyalty')
+          if(report_type == '0')
           {
-            $('#Name').append('Loyalty Membership')
+            $('#Name').append('Daily Sales')
           }
-          else if(report_type == 'amenity')
+          else if(report_type == '1')
           {
-            $('#Name').append('Amenity')
+            $('#Name').append('Weekly Sales')
           }
-          else if(report_type == 'reservation')
+          else if(report_type == '2')
           {
-            $('#Name').append('Reservation')
+            $('#Name').append('Monthly Sales')
+            for(var i=0;i<data.length;i++)
+            {
+              $('#ReportChange').append(`<tr>
+                <td>${data[i].walkin_date}</td>
+                <td>
+                </td>
+                <td></td>
+                <td> </td>
+                <td>₱${data[i].total_amount}</td>
+                <td> </td>
+                </tr>`)
+            }
+            REPORTS()
           }
-          for(var i=0;i<data.length;i++)
-          {
-            $('#ReportChange').append(`<tr>
-              <td>${data[i].payment_date}</td>
-              <td>
-              </td>
-              <td></td>
-              <td> </td>
-              <td>₱${data[i].Total}</td>
-              <td> </td>
-              </tr>`)
-          }
-        $('#datatables').DataTable({
-          "pagingType": "full_numbers",
-          "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
-          responsive: true,
-          language: {
-          search: "_INPUT_",
-          searchPlaceholder: "Search records",
-          },
-          retrieve:true,
-          dom: 'Bfrtip',
-          buttons: [
-              { extend:'copy', attr: { id: 'allan' } }, 'csv', 'excel',  'print'
-          ],
-            
-          });
-           $('#datatables').DataTable({
-            initComplete: function () {
-                    this.api().columns().every( function () {
-                        var column = this;
-                        var select = $('<select><option value=""></option></select>')
-                            .appendTo( $(column.footer()).empty() )
-                            .on( 'change', function () {
-                                var val = $.fn.dataTable.util.escapeRegex(
-                                    $(this).val()
-                                );
-        
-                                column
-                                    .search( val ? '^'+val+'$' : '', true, false )
-                                    .draw();
-                            });
-        
-                        column.data().unique().sort().each( function ( d, j ) {
-                            select.append( '<option value="'+d+'">'+d+'</option>' )
-                        });
-                    });
-                },
-                retrieve:true
-        })
-
-        })
-        $('#ReportChange').empty()
-        $('#Name').empty()
-      })
     })
+    })
+    })
+  script.
+    function REPORTS(){
+      var wb = XLSX.utils.table_to_book($('#datatables')[0], {sheet:"Sheet JS"});
+      var wbout = XLSX.write(wb, {bookType:'xlsx', bookSST:true, type: 'binary'});
+      function s2ab(s) {
+        var buf = new ArrayBuffer(s.length);
+        var view = new Uint8Array(buf);
+        for (var i=0; i<s.length; i++) view[i] = s.charCodeAt(i) & 0xFF;
+        return buf;
+      }
+      $("#button-a").click(function(){
+        saveAs(new Blob([s2ab(wbout)],{type:"application/octet-stream"}), 'SalesReport.xlsx');
+      });
+    }

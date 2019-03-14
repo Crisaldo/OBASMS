@@ -171,10 +171,10 @@ html(lang='en')
                   b.caret
               #queries.collapse.in
                 ul.nav
-                  li(style="margin-left: 30px;")
-                    a(href='./customerList')
-                      span.sidebar-mini 
-                      span.sidebar-normal Customers
+                  //- li(style="margin-left: 30px;")
+                  //-   a(href='./customerList')
+                  //-     span.sidebar-mini 
+                  //-     span.sidebar-normal Customers
                   li(style="margin-left: 30px;")
                     a(href='./loyaltyMembers')
                       span.sidebar-mini 
@@ -199,10 +199,10 @@ html(lang='en')
                     a(href='./roomList')
                       span.sidebar-mini 
                       span.sidebar-normal Rooms    
-                  li(style="margin-left: 30px;")
-                    a(href='./freebiesList')
-                      span.sidebar-mini 
-                      span.sidebar-normal Freebies
+                  //- li(style="margin-left: 30px;")
+                  //-   a(href='./freebiesList')
+                  //-     span.sidebar-mini 
+                  //-     span.sidebar-normal Freebies
                 //-   li
                 //-     a(href='./List')
                 //-       span.sidebar-mini 
@@ -252,10 +252,12 @@ html(lang='en')
               .col-md-12
                 .card
                   .row
+                    center
+                      h4 SERVICES
+                  .row
                     .col-md-6
                       .card-content
-                          
-                  
+                        button.btn.btn-info.btn-fill.btn-wd#button-a Create Querie Report
                   .content
                     .container-fluid
                       .row
@@ -274,21 +276,12 @@ html(lang='en')
                                     th.disabled-sorting  Price
                                     th.disabled-sorting  Duration
                                     th.disabled-sorting  Points
-                                  
-                                  tfoot
-                                    th.disabled-sorting  Service Type
-                                      th.disabled-sorting  Service Name
-                                      th.disabled-sorting  Price
-                                      th.disabled-sorting  Duration
-                                      th.disabled-sorting  Points
-                                      
-                                 
                                   tbody
                                     each service in services
                                       tr
                                         td= service.service_type_desc
                                         td= service.service_name
-                                        td= '₱'+service.service_price+'.00'
+                                        td= '₱'+(service.service_price).toFixed(2)
                                         td= service.service_duration_desc+' minutes'
                                         td= service.service_points
                                         
@@ -356,6 +349,8 @@ html(lang='en')
   script(src='/assets/paperDashboardPro/js/jszip.min.js')
   script(src='/assets/paperDashboardPro/js/vfs_fonts.js')
   script(src='/assets/paperDashboardPro/js/jspdf.js')
+  script(src='/assets/SheetJS/FileSaver.js')
+  script(src='/assets/SheetJS/xlsx.full.min.js')
   //- script(src='/assets/paperDashboardPro/js/jquery-3.3.1.js')
   
     
@@ -366,46 +361,18 @@ html(lang='en')
     });
   script.
     $(document).ready(function() {  
-      $('#datatables').DataTable( {
-        dom: 'Bfrtip',
-        buttons: [
-            { extend:'copy', attr: { id: 'allan' } }, 'csv', 'excel', 'pdf', 'print'
-        ],
-          initComplete: function () {
-              this.api().columns().every( function () {
-                  var column = this;
-                  var select = $('<select><option value=""></option></select>')
-                      .appendTo( $(column.footer()).empty() )
-                      .on( 'change', function () {
-                          var val = $.fn.dataTable.util.escapeRegex(
-                              $(this).val()
-                          );
-  
-                          column
-                              .search( val ? '^'+val+'$' : '', true, false )
-                              .draw();
-                      });
-  
-                  column.data().unique().sort().each( function ( d, j ) {
-                      select.append( '<option value="'+d+'">'+d+'</option>' )
-                  });
-              });
-          }
+      var wb = XLSX.utils.table_to_book($('#datatables')[0], {sheet:"Sheet JS"});
+      var wbout = XLSX.write(wb, {bookType:'xlsx', bookSST:true, type: 'binary'});
+      function s2ab(s) {
+        var buf = new ArrayBuffer(s.length);
+        var view = new Uint8Array(buf);
+        for (var i=0; i<s.length; i++) view[i] = s.charCodeAt(i) & 0xFF;
+        return buf;
+      }
+      $("#button-a").click(function(){
+        saveAs(new Blob([s2ab(wbout)],{type:"application/octet-stream"}), 'ServicesList.xlsx');
       });
     });
-  script(type='text/javascript').
-    $(document).ready(function() {
-    $('#datatables').DataTable({
-    "pagingType": "full_numbers",
-    "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
-    responsive: true,
-    language: {
-    search: "_INPUT_",
-    searchPlaceholder: "Search records",
-    },
-    retrieve:true
-    });
-    })
   script.
     $().ready(function(){
       $('#registerFormValidation').validate();

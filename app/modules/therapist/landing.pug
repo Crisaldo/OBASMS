@@ -30,7 +30,7 @@ html(lang='en')
 				#navbarToggler.collapse.navbar-collapse
 					ul.navbar-nav.ml-auto
 						li.nav-item
-							a.nav-link(href='/therapist/logout')
+							a.nav-link.logout(style="cursor: pointer; color: white")
 								i.nc-icon.nc-button-power
 								| &nbsp; Logout
 		.page-header(data-parallax='true', style="background-image: url('/assets/paperkit/assets/img/therapistbg.jpeg');display:flex;align-items:center;")
@@ -38,17 +38,14 @@ html(lang='en')
 			.container
 				.motto.text-center
 					h1 Therapist Portal
-					- if(typeof user === 'undefined')
-						h3 *insert text here*
-						br
-						button.btn.btn-outline-neutral.btn-round(type='button' data-toggle='modal' data-target='#loginModal') Login
-					- else
-						h3 Welcome #{user.username}!
+						each therapist in therapists
+							h3(style="text-transform: capitalize")= "Welcome! "+ therapist.therapist_fname+" "+therapist.therapist_mname+" "+therapist.therapist_lname
+								input.therapist_id(type='hidden' value=`${therapist.therapist_id}`)
+								br
+								| View your things by navigating using these buttons.
 							br
-							| View your things by navigating using these buttons.
-						br
-						a.btn.btn-outline-primary.btn-round(style='margin:5px;color:white' data-toggle='modal' data-target='#scheduleModal') Schedule
-						a.btn.btn-outline-danger.btn-round(style='margin:5px;color:white' data-toggle='modal' data-target='#commissionModal') Commission
+							a.btn.btn-outline-primary.btn-round(style='margin:5px;color:white' data-toggle='modal' data-target='#scheduleModal') Schedule
+							a.btn.btn-outline-danger.btn-round(style='margin:5px;color:white' data-toggle='modal' data-target='#commissionModal') Commission
 		#loginModal.modal.fade.show(tabindex='-1', role='dialog')
 			.modal-dialog.modal-register
 				.modal-content
@@ -121,6 +118,25 @@ html(lang='en')
 		// Fullcalendar
 		script(src='/assets/paperDashboardPro/js/moment.min.js')
 		script(src='/assets/paperDashboardPro/js/fullcalendar.js')
+		script(src='/assets/paperkit/assets/js/sweetalert.js')
+		script.
+			$(document).ready(function(){
+				$('.logout').click(function(){
+				swal({
+					title: "Are you sure?",
+					text: "Do you want to log out?",
+					icon: "warning",
+					buttons: true,
+					dangerMode: true,
+				})
+				.then((willDelete) => {
+					if (willDelete) {
+						$.post('./logout')
+						location.reload()
+					} 
+				});
+				})
+			})
 		script.
 			$(document).ready(function(){
 				const today = moment().format('YYYY-MM-DD')
@@ -128,10 +144,13 @@ html(lang='en')
 					header: {
 						left: 'prev,next today',
 						center: 'title',
-						right: 'month,agendaWeek,agendaDay'
+						right: 'agendaWeek,agendaDay'
 					},
-					defaultView: 'agendaDay',
-					defaultDate: today
+					defaultView: 'agendaWeek',
+					defaultDate: today,
+					slotDuration: "00:20:00",
+					minTime: "12:00",
+					maxTime: "25:40",
 				})
 				$('#scheduleModal').on('show.bs.modal', function(){
 					if($('#toggle').val() == 0){
@@ -140,7 +159,35 @@ html(lang='en')
 					}
 				})
 				$('#scheduleModal').on('shown.bs.modal', function(){
-					$('#scheduleCalendar').fullCalendar('changeView', 'agendaWeek')
+					$('#scheduleCalendar').fullCalendar('changeView', 'agendaDay')
 					$('#scheduleCalendar').fadeIn(1000)
 				})
 			})
+	script.
+		$(document).ready(function(){
+			var therapist_id = $('.therapist_id').val()
+
+			$.post('therapist/schedule',{
+				therapist_id
+			}).done(function(data){
+				console.log(data)
+
+
+
+				for(var i= 0;i<data.out.length;i++){
+					var date = moment(data.out[i].walkin_date).format('MMMM DD, YYYY')
+					var start = date+' '+data.out[i].walkin_start_time
+							start = moment(start).format()
+					var end = date+' '+data.out[i].walkin_end_time
+							end = moment(end).format()
+					$('#scheduleCalendar').fullCalendar('renderEvent',{
+						title: data.out[i].walkin_start_time+' '+data.out[i].walkin_end_time,
+						title2: "START TIME: ",
+						description: 'aaa',
+						start: start,
+						end: end,
+						textColor: 'white'
+					},true)
+				}
+			})
+		})
