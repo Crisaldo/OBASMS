@@ -25,15 +25,6 @@ html(lang='en')
             span.button-bar
             span.button-bar
             span.button-bar
-          .dropdown-menu(aria-labelledby='navbarDropdown')
-            a.dropdown-header Dropdown header
-            a.dropdown-item(href='#') Action
-            a.dropdown-item(href='#') Another action
-            a.dropdown-item(href='#') Something else here
-            .dropdown-divider
-            a.dropdown-item(href='#') Separated link
-            .dropdown-divider
-            a.dropdown-item(href='#') One more separated link
         .navbar-translate
           a.navbar-brand(href='#', rel='tooltip', title='', data-placement='bottom', target='_blank')
             | Mbay Health Spa
@@ -124,22 +115,22 @@ html(lang='en')
                   span.form-check-sign
                   |         Multiple
             .row
-              .col-md-4  
+              .col-md-4.multiple  
                 .form-check.form-check-inline
                   span.input-group-btn
                     button.btn.btn-info.btn-numberMale.buttonMinus(type='button', disabled='disabled', data-type='minus', data-field='quantMale' id="add")
                       span.now-ui-icons.ui-1_simple-delete
-                  input.form-control.input-number.male(type='text', id="quantity" name='quantMale', value="0" min='0', max='6' disabled)
+                  input.form-control.input-number.male(type='text', id="quantity" name='quantMale', value="0" min='0', max='6' disabled  style='border-radius: inherit')
                   span.input-group-btn
                     button.btn.btn-info.btn-numberMale.buttonAdd(type='button', data-type='plus', data-field='quantMale', disabled id="add")
                       span.now-ui-icons.ui-1_simple-add
                 span.help-block Male
-              .col-md-4  
+              .col-md-4.multiple  
                 .form-check.form-check-inline
                   span.input-group-btn
                     button.btn.btn-info.btn-number.buttonMinus(type='button', disabled='disabled', data-type='minus', data-field='quantFemale' id="add")
                       span.now-ui-icons.ui-1_simple-delete
-                  input.form-control.input-number.female(type='text', id="quantityFemale" name='quantFemale', value="0" min='0', max='6' disabled)
+                  input.form-control.input-number.female(type='text', id="quantityFemale" name='quantFemale', value="0" min='0', max='6' disabled style='border-radius: inherit')
                   span.input-group-btn
                     button.btn.btn-info.btn-number.buttonAdd(type='button', data-type='plus', data-field='quantFemale', disabled id="add")
                       span.now-ui-icons.ui-1_simple-add
@@ -176,6 +167,7 @@ html(lang='en')
         $('.buttonReservation').click(function(){
         var id = $(this).val()
         console.log("id"+id)
+        $('.multiple').css('display','none')
         $('#ReservationModal').modal('show')
         $('input[type="radio"]').click(function(e){
         if(e.target.checked)
@@ -192,7 +184,8 @@ html(lang='en')
           }
           else if($(this).val()=="multiple")
           {
-             $('button[id="add"]').click(function(){
+            $('.multiple').css('display','block')
+            $('button[id="add"]').click(function(){
             $('#reservationFooter').empty()
             var male=$('.male[name="quantMale"]').val()
             var female=$('.female[name="quantFemale"]').val()
@@ -220,11 +213,11 @@ html(lang='en')
          }
         $('#reservationFooter').append(`
         <button class="btn btn-secondary pull-left btn btn-danger btn-fill btn-wd" type="button" data-dismiss="modal">Cancel</button>
-        <a class="btn btn-secondary btn-info btn-fill" href="selectDate?id=${id}&reservetype=single" stlye="margin-right: 15px">Single</a>`)
+        <a class="btn btn-secondary btn-info btn-fill" href="selectDate?id=${id}&reservetype=single&male=0&female=0" stlye="margin-right: 15px">Single</a>`)
         })
         $('#reservationFooter').append(`
         <button class="btn btn-secondary pull-left btn btn-danger btn-fill btn-wd" type="button" data-dismiss="modal">Cancel</button>
-        <a class="btn btn-secondary btn-info pull-right btn-fill" href="selectDate?id=${id}&reservetype=single" stlye="margin-right: 15px">Single</a>`)
+        <a class="btn btn-secondary btn-info pull-right btn-fill" href="selectDate?id=${id}&reservetype=single&male=0&female=0" stlye="margin-right: 15px">Single</a>`)
         $('#ReservationModal').on('hidden.bs.modal', function (){
           $('#reservationFooter').empty()
         })

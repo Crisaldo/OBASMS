@@ -66,56 +66,41 @@ html(lang='en')
                     a(style="color: white")#time-part
                 
     .wrapper.wrapper-full-page
-      each customer in customers
-        if(customer.cust_gender=='Male')
-          .full-page.login-page(data-color='black', style=("background-image: url('/assets/paperDashboardPro/img/bluespa.jpg'); background-size: cover; background-repeat: no-repeat"))
-            // you can change the color of the filter page using: data-color="blue | azure | green | orange | red | purple"
-            .content
-              .container
-                .row
-                  .col-md-2.col-sm-1.col-md-offset-0.col-sm-offset-1
-                    .card(style="width: 80em; bottom: 30px; height: 80em;")
-                      .card-content
-                        //- input(type="" value=`${date}` id="datePick")
-                        input(type="hidden" value=`${customerId}` id="Id")
-                        input(type='hidden' value=`${customerId}` id="Id")
-                        input(type='hidden' id="restype" value=`${restype}`)
-                        input(type='hidden' value=`Male: ${male}`)
-                        input(type='hidden' value=`Female: ${female}`)
-                        center  
-                          h2 Select Date
-                        #fullCalendar
-        else
-          .full-page.login-page(data-color='black', style=("background-image: url('/assets/paperDashboardPro/img/pinkspa.jpg'); background-size: cover; background-repeat: no-repeat"))
-            // you can change the color of the filter page using: data-color="blue | azure | green | orange | red | purple"
-            .content
-              .container
-                .row
-                  .col-md-2.col-sm-1.col-md-offset-0.col-sm-offset-1
-                    .card(style="width: 80em; bottom: 30px; height: 80em;")
-                      .card-content
-                        center  
-                          h2 Select Date
-                          h1= customer.cust_fname
-                        input(type="hidden" value=`${customerId}` id="Id")
-                        input(value=`${customerId}` id="Id")
-                        input(id="restype" value=`${restype}`)
-                        input(value=`Male: ${male}`)
-                        input(value=`Female: ${female}`)
-                        #fullCalendar
-
-
-        footer.footer.footer-transparent
-          .container
-            .copyright
+      .full-page.login-page(data-color='black', style=("background-image: url('/assets/paperDashboardPro/img/bluespa.jpg'); background-size: cover; background-repeat: no-repeat"))
+        // you can change the color of the filter page using: data-color="blue | azure | green | orange | red | purple"
+        .content
+          .container-fluid
+            .row
+              //- .col-md-10.col-md-offset-1
+              .card.card-calendar
+                .card-content
+                  input(type="hidden" value=`${customerId}` id="Id")
+                  input(type='hidden' value=`${customerId}` id="Id")
+                  input(type='hidden' id="restype" value=`${restype}`)
+                  input(type='hidden' value=`Male: ${male}`)
+                  input(type='hidden' value=`Female: ${female}`)
+                  #fullCalendar
+        
+        //VIEW SPECIFIC SCHEDULE
+        #viewDateSchedule.modal.fade(tabindex='-1', role='dialog', aria-labelledby='exampleModalLabel', aria-hidden='true')
+          .modal-dialog.modal-lg(role='document')
+            .modal-content
+              .modal-header
+                button.close(type='button', data-dismiss='modal', aria-label='Close')
+                  span(aria-hidden='true') ×
+                center
+                  h4.modal-title
+              .modal-body#viewAppend
+        footer.footer
+          .container-fluid
+            .copyright.pull-right
               | © 
               script.
                 document.write(new Date().getFullYear())
               | , made with 
               i.fa.fa-heart.heart
               |  by 
-              a(href='') Team RJPC
-
+              a(href='#') Team MBAY
                        
   // Core JS Files. Extra: TouchPunch for touch library inside jquery-ui.min.js
   script(src='/assets/paperDashboardPro/js/jquery-3.1.1.min.js', type='text/javascript')
@@ -161,16 +146,17 @@ html(lang='en')
   script(src='/assets/paperDashboardPro/js/scheduler.js')
   script(type='text/javascript').
     $(document).ready(function(){
-      var date = !{JSON.stringify(date)}
       var restype = $('#restype').val()
       var room_type_id;
       var girl_room;
       var boy_room;
       var girl_room_qty;
       var boy_room_qty;
+      var date = !{JSON.stringify(date)}
+
       if(restype == 'multiple')
         {
-          $.post('/customer/customerTime/queryCommon').done(data=>{
+          $.post('customerTime/queryCommon').done(data=>{
             room_type_id= data.common[0].room_type_id
             girl_room = data.girls[0].room_id
             girl_room_qty = data.girls[0].bed_qty
@@ -178,7 +164,7 @@ html(lang='en')
             boy_room = data.boys[0].room_id
             boy_room_qty = data.boys[0].bed_qty
           })
-          $.post('/customer/customerTime/queryRoom').done(data=>{
+          $.post('customerTime/queryRoom').done(data=>{
             for(var i=0; i<data.length;i++)
               {
                 if(data[i].room_type_id==room_type_id)
@@ -196,9 +182,10 @@ html(lang='en')
                       })
                   }
               }
-              $.post('/customer/customerTime/addResource/Multiple').done(data=>{
+              $.post('customerTime/addResource/Multiple').done(data=>{
                 var saveArea;
                 var array = [];
+                console.log(array)
                 for(var i=0; i<data.length;i++)
                   {
                     var points = 0;
@@ -251,187 +238,21 @@ html(lang='en')
                         resourceId: 'common',
                         title: "Remaining Bed",
                         title2: title2save,
-                        description: 'WALA',
+                        //- description: ,
                         start: moment(array[t].dateTime).format(),
                         end: moment(array[t].dateTime).add(5,'m').format()
                         },true)
                     }
                   }
-                  //- for(var r=0; r<data.length; r++){
-                  //-   if(data[r].room_type_id==room_type_id)
-                  //-   {
 
-                  //-     desc = data[r].room_type_desc
-                  //-     //-   console.log("ROOM= "+data[r].room_id)
-                  //-     //- //- console.log(data[r].room_type_desc)
-                  //-     //-   console.log('ARRAY TIME= '+array[t])
-                  //-       //- console.log('TIME= '+data[r].walkin_start_time)
-                  //-     if(array[t].time == data[r].walkin_start_time && array[t].roomId == data[r].room_id){
-                  //-       //- console.log('pasok')
-                  //-       var occupied = data[r].bed_occupied
-                  //-       //- console.log(occupied)
-                  //-       if(r>0)
-                  //-       {
-                  //-         var test = data[r].walkin_date+' '+data[r].walkin_start_time;
-                  //-         var test2 = data[r-1].walkin_date+' '+data[r-1].walkin_end_time;
-                  //-         console.log(test)
-                  //-         console.log(test2)
-                  //-         console.log(moment(test).isSameOrAfter(test2))
-                  //-         if(moment(test).isSameOrAfter(test2))
-                  //-           {
-                  //-             if(girl_room == data[r].room_id){
-                  //-               saveGirlQty = eval(saveGirlQty+'-'+data[r].occupied)
-                  //-               title2save = title2save+""+data[r].room_name+" "+saveGirlQty
-                              
-                  //-             console.log('FIRST IF(girls)= '+title2save+" "+saveGirlQty)
-                  //-             }
-                  //-             else if (boy_room == data[r].room_id){
-                                
-                  //-               saveBoyQty = eval(saveBoyQty+'-'+data[r].occupied)
-                  //-               title2save = title2save+""+data[r].room_name+" "+saveBoyQty
-                  //-               console.log('FIRST IF(boys)= '+title2save+" "+saveBoyQty)
-                  //-             }
-                  //-           }
-                  //-         else
-                  //-           {
-                  //-             if(girl_room == data[r].room_id){
-                  //-               saveGirlQty = eval(girl_room_qty+'-'+data[r].occupied)
-                  //-               title2save = title2save+""+data[r].room_name+" "+saveGirlQty
-                  //-               console.log('ELSE(girls)= '+title2save+" "+saveGirlQty)
-                              
-                  //-             }
-                  //-             else if (boy_room == data[r].room_id){
-                  //-               saveBoyQty = eval(boy_room_qty+'-'+data[r].occupied)
-                  //-               title2save = title2save+""+data[r].room_name+" "+saveBoyQty
-                  //-               console.log('ELSE(boys)= '+title2save+" "+saveBoyQty)
-                              
-                  //-             }
-                  //-           }
-                  //-       }
-                  //-   start = moment(data[t].walkin_date+" "+data[t].walkin_start_time).format()
-                  //-   end = moment(data[t].walkin_date+" "+data[t].walkin_start_time).add(5,'m').format()
-                  //-     } 
-                  //-   if(r == data.length-1){
-                  //-     console.log(title2save)
-                  //-     //- console.log('------------------------')
-                  //-     //- console.log("START= "+start)
-                  //-     //- console.log("END= "+end)
-                  //-     //- console.log('------------------------')
-                  //-     $('#fullCalendar').fullCalendar('renderEvent',{
-                  //-       resourceId: 'common',
-                  //-       title: "Remaining Bed",
-                  //-       title2: title2save,
-                  //-       description: desc,
-                  //-       start: start,
-                  //-       end: end
-                  //-       },true)
-                  //-   }
-                  //-   else
-                  //-   {
-                  //-     $('#fullCalendar').fullCalendar('renderEvent',{
-                  //-       resourceId: data[r].room_id,
-                  //-       title: "Remaining Bed",
-                  //-       title2: title2save,
-                  //-       description: desc,
-                  //-       start: start,
-                  //-       end: end
-                  //-       },true)
-                  //-   }
-                  //-   }
-                  //- }
                 }
-                //- for(var i=0; i<data.length;i++)
-                //-   {
-                //-     if(data[i].room_type_id==room_type_id)
-                //-       {
-                //-         if(i>0)
-                //-           {
-                //-           var TIME = data[i-1].walkin_start_time
-                //-           }
-                //-         else{
-                //-           var TIME = data[0].walkin_start_time
-                //-         }
 
-                        
-                //-         if(TIME==data[i].walkin_start_time)
-                //-           {
-                //-             var occupied = data[i].occupied
-                //-             var bed_qnty = data[i].bed_qty
-                //-             var newQnty = bed_qnty - occupied
-                //-             var Timestart = data[i].walkin_date +' '+data[i].walkin_start_time
-                //-             var Timeend = data[i].walkin_date +' '+data[i].walkin_start_time;
-                //-             var newT = moment(Timeend).add(5,'m').format()
-                //-             var startTime = moment(Timestart).format()
-                //-             var endTime= moment(Timeend).format()
-
-                //-             if(i>0)
-                //-               {
-                //-               //- $('#fullCalendar').fullCalendar('renderEvent',{
-                //-               //-   resourceId: 'common',
-                //-               //-   title: "Remaining Bed",
-                //-               //-   title2: data[i].room_name+" "+newQnty+" remainings "+data[i-1].room_name,
-                //-               //-   description: data[i].room_type_desc,
-                //-               //-   start: startTime,
-                //-               //-   end: newT
-                //-               //-   },true)
-                //-               }
-                //-             console.log(TIME)
-                //-             if(TIME != data[i].walkin_start_time)
-                //-               {
-                //-                 alert(TIME)
-                //-                 var occupied = data[i].occupied
-                //-                 var bed_qnty = data[i].bed_qty
-                //-                 var newQnty = bed_qnty - occupied
-                //-                 var Timestart = data[i].walkin_date +' '+data[i].walkin_start_time
-                //-                 var Timeend = data[i].walkin_date +' '+data[i].walkin_start_time;
-                //-                 var newT = moment(Timeend).add(5,'m').format()
-                //-                 var startTime = moment(Timestart).format()
-                //-                 var endTime= moment(Timeend).format()
-
-                //-                 if(i>0)
-                //-                   {
-                //-                     //- $('#fullCalendar').fullCalendar('renderEvent',{
-                //-                     //-   resourceId: 'common',
-                //-                     //-   title: "Remaining Bed",
-                //-                     //-   title2: data[i].room_name+" "+newQnty+" remainings "+data[i-1].room_name,
-                //-                     //-   description: data[i].room_type_desc,
-                //-                     //-   start: startTime,
-                //-                     //-   end: newT
-                //-                     //-   },true)
-                //-                   }
-                //-               }
-                //-         }
-                //-       }
-                //-   }
               })
           })
-          //- $.post('/customer/customerTime/addResource/Multiple').done(data=>{
-          //-   for(var i=0; i<data.length;i++){
-              
-          //-   var occupied = data[i].occupied
-          //-   var bed_qnty = data[i].bed_qty
-          //-   var newQnty = bed_qnty - occupied
-
-
-          //-   var Timestart = data[i].walkin_date +' '+data[i].walkin_start_time
-          //-   var Timeend = data[i].walkin_date +' '+data[i].walkin_start_time;
-          //-   var newT = moment(Timeend).add(5,'m').format()
-          //-   var startTime = moment(Timestart).format()
-          //-   var endTime= moment(Timeend).format()
-          //-   $('#fullCalendar').fullCalendar('renderEvent',{
-          //-     resourceId: data[i].room_id,
-          //-     title: "Remaining Bed "+"ID: "+data[i].room_id,
-          //-     title2: data[i].room_name+" "+newQnty+" remainings ",
-          //-     description: data[i].room_type_desc,
-          //-     start: startTime,
-          //-     end: newT
-          //-   },true)
-          //-   }
-          //- })
           }
           else if (restype == 'single')
             {
-              $.post('/customer/customerTime/query').done(data=>{
+              $.post('customerTime/query').done(data=>{
                 for(var i=0; i<data.length;i++)
                   {
                     $('#fullCalendar').fullCalendar('addResource', {
@@ -441,68 +262,160 @@ html(lang='en')
                     })
 
                     //- BACKGROUND COLOR 
-                    $.post('/customer/customerTime/addResource',{id:data[i].room_id,
-                    datePick:date.date}).done(data=>{
+                    $.post('customerTime/addResource',{id:data[i].room_id,datePick:date.date}).done(data=>{
+                      if(data[0].room_gender == 1){
+                        var newQnty = data[0].bed_qty - data[0].boys_occupied
+                        //- console.log('NEW QUANTITY',newQnty)
+                      } else if(data[0].room_gender ==2){
+                        var newQnty = data[0].bed_qty - data[0].girls_occupied
+                        //- console.log('NEW QUANTITY',newQnty)
+                      } else if(data[0].room_gender == 3){
+                        var total_occupied = data[0].boys_occupied + data[0].girls_occupied
+                        var newQnty = data[0].bed_qty - total_occupied
+                        //- console.log('NEW QUANTITY',newQnty)
+                      }
+                      //- var newQnty = data[0].bed_qty - data[0].occupied
+                      var color = '#FF232'
+                      //- console.log('DATA FROM BG COLOR')
+                      //- console.log(data)
                       for(var i=0; i<data.length;i++)
                         {
-                          console.log(data)
-                          
-                          var occupied = data[i].bed_occupied
-
+                          if(data[i].room_gender == 1){
+                            var occupied = data[i].boys_occupied
+                            //- console.log('TOTAL_OCCUPIED',occupied)
+                          } else if(data[i].room_gender == 2){
+                            var occupied = data[i].girls_occupied
+                            //- console.log('TOTAL_OCCUPIED',occupied)
+                          } else if(data[i].room_gender == 3){
+                            var occupied = data[i].boys_occupied + data[i].girls_occupied
+                            //- console.log('TOTAL_OCCUPIED',occupied) 
+                          }
+                          //- var occupied = data[i].bed_occupied
                           var bed_qnty = data[i].bed_qty
+                          //- console.log('BED_QNTY '+bed_qnty)
+                          var test = data[i].walkin_date+' '+data[i].walkin_start_time;
+                      if(i>0)
+                        {
+                          var test2 = data[i-1].walkin_date+' '+data[i-1].walkin_end_time;
+                          //- console.log('TEST: '+test+' TEST2: '+test2)
+                          //- console.log(moment(test).isSameOrAfter(test2))
+                          if(moment(test).isSameOrAfter(test2))
+                            {
+                              newQnty = eval(data[0].bed_qty+'-'+occupied)
+                              //- console.log('OCCUPIEDs '+newQnty)
+                            }
+                          else
+                            {
+                              //- console.log('pasok dito')
+                              newQnty = eval(newQnty+'-'+occupied)
+                              //- console.log(newQnty)
+                            }
+                        if(newQnty<=16){
+                          color = '#ffe6b3' //kunwari red
+                        }
+                        if(newQnty<=5){
+                          color = '#FFA500' //kunwari red
+                        }
+                        if(newQnty<=0){
+                          color = '#FF0000' //kunwari red
+                        }
+                        }
+                        test = moment(test).format('YYYY-MM-DD HH:mm')
+                        test2 = moment(test2).format('YYYY-MM-DD HH:mm')
+                        var TIMESTART = data[i].walkin_start_time
+                        var TIMEEND = data[i].walkin_end_time
+                        var Tstart = data[i].walkin_date +' '+data[i].walkin_start_time
+                        var Timestart = data[i].walkin_date +' '+data[i].walkin_start_time
+                        var Timeend = data[i].walkin_date +' '+data[i].walkin_end_time;
+                        var newT = moment(Timeend).add(5,'m').format()
+                        var Tnew = moment(endTime).add(5,'m').format()
+                        var startTime = moment(Timestart).format()
+                        var endTime= moment(Timeend).format()
+                          //- var occupied = data[i].bed_occupied
+                          //- var bed_qnty = data[i].bed_qty
 
-                          var TIMESTART = data[i].walkin_start_time
-                          var TIMEEND = data[i].walkin_end_time
-                          var newQnty = bed_qnty - occupied
-                          var Tend = data[i].walkin_date +' '+data[i].walkin_end_time
-                          var Timestart = data[i].walkin_date +' '+data[i].walkin_start_time
-                          var Timeend = data[i].walkin_date +' '+data[i].walkin_end_time;
-                          var newT = moment(Timeend).add(5,'m').format()
-                          var startTime = moment(Timestart).format()
-                          var endTime= moment(Timeend).format()
+                          //- var TIMESTART = data[i].walkin_start_time
+                          //- var TIMEEND = data[i].walkin_end_time
+                          //- var newQnty = bed_qnty - occupied
+                          //- var Tend = data[i].walkin_date +' '+data[i].walkin_end_time
+                          //- var Timestart = data[i].walkin_date +' '+data[i].walkin_start_time
+                          //- var Timeend = data[i].walkin_date +' '+data[i].walkin_end_time;
+                          //- var newT = moment(Timeend).add(5,'m').format()
+                          //- var startTime = moment(Timestart).format()
+                          //- var endTime= moment(Timeend).format()
+                          //- if(newQnty<=16){
+                          //-   color = '#ffb31a' //kunwari red
+                          //- }
+                          //- if(newQnty<=5){
+                          //-   color = '#FFA500' //kunwari red
+                          //- }
+                          //- if(newQnty<=0){
+                          //-   color = '#FF0000' //kunwari red
+                          //- }
                       
                           $('#fullCalendar').fullCalendar('renderEvent',{
                             resourceId: data[i].room_id,
                             title: "Remaining Bed "+newQnty,
-                            title2: "Start TIME: "+TIMESTART+" END TIME: "+TIMEEND,
+                            title2: "START TIME: "+TIMESTART+" END TIME: "+TIMEEND+" "+newQnty,
                             description: data[i].room_name+" ",
                             start: startTime,
                             end: newT,
-                            rendering: 'background'
+                            rendering: 'background',
+                            backgroundColor: color
                           },true)
                         }
                       })
+
+
+
                     //- YUNG EVENT MISMO
-                    $.post('/customer/customerTime/addResource',{id:data[i].room_id,datePick:date.date}).done(data=>{
-                      //- console.log(data)
-                      var newQnty = data[0].bed_qty - data[0].occupied
-                      console.log('QUANTITY '+newQnty)
+                    $.post('customerTime/addResource',{id:data[i].room_id,datePick:date.date}).done(data=>{
+                      console.log('EVENT MISMO')
+                      console.log(data)
+                      if(data[0].room_gender == 1){
+                        var newQnty = data[0].bed_qty - data[0].boys_occupied
+
+                      } else if(data[0].room_gender == 2){
+                        var newQnty = data[0].bed_qty - data[0].girls_occupied
+                      } else if(data[0].room_gender == 3){
+                        var total_occupied = data[0].boys_occupied + data[0].girls_occupied
+                        var newQnty = data[0].bed_qty - total_occupied
+                      }
+                      console.log(newQnty)
+                      //- var newQnty = data[0].bed_qty - data[0].boys_occupied
+                      
                       var color = '#FF232' // kunwari blue
-                      for(var i=0; i<data.length;i++)
+                      for(let i=0; i<data.length;i++)
                         {
-                          var occupied = data[i].bed_occupied
+                          if(data[i].room_gender ==1){
+                            var occupied = data[i].boys_occupied
+                          } else if(data[i].room_gender ==2){
+                            var occupied = data[i].girls_occupied
+                          } else if(data[i].room_gender == 3){
+                            var occupied = data[i].boys_occupied + data[i].girls_occupied
+                          }
+                          //- var occupied = data[i].boys_occupied
                           var bed_qnty = data[i].bed_qty
-                          //- console.log("OCCUPIED "+occupied)
                           console.log('BED_QNTY '+bed_qnty)
                           var test = data[i].walkin_date+' '+data[i].walkin_start_time;
                       if(i>0)
                         {
                           var test2 = data[i-1].walkin_date+' '+data[i-1].walkin_end_time;
-                          console.log('TEST: '+test+' TEST2: '+test2)
+                          //- console.log('TEST: '+test+' TEST2: '+test2)
                           console.log(moment(test).isSameOrAfter(test2))
                           if(moment(test).isSameOrAfter(test2))
                             {
                               newQnty = eval(data[0].bed_qty+'-'+occupied)
-                              console.log('OCCUPIED '+occupied)
+                              console.log('NEW QNTY'+newQnty)
                             }
                           else
                             {
-                              console.log('pasok dito')
+                              //- console.log('pasok dito')
                               newQnty = eval(newQnty+'-'+occupied)
-                              console.log(newQnty)
+                              //- console.log(newQnty)
                             }
                         if(newQnty<=16){
-                          color = '#FFFF50' //kunwari red
+                          color = '#ffb31a' //kunwari red
                         }
                         if(newQnty<=5){
                           color = '#FFA500' //kunwari red
@@ -527,7 +440,7 @@ html(lang='en')
                           $('#fullCalendar').fullCalendar('renderEvent',{
                             resourceId: data[i].room_id,
                             title: "Remaining Bed "+newQnty,
-                            title2: "Start TIME: "+TIMESTART+" END TIME: "+TIMEEND,
+                            title2: "START TIME: "+TIMESTART+" END TIME: "+TIMEEND,
                             title3: newQnty,
                             description: data[i].room_name+" ",
                             start: startTime,
@@ -536,6 +449,7 @@ html(lang='en')
                           },true)
                         }
                       }
+                      //- console.log(color)
                     })
                   }
 
@@ -552,8 +466,16 @@ html(lang='en')
         })
   script.
       $(document).ready(function(){
+        var scriptSession = !{JSON.stringify(reqSession)};
+        console.log(scriptSession)
+        var opening_time= scriptSession.utilities[0].opening_time
+        var closing_time= scriptSession.utilities[0].closing_time
+        console.log(opening_time+" "+closing_time)
         var customerId= $('#Id').val()
         var date = !{JSON.stringify(date)}
+        var reservetype = !{JSON.stringify(restype)}
+        var male = !{JSON.stringify(male)}
+        var female = !{JSON.stringify(female)}
         $('#fullCalendar').fullCalendar({
           header: {
               left:   'title',
@@ -585,8 +507,8 @@ html(lang='en')
               var timePicked= date.format('hh:mm A')
               var datePicked = !{JSON.stringify(date)}
               swal({
-                title: "You Clicked " + date.format('hh:mm A')+" From "+resource.title,
-                text: "Are You Sure?",
+                title: "You clicked " + date.format('hh:mm A')+" From "+resource.title,
+                text: "Are you sure?",
                 icon: "info",
                 buttons: ["Cancel","Proceed"],
                 dangerMode: true
@@ -594,7 +516,7 @@ html(lang='en')
               }).then((proceed) => {
                 if(proceed)
                 {
-                  location.href=`/customer/bookreservation?time=${timePicked}&date=${datePicked.date}&room=${resource.title}&roomId=${resource.id}`
+                  location.href=`./bookreservation?time=${timePicked}&date=${datePicked.date}&room=${resource.title}&roomId=${resource.id}&reservetype=${reservetype}&male=${male}&female=${female}`
                 }
                 else
                 {
@@ -615,8 +537,8 @@ html(lang='en')
             // days of week. an array of zero-based day of week integers (0=Sunday)
             dow: [ 1, 2, 3, 4, 5, 6, 7 ], // Monday - Thursday
 
-            start: '13:00', 
-            end: '01:00', 
+            start: opening_time, 
+            end: closing_time, 
           },
           eventRender: function(eventObj, $el) {
             $el.popover({
@@ -628,7 +550,7 @@ html(lang='en')
             });
           },
           eventClick: function(eventObj) {
-             var timeNow = moment().format('YYYY-MM-DD HH:mm')
+            var timeNow = moment().format('YYYY-MM-DD HH:mm')
             //- var businessHours = reqSession.utilities.businessHours
             var businessHoursDate = moment().format('YYYY-MM-DD')
             var businessHours = businessHoursDate+' 13:00'
@@ -641,8 +563,8 @@ html(lang='en')
               var timePicked= eventObj.start.format('hh:mm A')
               var datePicked = !{JSON.stringify(date)}
               swal({
-                title: "You Clicked " + eventObj.start.format('hh:mm A')+" From "+eventObj.title+" "+eventObj.title,
-                text: "Are You Sure?",
+                title: "You clicked " + eventObj.start.format('hh:mm A')+" From "+eventObj.description+" "+eventObj.title3,
+                text: "Are you sure?",
                 icon: "info",
                 buttons: ["Cancel","Proceed"],
                 dangerMode: true
@@ -650,7 +572,7 @@ html(lang='en')
               }).then((proceed) => {
                 if(proceed)
                 {
-                  location.href=`/customer/bookreservation?time=${timePicked}&date=${datePicked.date}&room=${eventObj.description}&roomId=${eventObj.resourceId}`
+                  location.href=`/bookreservation?time=${timePicked}&date=${datePicked.date}&room=${eventObj.description}&roomId=${eventObj.resourceId}&reservetype=${reservetype}&male=${male}&female=${female}`
                 }
                 else
                 {
@@ -681,4 +603,3 @@ html(lang='en')
       });
       //- $('#calendar').val('')
       });
-  

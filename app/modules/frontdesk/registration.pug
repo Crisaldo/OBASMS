@@ -299,6 +299,11 @@ html(lang='en')
                                               td
                                                 a.viewDetails(style='color: black; cursor: pointer' rel='tooltip' title='Click to view details' customer_id=`${customer.cust_id}`)= customer.cust_fname+" "+customer.cust_mname+" "+customer.cust_lname
                                               input.name(type='hidden' value=`${customer.cust_fname+" "+customer.cust_mname+" "+customer.cust_lname}` id=`${customer.cust_id}`)
+                                              -if(customer.vat_exempt_id_no == null)
+                                                input.vat_exempt_custHidden(type='hidden' value='0' id=`${customer.cust_id}`)
+                                              -else if(customer.vat_exempt_id_no != null)
+                                                input.vat_exempt_custHidden(type='hidden' value='1' id=`${customer.cust_id}`)
+                                              
                                               td= customer.cust_gender
                                               td
                                                 .dropdown(style="right: 10px")
@@ -568,7 +573,7 @@ html(lang='en')
                           .col-md-6
                             h3
                               strong#TotalPrice
-                              input.totalPrice(type='' value='')
+                              input.totalPrice(type='hidden' value='')
 
                         hr
                         .row
@@ -605,6 +610,9 @@ html(lang='en')
                             h4
                               strong Name: 
                                 a#Name
+                        .row
+                          .col-md-10
+                            a(style='color: black')#cust_type
                         hr
                         .row
                           .col-md-15
@@ -614,13 +622,15 @@ html(lang='en')
                         .row
                           .col-md-10
                             h4 Total Guest: 
+                                strong#numberOfGuest 
                                 a#EntranceFee
-                                  strong#numberOfGuest 
                         .row
-                          .col-md-4
-                          .col-md-6
+                          .col-md-3
+                          .col-md-7
                             h3
                               strong#TotalAmenityPrice
+                              br
+                              strong#TotalAmenityPriceVat
                               input.totalAmenityPrice(type='hidden' value='')
 
                         hr
@@ -631,15 +641,13 @@ html(lang='en')
                               .input-group
                                 span.input-group-addon ₱  
                                 input.form-control.amountAmenityReceived(type='number', placeholder='Amount Received' data-mask='000.000.000.000.000,00' data-mask-reverse="true")
-                                span.input-group-addon .00
                           
                           .col-md-5
                             .form-group.has-default.bmd-form-group
                               label Change: 
                               .input-group
                                 span.input-group-addon ₱ 
-                                input.form-control.changeAmenity(type='number', placeholder='Change' value='0' disabled)
-                                span.input-group-addon .00
+                                input.form-control.changeAmenity(type='number', placeholder='Change' value='0.00' disabled)
                         .modal-footer
                           button.btn.btn-secondary.pull-right.btn.btn-success.btn-fill.btn-wd.buttonAmenityDone(type='button') Done
                           button.btn.btn-secondary.pull-left.btn.btn-danger.btn-fill.btn-wd(type='button', data-dismiss='modal') Cancel
@@ -694,6 +702,8 @@ html(lang='en')
   script(src='/assets/paperDashboardPro/js/jquery.sharrre.js')
   // Paper Dashboard PRO DEMO methods, don't include it in your project!
   script(src='/assets/paperDashboardPro/js/demo.js')
+  script(src='/assets/pdfmake/pdfmake.js')
+  script(src='/assets/pdfmake/vfs_fonts.js')
   script.
     $(document).ready(function(){
       $('#vat_id_no').on('keyup',function(){
@@ -979,84 +989,92 @@ html(lang='en')
       })
     })
 
-
   //- AMENITY
   script.
     $(document).ready(function(){
       $('.amenityButton').click(function(){
         var id = $(this).val()
-        var cust_name = $(`.name[id='${id}'`).val()
+        var cust_name = $(`.name[id='${id}']`).val()
         $('#amenityOnly').modal('show')
         $('#custName').append(`${cust_name}`)
-
+        var exempt_cust = $(`.vat_exempt_custHidden[id='${id}']`).val()
         // PROCEED
         $('.proceedButton').click(function(){
           var guest_quantity = $('.quantityGuest').val()
           var scriptSession = !{JSON.stringify(reqSession)};
+          var vat = parseFloat(scriptSession.utilities[0].vat) / 100
+          console.log('VAT',vat)
           var entrance_fee = scriptSession.utilities[0].entrance_fee
               entrance_fee_total = parseInt(guest_quantity) * parseFloat(entrance_fee)
+          var entrance_fee_vat = parseFloat(entrance_fee_total) * vat
+              entrance_fee_vat = parseFloat(entrance_fee_total) - parseFloat(entrance_fee_vat)
+          if(guest_quantity != 0){
           swal({
             title: guest_quantity+' Guest?',
             text: ' Are you sure?',
             icon: 'info',
             buttons: ['No','Yes'],
           }).then(function(Yes){
-            if(Yes)
-            {
+            if(Yes){
               swal({
                 title: "Pay now or pay later?",
                 icon: 'info',
-                buttons: ['Pay Later',"Pay Now"],
-              }).then(function(PayNow){
-                if(PayNow)
-                {
+                buttons: {
+                  cancel: true,
+                  payLater: {
+                    text:'Pay Later',
+                    value:'PayLater'
+                  },
+                  payNow: {
+                    text: 'Pay Now',
+                    value: 'PayNow'
+                  }
+                },
+              }).then(function(value){
+                if(value == "PayNow"){
                   $('#paynowAmenity').modal('show')
                   $('#Name').append(`${cust_name}`)
                   $('#numberOfGuest').append(`${guest_quantity} x `)
-                  $('#EntranceFee').append(`₱${entrance_fee}.00`)
-
-                  $('.totalAmenityPrice').val(entrance_fee_total)
-                  $('#TotalAmenityPrice').append(`Total Price: ₱${entrance_fee_total}.00`)
-
+                  $('#EntranceFee').append(`₱${parseFloat(entrance_fee).toFixed(2)}`)
+                  if(exempt_cust == 0){
+                    $('.totalAmenityPrice').val(entrance_fee_total)
+                    $('#TotalAmenityPrice').append(`Total Price: ₱${(entrance_fee_total).toFixed(2)}`)
+                  } else {
+                    $('#cust_type').append('This customer is VAT exempted')
+                    $('#TotalAmenityPrice').append(`Total Price: ₱${(entrance_fee_vat).toFixed(2)}`)
+                    $('.totalAmenityPrice').val(entrance_fee_vat)
+                    $('#TotalAmenityPriceVat').append(`Original Price: ₱${(entrance_fee_total).toFixed(2)}`)
+                  }
                   // BUTTON AMENITY DONE
-
                   $('.buttonAmenityDone').click(function(){
                     var amount_received = $('.amountAmenityReceived').val()
                     var total_price = $('.totalAmenityPrice').val()
-                    
-                    console.log('AMOUNT RECEIVED', amount_received)
-                    console.log('TOTAL PRICE', total_price)
-
-                    console.log(amount_received >= total_price)
-                    if(amount_received == 0)
-                    {
+                    if(amount_received == 0){
                       swal({
                         title: "Amount received is 0.",
                         icon: 'warning'
                       })
                     }
-                    else if(parseFloat(amount_received) < parseFloat(total_price))
-                    {
+                    else if(parseFloat(amount_received) < parseFloat(total_price)){
                       swal({
                         title: "The amount received is insuficient.",
                         icon: 'warning'
                       })
                     }
-                    else if(parseFloat(amount_received) >= parseFloat(total_price))
-                    {
+                    else if(parseFloat(amount_received) >= parseFloat(total_price)){
                       swal({
                         title: "Are you sure?",
-                        icon: 'info'
+                        icon: 'warning',
+                        buttons: ['Cancel','Confirm']
                       }).then(function(sure){
-                        if(sure)
-                        {
+                        if(sure){
                           $.post('./AmenityPayNow',{
                             cust_id: id,
                             guest_quantity,
-                            entrance_fee_total
+                            entrance_fee_total: $('.totalAmenityPrice').val()
                           }).done(function(data){
-                            if(data.alertDesc==0)
-                            {
+                            if(data.alertDesc==0){
+                              PDF(exempt_cust,cust_name,guest_quantity,entrance_fee_total,entrance_fee_vat)
                               swal({
                                 title: "Success",
                                 icon: 'success'
@@ -1064,65 +1082,133 @@ html(lang='en')
                                 location.reload();
                               })
                             }
-                            else
-                            {
+                            else{
                               swal({
                                 title: "ERROR",
                                 icon: 'error'
                               })
                             }
                           })
+                        } else {
                         }
                       })
                     }
                   })
-
                 }
-                else
-                {
-                  alert("PAYLATER")
+                else if(value == 'PayLater'){
+                  if(exempt_cust == 0){
+                    entrance_fee_total = entrance_fee_total
+                  } else {
+                    entrance_fee_total = entrance_fee_vat
+                  }
                   $.post('./AmenityPayLater',{
-                            cust_id: id,
-                            guest_quantity,
-                            entrance_fee_total
-                          }).done(function(data){
-                            if(data.alertDesc==0)
-                            {
-                              swal({
-                                title: "Success",
-                                icon: 'success'
-                              }).then(function(){
-                                location.reload();
-                              })
-                            }
-                            else
-                            {
-                              swal({
-                                title: "ERROR",
-                                icon: 'error'
-                              })
-                            }
+                    cust_id: id,
+                    guest_quantity,
+                    entrance_fee_total
+                    }).done(function(data){
+                      if(data.alertDesc==0){
+                        swal({
+                          title: "Success",
+                          icon: 'success'
+                        }).then(function(){
+                          location.reload();
+                        })
+                      } else {
+                        swal({
+                          title: "ERROR",
+                          icon: 'error'
+                        })
+                      }
                   })
+                } else if(value == null){
+
                 }
               })
-            }
-            else
-            {
-
+            } else {
             }
           })
+          $('#paynowAmenity').on('hidden.bs.modal', function (){
+            $('#cust_type').empty()
+            $('#Name').empty()
+            $('#numberOfGuest').empty()
+            $('#EntranceFee').empty()
+            $('#TotalAmenityPrice').empty()
+            $('#TotalAmenityPriceVat').empty()
+          
+          })
+          }
         })
-
-
-
-
-         $('#amenityOnly').on('hidden.bs.modal', function (){
-        $('#custName').empty()
-
-        
-        
+        $('#amenityOnly').on('hidden.bs.modal', function (){
+          $('#custName').empty()       
         });
       })
+
+        function PDF(exempt_cust,cust_name,guest_quantity,entrance_fee_total,entrance_fee_vat){
+        var scriptSession = !{JSON.stringify(reqSession)};
+        var company_name = scriptSession.utilities[0].company_name
+        var company_address = scriptSession.utilities[0].company_address
+        var or_no = scriptSession.utilities[0].official_receipt_num
+        var entrance = scriptSession.utilities[0].entrance_fee
+        var vat = scriptSession.utilities[0].vat / 100
+        var amountReceived = $('.amountAmenityReceived').val()
+        var date_time = moment(new Date()).format('MMMM DD, YYYY')
+        if(exempt_cust == 0){
+          var total_price = (entrance_fee_total).toFixed(2)
+          var vatable_sales = parseFloat(total_price) * vat
+              vatable_sales = total_price - vatable_sales
+          var vat_amount = total_price - vatable_sales
+        } else {
+          var total_price = (entrance_fee_vat).toFixed(2)
+           var vatable_sales = parseFloat(total_price) * vat
+              vatable_sales = total_price - vatable_sales
+          var vat_amount = total_price - vatable_sales
+          var vatable = {text: 'Original Price: ₱'+(entrance_fee_total).toFixed(2), fontSize: 13, bold: true}
+        }
+        var docDefinition = {
+            content: [
+                {text: company_name, fontSize: 20, bold: true, alignment: 'center'},
+                {text: company_address, fontSize: 14, bold: false,alignment: 'center'},
+                {text: '- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - ', fontSize: 14, bold: false, margin: [0, 0, 0, 0]},
+                {text: 'Official Receipt No: '+or_no, fontSize: 12, bold: false,},
+                {text: 'Date: '+date_time, fontSize: 12, bold: false,},
+                {text: 'Customer '+cust_name, fontSize: 12, bold: false,},
+                {text: '- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - ', fontSize: 14, bold: false, margin: [0, 0, 0, 0]},
+                {text: 'Amenity Only', fontSize:15, bold: true},
+                {text: 'Entrance fee: ₱'+parseFloat(entrance).toFixed(2), fontSize:12, bold:false},
+                {text: 'Total Guest: '+guest_quantity, fontSize:12, bold:false},
+                
+                {text: '- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - ', fontSize: 14, bold: false, margin: [0, 0, 0, 0]},
+                {text: 'Amount Due: ₱'+total_price, fontSize: 17, bold: true},
+                {text: 'Cash Received: ₱'+parseFloat(amountReceived).toFixed(2), fontSize: 12, bold: false},
+                {text: 'Change: ₱'+$('.changeAmenity').val(), fontSize: 12, bold: false},
+                vatable,
+                {text: 'Vatable Sales: ₱'+(vatable_sales).toFixed(2), fontSize: 12, bold: false},
+                {text: 'VAT amount'+'('+eval(vat*100)+'%): ₱'+(vat_amount).toFixed(2), fontSize: 12, bold: false},
+            ],
+
+              styles: {
+              header: {
+                fontSize: 18,
+                bold: true,
+                margin: [0, 0, 0, 10]
+              },
+              subheader: {
+                fontSize: 16,
+                bold: true,
+                margin: [0, 10, 0, 5]
+              },
+              tableExample: {
+                margin: [0, 5, 0, 15]
+              },
+              tableHeader: {
+                bold: true,
+                fontSize: 13,
+                color: 'black'
+              }
+              }
+            };
+            pdfMake.createPdf(docDefinition).open(); 
+    }
     })
   
   //- COMPUTATION FOR CHANGE[AMENITY]
@@ -1133,12 +1219,16 @@ html(lang='en')
         var input = $('.amountAmenityReceived').val()
         if($('.amountAmenityReceived').val()==0)
           {
-            $('.changeAmenity').val(0)
+            $('.changeAmenity').val(parseFloat(0).toFixed(2))
           }
         else
         {
           input -= parseFloat(totalPrice)
-          $('.changeAmenity').val(input)
+          if(input < 0){
+            $('.changeAmenity').val(parseFloat(0).toFixed(2))
+          } else {
+            $('.changeAmenity').val((input).toFixed(2))
+          }
         }
       })
     })

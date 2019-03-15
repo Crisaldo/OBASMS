@@ -247,7 +247,7 @@ html(lang='en')
                   <td>${data.out1[i].service_name}</td>
                   <td>${data.out1[i].service_total_quantity}</td>
                   <td>${data.out1[i].service_total_duration}</td>
-                  <td>${data.out1[i].service_total_price}</td>`)
+                  <td>₱${(data.out1[i].service_total_price).toFixed(2)}</td>`)
                 }
           $('#viewServices').modal('show')
           $('#viewServices').on('hidden.bs.modal', function (){

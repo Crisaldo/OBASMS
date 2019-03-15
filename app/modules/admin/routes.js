@@ -1763,6 +1763,7 @@ router.post('/utilities/updateLogo',upload.single('company_logo'),(req,res)=>{
   therapist_commission="${req.body.therapist_commission}",
   amenity_cancellation='${req.body.amenity_cancellation}',
   official_receipt_num='${req.body.official_receipt_num}',
+  locker_quantity = '${req.body.locker_quantity}',
   vat='${req.body.vat}'
   WHERE utilities_id="${req.body.utilities_id}"
   `
@@ -1827,13 +1828,42 @@ router.post('/deleteExempt',(req,res)=>{
 // - - - - - - - - - - - - - - - - - - C O M M I S S I O N - - - - -  - - - - - - - - - - - - - - - - - - -  ||
 // ========================================================================================================= ||
 
-router.get('/commission',mid.adminnauthed, (req, res) => {
-  const query = `SELECT * FROM utilities_tbl`
+router.get('/commission', (req, res) => {
+  const query = `SELECT * FROM utilities_tbl;
+  
+  SELECT *, SUM(walkin_total_amount) AS TOTAL  
+  FROM walkin_queue_tbl JOIN therapist_in_service_tbl ON walkin_queue_tbl.walkin_id = therapist_in_service_tbl.walkin_id
+  JOIN therapist_tbl ON therapist_tbl.therapist_id = therapist_in_service_tbl.therapist_id
+  WHERE DAY(walkin_queue_tbl.walkin_date) <= '06' OR DAY(walkin_queue_tbl.walkin_date) >= '21'
+  AND walkin_queue_tbl.walkin_payment_status = 1 AND walkin_queue_tbl.walkin_indicator = 2
+  GROUP BY therapist_tbl.therapist_id;
+  SELECT *, SUM(walkin_total_amount) AS TOTAL  
+  FROM walkin_queue_tbl JOIN therapist_in_service_tbl ON walkin_queue_tbl.walkin_id = therapist_in_service_tbl.walkin_id
+  JOIN therapist_tbl ON therapist_tbl.therapist_id = therapist_in_service_tbl.therapist_id
+  WHERE DAY(walkin_queue_tbl.walkin_date) >= '05' AND DAY(walkin_queue_tbl.walkin_date) <= '21'
+  AND walkin_queue_tbl.walkin_indicator = 2 AND walkin_queue_tbl.walkin_payment_status = 1
+  GROUP BY therapist_tbl.therapist_id;
+`
 
   db.query(query,(err,out)=>{
-    req.session.utilities = out
+    req.session.utilities = out[0]
+    var therapist_commission = parseFloat(out[0][0].therapist_commission) / 100
+    for(var i= 0; i<out[1].length;i++){
+      // console.log(parseFloat(out[1][i].TOTAL) - parseFloat(out[1][i].TOTAL))
+      var total = parseFloat(out[1][i].TOTAL) * therapist_commission
+      out[1][i].TOTAL = parseFloat(out[1][i].TOTAL) - parseFloat(total)
+    }
+
+    for(var i= 0; i<out[2].length;i++){
+      // console.log(parseFloat(out[2][i].TOTAL) - parseFloat(out[2][i].TOTAL))
+      var total = parseFloat(out[2][i].TOTAL) * therapist_commission
+      out[2][i].TOTAL = parseFloat(out[2][i].TOTAL) - parseFloat(total)
+    }
+
     res.render('admin/commission/comm',{
-      reqSession : req.session
+      reqSession : req.session,
+      fifths : out[1],
+      bents : out[2]
     })
   })
 })
@@ -1963,63 +1993,383 @@ router.get('/freebiesList',mid.adminnauthed,(req, res) => {
   res.render('admin/queries/freebiesList')
 })
 
+function COMPUTE_REVENUE(MONTHS, results){
+
+  return new Promise(function(resolve,reject){
+    for(let i= 0;i< results.length;i++){
+      var month = moment(results[i].walkin_date).format('MMMM')
+      var revenue = results[i].TOTAL_AMOUNT
+      if(MONTHS.length != 0){
+        console.log(MONTHS)
+        var MONTH_LENGTH = MONTHS.length
+        for(let a = 0;a<MONTH_LENGTH;a++){
+          if(month == MONTHS[a].month){
+            MONTHS[a].revenue = eval(`${MONTHS[a].revenue}+${revenue}`)
+            break;
+          } 
+          else if(a == MONTHS.length - 1) {
+            MONTHS.push({month,revenue})
+          }
+        }
+      }
+      else{
+        MONTHS.push({month,revenue})
+      }
+      if(i == results.length - 1){
+        resolve(MONTHS)
+      }
+    }
+    if(results.length == 0){
+      resolve(MONTHS)
+    }
+  })
+}
 
 
+function COMPUTE_REVENUE_YEAR(YEARS, results){
 
+  return new Promise(function(resolve,reject){
+    for(let i= 0;i< results.length;i++){
+      var year = moment(results[i].walkin_date).format('YYYY')
+      var revenue = results[i].TOTAL_AMOUNT
+      if(YEARS.length != 0){
+        console.log(YEARS)
+        var MONTH_LENGTH = YEARS.length
+        for(let a = 0;a<MONTH_LENGTH;a++){
+          if(year == YEARS[a].year){
+            YEARS[a].revenue = eval(`${YEARS[a].revenue}+${revenue}`)
+            break;
+          } 
+          else if(a == YEARS.length - 1) {
+            YEARS.push({year,revenue})
+          }
+        }
+      }
+      else{
+        YEARS.push({year,revenue})
+      }
+      if(i == results.length - 1){
+        resolve(YEARS)
+      }
+    }
+    if(results.length == 0){
+      resolve(YEARS)
+    }
+  })
+}
 //REPORTS
 router.get('/salesReport',(req, res) => {
   var monthNow = moment(new Date()).format('MM')
-  const query = `SELECT *, SUM(walkin_total_amount) AS total_amount FROM walkin_queue_tbl
-  WHERE MONTH(walkin_date) = "${monthNow}" AND walkin_indicator = 2 AND walkin_payment_status = 1;
+  const query = `SELECT walkin_date, SUM(walkin_total_amount) AS TOTAL_AMOUNT
+  FROM walkin_queue_tbl
+  WHERE walkin_indicator = 2 
+  AND walkin_payment_status = 1
+  GROUP BY MONTH(walkin_date);
+  SELECT date_sold,SUM(gc_price) AS TOTAL_AMOUNT
+  FROM giftcertificate_tbl 
+  WHERE release_stats = 2 || release_stats = 3
+  GROUP BY MONTH(date_sold);
+  SELECT date_only, SUM(total_fee) AS TOTAL_AMOUNT 
+  FROM amenities_reservation_tbl 
+  WHERE paid_status = 1
+  GROUP BY MONTH(date_only);
+  SELECT payment_date, SUM(payment_amount) AS TOTAL_AMOUNT 
+  FROM payment_loyalty_trans_tbl
+  GROUP BY MONTH(payment_date);
   SELECT * FROM utilities_tbl`
 
   db.query(query,(err,out)=>{
-    req.session.utilities = out[1]
-    res.render('admin/reports/salesReport',{
-      salesReports : out[0],
-      reqSession : req.session
+    // req.session.utilities = out[2]
+    // var MONTLY_TOTAL = aa
+    COMPUTE_REVENUE([],out[0]).then(monthsNow => {
+      COMPUTE_REVENUE(monthsNow,out[1]).then(monthsNow => {
+        COMPUTE_REVENUE(monthsNow,out[2]).then(monthsNow => {
+          COMPUTE_REVENUE(monthsNow,out[3]).then(monthsNow => {
+            res.render('admin/reports/salesReport',{  
+                monthsNows : monthsNow
+            })
+          })
+        })
+      })
     })
+    // // console.log(MONTHS)
+    // console.log(out[0])
+    // console.log(out[1])
+    // console.log(out[2])
+    // console.log(out[3])
   })
 })
 
 router.post('/ChangeReport',(req,res)=>{
-  if(req.body.report_type == 0)
-  {
-    const query =`SELECT *,SUM(payment_amount) As Total  FROM payment_loyalty_trans_tbl 
-    GROUP BY payment_date`
-  
-    db.query(query,(err,out)=>{
-      res.send(out)
-    })
-  }
-  else if(req.body.report_type == 1)
-  {
-    const query =`SELECT *,SUM(total_fee) As Total, date_only AS payment_date FROM amenities_reservation_tbl WHERE paid_status = 1 
-    GROUP BY date_only
-    `
-  
-    db.query(query,(err,out)=>{
-      res.send(out)
-    })
-  }
-  else if(req.body.report_type == 2)
-  {
-    var monthNow = moment(new Date()).format('MM')
-    const query = `SELECT *, SUM(walkin_total_amount) AS total_amount FROM walkin_queue_tbl
-    WHERE MONTH(walkin_date) = "${monthNow}" AND walkin_indicator = 2 AND walkin_payment_status = 1`
+  var sales_type = req.body.sales_type
+  var report_type = req.body.report_type
+  console.log('SALE',sales_type)
+  console.log('REPORT',report_type)
+  if(report_type == 0){
+    if(sales_type == 0){
+      const query = `SELECT walkin_date, SUM(walkin_total_amount) AS TOTAL_AMOUNT
+      FROM walkin_queue_tbl
+      WHERE walkin_indicator = 2 
+      AND walkin_payment_status = 1
+      GROUP BY MONTH(walkin_date);
+      SELECT date_sold,SUM(gc_price) AS TOTAL_AMOUNT
+      FROM giftcertificate_tbl 
+      WHERE release_stats = 2 || release_stats = 3
+      GROUP BY MONTH(date_sold);
+      SELECT date_only, SUM(total_fee) AS TOTAL_AMOUNT 
+      FROM amenities_reservation_tbl 
+      WHERE paid_status = 1
+      GROUP BY MONTH(date_only);
+      SELECT payment_date, SUM(payment_amount) AS TOTAL_AMOUNT 
+      FROM payment_loyalty_trans_tbl
+      GROUP BY MONTH(payment_date)`
 
-    db.query(query,(err,out)=>{
-      for(var i= 0; i<out.length; i++){
-        out[i].walkin_date = moment(out[i].walkin_date).format('MMMM')
-        out[i].total_amount = (out[i].total_amount).toFixed(2)
-      }
-      res.send(out)
-    })
+      db.query(query,(err,out)=>{
+        COMPUTE_REVENUE([],out[0]).then(monthsNow => {
+          COMPUTE_REVENUE(monthsNow,out[1]).then(monthsNow => {
+            COMPUTE_REVENUE(monthsNow,out[2]).then(monthsNow => {
+              COMPUTE_REVENUE(monthsNow,out[3]).then(monthsNow => {
+                res.send({  
+                    monthsNows : monthsNow
+                })
+              })
+            })
+          })
+        })
+      })
+    } else if(sales_type == 1){
+      const query = `SELECT walkin_date, SUM(walkin_total_amount) AS TOTAL_AMOUNT
+      FROM walkin_queue_tbl
+      WHERE walkin_indicator = 2 
+      AND walkin_payment_status = 1
+      GROUP BY YEAR(walkin_date);
+      SELECT date_sold,SUM(gc_price) AS TOTAL_AMOUNT
+      FROM giftcertificate_tbl 
+      WHERE release_stats = 2 || release_stats = 3
+      GROUP BY YEAR(date_sold);
+      SELECT date_only, SUM(total_fee) AS TOTAL_AMOUNT 
+      FROM amenities_reservation_tbl 
+      WHERE paid_status = 1
+      GROUP BY YEAR(date_only);
+      SELECT payment_date, SUM(payment_amount) AS TOTAL_AMOUNT 
+      FROM payment_loyalty_trans_tbl
+      GROUP BY YEAR(payment_date)`
+
+      db.query(query,(err,out)=>{
+        COMPUTE_REVENUE_YEAR([],out[0]).then(yearsNow => {
+          COMPUTE_REVENUE_YEAR(yearsNow,out[1]).then(yearsNow => {
+            COMPUTE_REVENUE_YEAR(yearsNow,out[2]).then(yearsNow => {
+              COMPUTE_REVENUE_YEAR(yearsNow,out[3]).then(yearsNow => {
+                res.send({  
+                    yearsNows : yearsNow
+                })
+              })
+            })
+          })
+        })
+      })
+    }
   }
+  
+  if(report_type == 1){
+    if(sales_type ==0){
+      const query = `
+      SELECT payment_date, SUM(payment_amount) AS TOTAL_AMOUNT 
+      FROM payment_loyalty_trans_tbl
+      GROUP BY MONTH(payment_date)`
+
+      db.query(query,(err,out)=>{
+        if(err){
+          console.log(err)
+        }
+        COMPUTE_REVENUE([],out).then(monthsNow => {
+          res.send({  
+              monthsNows : monthsNow
+          })
+        })
+      })
+    } else if(sales_type == 1){
+      const query = `
+      SELECT payment_date, SUM(payment_amount) AS TOTAL_AMOUNT 
+      FROM payment_loyalty_trans_tbl
+      GROUP BY YEAR(payment_date)`
+
+      db.query(query,(err,out)=>{
+        if(err){
+          console.log(err)
+        }
+        COMPUTE_REVENUE_YEAR([],out).then(yearsNow => {
+          res.send({  
+              yearsNows : yearsNow
+          })
+        })
+      })
+    }
+  }
+
+  if(report_type == 2){
+    if(sales_type ==0){
+      const query = `
+      SELECT date_sold,SUM(gc_price) AS TOTAL_AMOUNT
+      FROM giftcertificate_tbl 
+      WHERE release_stats = 2 || release_stats = 3
+      GROUP BY MONTH(date_sold)`
+
+      db.query(query,(err,out)=>{
+        if(err){
+          console.log(err)
+        }
+        COMPUTE_REVENUE([],out).then(monthsNow => {
+          res.send({  
+              monthsNows : monthsNow
+          })
+        })
+      })
+    } else if(sales_type == 1){
+      const query = `
+      SELECT date_sold,SUM(gc_price) AS TOTAL_AMOUNT
+      FROM giftcertificate_tbl 
+      WHERE release_stats = 2 || release_stats = 3
+      GROUP BY YEAR(date_sold)`
+
+      db.query(query,(err,out)=>{
+        if(err){
+          console.log(err)
+        }
+        COMPUTE_REVENUE_YEAR([],out).then(yearsNow => {
+          res.send({  
+              yearsNows : yearsNow
+          })
+        })
+      })
+    }
+  }
+
+  if(report_type == 3){
+    if(sales_type ==0){
+      const query = `
+      SELECT date_only, SUM(total_fee) AS TOTAL_AMOUNT 
+      FROM amenities_reservation_tbl 
+      WHERE paid_status = 1
+      GROUP BY MONTH(date_only)`
+
+      db.query(query,(err,out)=>{
+        if(err){
+          console.log(err)
+        }
+        COMPUTE_REVENUE([],out).then(monthsNow => {
+          res.send({  
+              monthsNows : monthsNow
+          })
+        })
+      })
+    } else if(sales_type == 1){
+      const query = `
+      SELECT date_only, SUM(total_fee) AS TOTAL_AMOUNT 
+      FROM amenities_reservation_tbl 
+      WHERE paid_status = 1
+      GROUP BY MONTH(date_only)`
+
+      db.query(query,(err,out)=>{
+        if(err){
+          console.log(err)
+        }
+        COMPUTE_REVENUE_YEAR([],out).then(yearsNow => {
+          res.send({  
+              yearsNows : yearsNow
+          })
+        })
+      })
+    }
+  }
+
+  if(report_type == 4){
+    if(sales_type ==0){
+      const query = `
+      SELECT walkin_date, SUM(walkin_total_amount) AS TOTAL_AMOUNT
+      FROM walkin_queue_tbl
+      WHERE walkin_indicator = 2 
+      AND walkin_payment_status = 1
+      GROUP BY MONTH(walkin_date)`
+
+      db.query(query,(err,out)=>{
+        if(err){
+          console.log(err)
+        }
+        COMPUTE_REVENUE([],out).then(monthsNow => {
+          res.send({  
+              monthsNows : monthsNow
+          })
+        })
+      })
+    } else if(sales_type == 1){
+      const query = `
+      SELECT walkin_date, SUM(walkin_total_amount) AS TOTAL_AMOUNT
+      FROM walkin_queue_tbl
+      WHERE walkin_indicator = 2 
+      AND walkin_payment_status = 1
+      GROUP BY YEAR(walkin_date)`
+
+      db.query(query,(err,out)=>{
+        if(err){
+          console.log(err)
+        }
+        COMPUTE_REVENUE_YEAR([],out).then(yearsNow => {
+          res.send({  
+              yearsNows : yearsNow
+          })
+        })
+      })
+    }
+  }
+
 })
 
 router.get('/packagesReport',(req, res) => {
   res.render('admin/reports/packagesReport')
+})
+
+router.post('/validatePass',(req,res)=>{
+
+  const query = `SELECT * FROM therapist_account_tbl WHERE therapist_id = "${req.body.id}" AND therapist_password = "${req.body.therapist_password}"`
+
+  db.query(query,(err,out)=>{
+    if(out == '' || out == undefined){
+      var validate = 1
+      res.send({validate:validate})
+    } else if (out != '' || out != undefined){
+      var validate = 0
+      res.send({validate:validate})
+    }
+  }) 
+})
+router.post('/validateAdmin',(req,res)=>{
+  const query = `SELECT * FROM admin_tbl WHERE admin_id = 1 AND admin_password = "${req.body.admin_password}"`
+
+  db.query(query,(err,out)=>{
+    console.log(query)
+    console.log(out == '')
+    if(out == '' || out == undefined){
+      var validate = 1
+      res.send({validate:validate})
+    } else if (out != '' || out != undefined){
+      
+
+      const query = `UPDATE therapist_tbl SET release_comm = ${req.body.release_comm} WHERE therapist_id = "${req.body.id}"`
+
+      db.query(query,(err,out)=>{
+        if(err){
+          console.log(err)
+          console.log(query)
+          var validate = 2
+          res.send({validate:validate})
+        } else {
+          var validate = 0
+          res.send({validate:validate})
+        }
+      })
+    }
+  }) 
 })
 
 

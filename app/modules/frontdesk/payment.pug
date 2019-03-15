@@ -146,7 +146,7 @@ html(lang='en')
                                         tr
                                           th Name
                                           th.disabled-sorting
-                                          th 
+                                          th.disabled-sorting
                                           th Status
                                           th.disabled-sorting Actions
                                       tfoot
@@ -160,7 +160,7 @@ html(lang='en')
                                         each notpaid in notpaids
                                           tr
                                             td= notpaid.cust_fname+' '+notpaid.cust_mname+' '+notpaid.cust_lname
-                                              input.name(type='' value=`${notpaid.cust_fname} ${notpaid.cust_mname} ${notpaid.cust_lname}` id=`${notpaid.walkin_id}`)
+                                              input.name(type='hidden' value=`${notpaid.cust_fname} ${notpaid.cust_mname} ${notpaid.cust_lname}` id=`${notpaid.walkin_id}`)
                                             td
                                             td
                                             td
@@ -195,7 +195,7 @@ html(lang='en')
                                       thead
                                         tr
                                           th Name
-                                          th 
+                                          th.disabled-sorting
                                           th.disabled-sorting Status
                                           th.disabled-sorting Actions
                                           
@@ -226,13 +226,16 @@ html(lang='en')
                                                   span.btn-label
                                                   |  Queue
                                             td
+                                              input.walkin_dateHidden(type='hidden' id=`${paid.walkin_id}` value=`${paid.walkin_date}`)
+                                              input.start_time(type='hidden' id=`${paid.walkin_id}` value=`${paid.walkin_start_time}`)
+                                              input.end_time(type='hidden' id=`${paid.walkin_id}` value=`${paid.walkin_end_time}`)
                                               if(paid.walkin_payment_status == 1 && paid.walkin_indicator ==0)
                                                   .dropdown
                                                     button.btn.btn-simple.btn-info.btn-rotate(href='#', data-toggle='dropdown' )
                                                       i.ti-settings
                                                     ul.dropdown-menu
                                                       li
-                                                        button.btn.btn-simple.btn-info.reserveButton(data-toggle='modal')
+                                                        button.btn.btn-simple.btn-info.refundButton(type='button' value=`${paid.walkin_id}`)
                                                           span.btn-label
                                                           i.ti-calendar
                                                           |  Refund
@@ -265,17 +268,17 @@ html(lang='en')
                                           if(amenity.paid_status==0)
                                             tr
                                               td= amenity.cust_fname+' '+amenity.cust_mname+' '+amenity.cust_lname
-                                                input.amenityName(type='' value=`${amenity.cust_fname} ${amenity.cust_mname} ${amenity.cust_lname}` id=`${amenity.cust_id}`)
-                                                input.amenityId(type='' value=`${amenity.amenity_reservation_id}` id=`${amenity.cust_id}`)
+                                                input.amenityName(type='hidden' value=`${amenity.cust_fname} ${amenity.cust_mname} ${amenity.cust_lname}` id=`${amenity.cust_id}`)
+                                                input.amenityId(type='hidden' value=`${amenity.amenity_reservation_id}` id=`${amenity.cust_id}`)
                                               if(amenity.cust_type==1)
                                                 td Loyalty
                                               else
                                                 td Common
                                               td= amenity.date
                                               td= amenity.number_ofGuest
-                                                input.number_guest(type='' value=`${amenity.number_ofGuest}` id=`${amenity.cust_id}`)
+                                                input.number_guest(type='hidden' value=`${amenity.number_ofGuest}` id=`${amenity.cust_id}`)
                                               td= '₱'+amenity.total_fee
-                                                input.total_fee(type='' value=`${amenity.total_fee}` id=`${amenity.cust_id}`)
+                                                input.total_fee(type='hidden' value=`${amenity.total_fee}` id=`${amenity.cust_id}`)
                                               td
                                                 .dropdown(style="right: 10px")
                                                     button.btn.btn-simple.btn-info.btn-rotate(href='#', data-toggle='dropdown' style='left: auto; right: 5px')
@@ -316,13 +319,13 @@ html(lang='en')
                                           if(amenity.paid_status==1)
                                             tr
                                               td= amenity.cust_fname+' '+amenity.cust_mname+' '+amenity.cust_lname
-                                                input.amenityId(type='' value=`${amenity.amenity_reservation_id}` id=`${amenity.cust_id}`)
+                                                input.amenityId(type='hidden' value=`${amenity.amenity_reservation_id}` id=`${amenity.cust_id}`)
                                               if(amenity.cust_type==1)
                                                 td Loyalty
                                               else
                                                 td Common
                                               td= amenity.date
-                                                input.date(type='' value=`${amenity.date}` id=`${amenity.cust_id}`)
+                                                input.date(type='hidden' value=`${amenity.date}` id=`${amenity.cust_id}`)
                                               td= amenity.number_ofGuest
                                               td= '₱'+amenity.total_fee
                                               td   
@@ -358,7 +361,7 @@ html(lang='en')
                                         each loyalty in loyaltys
                                           tr
                                             td= loyalty.cust_fname+' '+loyalty.cust_mname+' '+loyalty.cust_lname
-                                              input.loyalty_name(type='' value=`${loyalty.cust_fname} ${loyalty.cust_mname} ${loyalty.cust_lname}` id=`${loyalty.member_id}`)
+                                              input.loyalty_name(type='hidden' value=`${loyalty.cust_fname} ${loyalty.cust_mname} ${loyalty.cust_lname}` id=`${loyalty.member_id}`)
                                             td
                                             td
                                             td
@@ -479,13 +482,13 @@ html(lang='en')
                                       div
                                         h5
                                           strong#custName
-                                          input.paid_stats(type='' value='')
+                                          input.paid_stats(type='hidden' value='')
                                           input.walkin_id(type="" value="")
                                           input.customer_id(type="" value="")
                                           input.cust_type(type="" value="")
-                                          input.vat_exempt_custHidden(type='' value="")
+                                          input.vat_exempt_custHidden(type='hidden' value="")
                                           br
-                                          button.hello(type='' value='') Register for Loyalty Membership
+                                          button.hello(type='hidden' value='') Register for Loyalty Membership
                                         h5
                                           strong#Room
                                           br
@@ -551,21 +554,21 @@ html(lang='en')
                                         .col-md-4
                                           h3
                                             strong#TotalPrice
-                                            input.totalPrice(type='' value='')
+                                            input.totalPrice(type='hidden' value='')
                                             br
                                             strong Balance: 
                                               a#AmountNeeded
-                                            input.amountNeeded(type='' value='')
+                                            input.amountNeeded(type='hidden' value='')
                                           h5
                                             strong#TotalPoints
-                                            input.totalAmountPoints(type='' value='')
-                                            input.totalAmountReceived(type='' value='')
+                                            input.totalAmountPoints(type='hidden' value='')
+                                            input.totalAmountReceived(type='hidden' value='')
                                         
                                       hr
                                       .row
                                         .col-md-3#appendDito
-                                        input.currentPoints(type='' value='')
-                                        input.newPoints(type='' value='')
+                                        input.currentPoints(type='hidden' value='')
+                                        input.newPoints(type='hidden' value='')
                                         .col-md-3
                                           .form-group.has-default.bmd-form-group
                                             .row
@@ -582,7 +585,7 @@ html(lang='en')
                                             //-   each gc in giftcerts
                                             //-     option(value=`${gc.gc_id}` gc_value=`${gc.gc_value}`)= gc.gc_refCode+" "+gc.gc_name
                                         
-                                            input.gcTotal(type='' value='0')
+                                            input.gcTotal(type='hidden' value='0')
                                         .col-md-3
                                           .form-group.has-default.bmd-form-group
                                               label Amount Received:
@@ -596,7 +599,7 @@ html(lang='en')
                                             label Change: 
                                             .input-group
                                               span.input-group-addon ₱
-                                              input.form-control.change(type='number', placeholder='Change' value='0' disabled)
+                                              input.form-control.change(type='number', placeholder='Change' value='0.00' disabled)
                                               
                                       .modal-footer
                                         button.btn.btn-secondary.pull-right.btn.btn-success.btn-fill.btn-wd.buttonDone(type='button') Done
@@ -631,7 +634,7 @@ html(lang='en')
                                         .col-md-6
                                           h3
                                             strong#TotalLoyaltyPrice
-                                            input.totalLoyaltyPrice(type='' value='')
+                                            input.totalLoyaltyPrice(type='hidden' value='')
 
                                       hr
                                       .row
@@ -681,7 +684,7 @@ html(lang='en')
                                         .col-md-6
                                           h3
                                             strong#TotalAmenityPrice
-                                            input.totalAmenityPrice(type='' value='')
+                                            input.totalAmenityPrice(type='hidden' value='')
 
                                       hr
                                       .row
@@ -741,7 +744,7 @@ html(lang='en')
                                         div
                                           h2
                                             strong#totalPrice
-                                            input.TotalPrice(type='' value='')
+                                            input.TotalPrice(type='hidden' value='')
                                           h4
                                             strong#totalPoints
                                       .modal-footer
@@ -897,12 +900,12 @@ html(lang='en')
           var input = $('.amountAmenityReceived').val()
           if($('.amountAmenityReceived').val()==0)
             {
-              $('.changeAmenity').val(0)
+              $('.changeAmenity').val(0.00)
             }
           else
           {
             input -= parseFloat(totalPrice)
-            $('.changeAmenity').val(input)
+            $('.changeAmenity').val((input).toFixed(2))
           }
         })
       })
@@ -925,7 +928,7 @@ html(lang='en')
           {
             swal({
               title: 'Ooops',
-              text: 'Sorry no refund',
+              text: 'The allowance time for refund has ended. Refund no longer allowed.',
               icon:'error'
             })
           }
@@ -1038,12 +1041,12 @@ html(lang='en')
           var input = $('.amountLoyaltyReceived').val()
           if($('.amountLoyaltyReceived').val()==0)
             {
-              $('.changeLoyalty').val(0)
+              $('.changeLoyalty').val(0.00)
             }
           else
           {
             input -= parseFloat(totalPrice)
-            $('.changeLoyalty').val(input)
+            $('.changeLoyalty').val((input).toFixed(2))
           }
         })
       })
@@ -1062,7 +1065,7 @@ html(lang='en')
 
           if($('.amountReceived').val()==0)
             {
-              $('.change').val(0)
+              $('.change').val(parseFloat(0).toFixed(2))
             }
           else
             {
@@ -1073,30 +1076,50 @@ html(lang='en')
                   {
                       console.log('CASH ONLY')
                       var change = parseFloat(input) - parseFloat(totalPrice)
-                      $('.change').val(change)
+                      if(change < 0 ){
+                        $('.change').val(parseFloat(0).toFixed(2))
+                      } else{
+                        $('.change').val((change).toFixed(2))
+                      }
                   }
                   else if ($('#checkbox_gc')[0].checked == false && $('#checkboxPoints')[0].checked == true && pointsChecked.length !=0) // CASH AND POINTS
                   {
                     
                     var change = parseFloat(input) - parseFloat(amountNeeded)
-                    $('.change').val(change)
+                    if(change < 0 ){
+                      $('.change').val(parseFloat(0).toFixed(2))
+                    } else{
+                      $('.change').val((change).toFixed(2))
+                    }
                   }
                   else if($('#checkbox_gc')[0].checked == false && $('#checkboxPoints')[0].checked == true && pointsChecked.length ==0)
                   {
                     var change = parseFloat(input) - parseFloat(amountNeeded)
-                    $('.change').val(change)
+                    if(change < 0 ){
+                      $('.change').val(parseFloat(0).toFixed(2))
+                    } else{
+                      $('.change').val((change).toFixed(2))
+                    }
                     $('#checkboxPoints').prop('checked',false)
                   }
                   else if ($('#checkbox_gc')[0].checked == true && giftcertSelected.length !=0 && $('#checkboxPoints')[0].checked == false) // CASH AND GC
                   {
                     
                     var change = parseFloat(input) - parseFloat(amountNeeded)
-                    $('.change').val(change)
+                    if(change < 0 ){
+                      $('.change').val(parseFloat(0).toFixed(2))
+                    } else{
+                      $('.change').val((change).toFixed(2))
+                    }
                   }
                   else if($('#checkbox_gc')[0].checked == true && giftcertSelected.length ==0 && $('#checkboxPoints')[0].checked == false)
                   {
                     var change = parseFloat(input) - parseFloat(amountNeeded)
-                    $('.change').val(change)
+                    if(change < 0 ){
+                      $('.change').val(parseFloat(0).toFixed(2))
+                    } else{
+                      $('.change').val((change).toFixed(2))
+                    }
                     $('#checkbox_gc').prop('checked',false)
                   }
 
@@ -1106,20 +1129,32 @@ html(lang='en')
                     console.log('ALL')
                     var amountNeeded = $('.amountNeeded').val()
                     var change = parseFloat(input) - parseFloat(amountNeeded)
-                    $('.change').val(change)
+                     if(change < 0 ){
+                      $('.change').val(parseFloat(0).toFixed(2))
+                    } else{
+                      $('.change').val((change).toFixed(2))
+                    }
                   }
                   else if($('#checkbox_gc')[0].checked == true  && giftcertSelected.length != 0 && $('#checkboxPoints')[0].checked == true && pointsChecked.length ==0)
                   {
                     var amountNeeded = $('.amountNeeded').val()
                     var change = parseFloat(input) - parseFloat(amountNeeded)
-                    $('.change').val(change)
+                     if(change < 0 ){
+                      $('.change').val(parseFloat(0).toFixed(2))
+                    } else{
+                      $('.change').val((change).toFixed(2))
+                    }
                     $('#checkboxPoints').prop('checked',false)
                   }
                   else if($('#checkbox_gc')[0].checked == true  && giftcertSelected.length == 0 && $('#checkboxPoints')[0].checked == true && pointsChecked.length !=0)
                   {
                     var amountNeeded = $('.amountNeeded').val()
                     var change = parseFloat(input) - parseFloat(amountNeeded)
-                    $('.change').val(change)
+                     if(change < 0 ){
+                      $('.change').val(parseFloat(0).toFixed(2))
+                    } else{
+                      $('.change').val((change).toFixed(2))
+                    }
                     $('#checkbox_gc').prop('checked',false)
                   }
                   else if($('#checkbox_gc')[0].checked == true && giftcertSelected.length == 0 && $('#checkboxPoints')[0].checked == true && pointsChecked.length ==0)
@@ -1135,7 +1170,7 @@ html(lang='en')
                       icon: 'info'
                     }).then(function(){
                       $('.amountReceived').val(' ')
-                      $('.change').val(0)
+                      $('.change').val(parseFloat(0).toFixed(2))
                     })
                   }
                 }
@@ -1145,35 +1180,54 @@ html(lang='en')
                   {
                       console.log('CASH ONLY')
                       var change = parseFloat(input) - parseFloat(totalPrice)
-                      $('.change').val(change)
+                       if(change < 0 ){
+                      $('.change').val(parseFloat(0).toFixed(2))
+                    } else{
+                      $('.change').val((change).toFixed(2))
+                    }
                   }
                   else if ($('#checkbox_gc')[0].checked == true && giftcertSelected.length !=0 ) // CASH AND GC
                   {
                     
                     var change = parseFloat(input) - parseFloat(amountNeeded)
-                    $('.change').val(change)
+                    if(change < 0 ){
+                      $('.change').val(parseFloat(0).toFixed(2))
+                    } else{
+                      $('.change').val((change).toFixed(2))
+                    }
                   }
                   else if($('#checkbox_gc')[0].checked == true && giftcertSelected.length ==0 )
                   {
                     var change = parseFloat(input) - parseFloat(amountNeeded)
-                    $('.change').val(change)
+                     if(change < 0 ){
+                      $('.change').val(parseFloat(0).toFixed(2))
+                    } else{
+                      $('.change').val((change).toFixed(2))
+                    }
                     $('#checkbox_gc').prop('checked',false)
                   }
 
           
                   if($('#checkbox_gc')[0].checked == true  && giftcertSelected.length != 0 ) // CASH , GIFT CERT AND POINTS
                   {
-                    console.log('ALL')
                     var amountNeeded = $('.amountNeeded').val()
                     var change = parseFloat(input) - parseFloat(amountNeeded)
-                    $('.change').val(change)
+                    if(change < 0 ){
+                      $('.change').val(parseFloat(0).toFixed(2))
+                    } else{
+                      $('.change').val((change).toFixed(2))
+                    }
 
                   }
                   else if($('#checkbox_gc')[0].checked == true  && giftcertSelected.length == 0 )
                   {
                     var amountNeeded = $('.amountNeeded').val()
                     var change = parseFloat(input) - parseFloat(amountNeeded)
-                    $('.change').val(change)
+                    if(change < 0 ){
+                      $('.change').val(parseFloat(0).toFixed(2))
+                    } else{
+                      $('.change').val((change).toFixed(2))
+                    }
                     $('#checkbox_gc').prop('checked',false)
                   }
                   else if($('#checkbox_gc')[0].checked == true && giftcertSelected.length == 0 )
@@ -1189,7 +1243,7 @@ html(lang='en')
                       icon: 'info'
                     }).then(function(){
                       $('.amountReceived').val(' ')
-                      $('.change').val(0)
+                      $('.change').val(parseFloat(0).toFixed(2))
                     })
                   }
                 }
@@ -1369,6 +1423,7 @@ html(lang='en')
           let sample = [
               [{text: 'Services Availed', style: 'tableHeader'}, {text: 'Quantity', style: 'tableHeader'}, {text: 'Amount', style: 'tableHeader'}, {text: 'Equivalent Points', style: 'tableHeader'}]
           ]
+          let original_price = []
           $('#checkout').modal('show')
           $.post('/payment/query/CheckoutDets',{id:id})
           .done(data=>{
@@ -1479,19 +1534,20 @@ html(lang='en')
                   <td>
                     ₱${parseFloat(final_price).toFixed(2)}
                     <input class="service_total_price" id="${data.outServices[i].service_id}" type="" value="${parseFloat(final_price).toFixed(2)}"/>
-                    <input class="newhalaga" type='' value="" id="${data.outServices[i].service_id}">
+                    <input class="newhalaga" type='hidden' value="" id="${data.outServices[i].service_id}">
                   </td>
                   <td>
                     ${total_equivalent_points}
                     <input  class="total_equivalent_points" id="${data.outServices[i].service_id}" type="" value="${total_equivalent_points}"/>
-                    <input class="newPointsEq" type='' value="" id="${data.outServices[i].service_id}">
+                    <input class="newPointsEq" type='hidden' value="" id="${data.outServices[i].service_id}">
                   </td>
                   <td>
                     <input class="checkboxPayment" type="checkbox" value="${data.outServices[i].service_id}" style='display:none' />
                   </td>
                   </tr>
                 `)
-                sample.push([data.outServices[i].service_name, data.outServices[i].service_total_quantity, '₱'+parseFloat(final_price).toFixed(2),total_equivalent_points])
+                sample.push([data.outServices[i].service_name, data.outServices[i].service_total_quantity, '₱'+(final_price).toFixed(2),total_equivalent_points])
+                original_price.push(final_price)
               }
             }
             else
@@ -1517,19 +1573,19 @@ html(lang='en')
                   <td>
                     ₱${(final_price).toFixed(2)}
                     <input class="service_total_price" id="${data.outPromo[i].promobundle_id}" type="" value="${final_price}"/>
-                    <input class="newhalaga" type='' value="" id="${data.outPromo[i].promobundle_id}">
+                    <input class="newhalaga" type='hidden' value="" id="${data.outPromo[i].promobundle_id}">
                   </td>
                   <td>
                     ${total_equivalent_points}
                     <input  class="total_equivalent_points" id="${data.outPromo[i].promobundle_id}" type="" value="${total_equivalent_points}"/>
-                    <input class="newPointsEq" type='' value="" id="${data.outPromo[i].promobundle_id}">
+                    <input class="newPointsEq" type='hidden' value="" id="${data.outPromo[i].promobundle_id}">
                   </td>
                   <td>
                     <input class="checkboxPayment" type="checkbox" value="${data.outPromo[i].promobundle_id}" style='display:none' />
                   </td>
                   </tr>
                 `)
-                sample.push([data.outPromo[i].promobundle_name, data.outServices[i].service_total_quantity, '₱'+parseFloat(final_price).toFixed(2),total_equivalent_points])
+                sample.push([data.outPromo[i].promobundle_name, data.outServices[i].service_total_quantity, '₱'+(final_price).toFixed(2),total_equivalent_points])
               }
             }
             else
@@ -1556,18 +1612,18 @@ html(lang='en')
                   <td>
                     ₱${parseFloat(final_price).toFixed(2)}
                     <input class="service_total_price" id="${data.outPackage[i].package_id}" type="" value="${final_price}"/>
-                    <input class="newhalaga" type='' value="" id="${data.outPackage[i].package_id}">
+                    <input class="newhalaga" type='hidden' value="" id="${data.outPackage[i].package_id}">
                   </td>
                   <td>${total_equivalent_points}
                     <input  class="total_equivalent_points" id="${data.outPackage[i].package_id}" type="" value="${total_equivalent_points}"/>
-                    <input class="newPointsEq" type='' value="" id="${data.outPackage[i].package_id}">
+                    <input class="newPointsEq" type='hidden' value="" id="${data.outPackage[i].package_id}">
                   </td>
                   <td>
                     <input class="checkboxPayment" type="checkbox" value="${data.outPackage[i].package_id}" style='display:none' />
                   </td>
                   </tr>
                 `)
-                sample.push([data.outPackage[i].package_name, data.outPackage[i].service_total_quantity, '₱'+parseFloat(final_price).toFixed(2),total_equivalent_points])
+                sample.push([data.outPackage[i].package_name, data.outPackage[i].service_total_quantity, '₱'+(final_price).toFixed(2),total_equivalent_points])
               }
             }
             else
@@ -1610,53 +1666,58 @@ html(lang='en')
           //- var newPoints = parseFloat($('.newPoints').val()) + parseFloat($('.totalAmountPoints').val()) 
           var balance = $('.amountNeeded').val()
           var total_price = $('.totalPrice').val()
+          PDF(sample,original_price)
           //- console.log(parseFloat($('.newPoints').val()))
           //- console.log(parseFloat($('.totalAmountPoints').val()))
           //- console.log('NEW POINTS', newPoints)
           //- console.log('TOTAL POINTS',total_points)
               //- alert(total_points)
-              $.post('/payment/PayNow',{
-              payment_type : payment_type,
-              balance,
-              total_price,
-              walkin_id : $('.walkin_id').val(),
-              amount_received : $('.amountReceived').val(),
-              cust_type : $('.cust_type').val(),
-              total_points,
-              cust_id : $('.customer_id').val(),
-              gift_certs : $('.selectpickerGc').val(),
-              newPoints
-              }).done(function(data){
-                if(data.alertDesc==0){
-                  swal({
-                    title: "Success",
-                    icon: 'success'
-                  }).then(function(){
-                    PDF(sample)
-                    location.reload()
-                  })
-                  } else{
-                    swal({
-                      title: "ERROR",
-                      icon: 'error'
-                    })
-                  }
-                })
+              //- $.post('/payment/PayNow',{
+              //- payment_type : payment_type,
+              //- balance,
+              //- total_price,
+              //- walkin_id : $('.walkin_id').val(),
+              //- amount_received : $('.amountReceived').val(),
+              //- cust_type : $('.cust_type').val(),
+              //- total_points,
+              //- cust_id : $('.customer_id').val(),
+              //- gift_certs : $('.selectpickerGc').val(),
+              //- newPoints
+              //- }).done(function(data){
+              //-   if(data.alertDesc==0){
+              //-     swal({
+              //-       title: "Success",
+              //-       icon: 'success'
+              //-     }).then(function(){
+              //-       //- PDF(sample)
+              //-       //- location.reload()
+              //-     })
+              //-     } else{
+              //-       swal({
+              //-         title: "ERROR",
+              //-         icon: 'error'
+              //-       })
+              //-     }
+              //-   })
               }
 
-        function PDF(sample){
+        function PDF(sample,original_price){
           var scriptSession = !{JSON.stringify(reqSession)};
           var company_name = scriptSession.utilities[0].company_name
           var company_address = scriptSession.utilities[0].company_address
+          var or_no = scriptSession.utilities[0].official_receipt_num
           var vat_exempt_custHidden = $('.vat_exempt_custHidden').val()
           var name = $('#custName').text()
           if(vat_exempt_custHidden == 1){
             var vat = parseInt(scriptSession.utilities[0].vat) / 100 
             var total_price = parseFloat($('.totalPrice').val()).toFixed(2)
-            var vat_price = parseFloat($('.originalTotal').val()).toFixed(2)
-            var vatable = {text: 'Original Price: ₱'+vat_price, fontSize: 13, bold: true}
-            var vat_amount = parseFloat($('.originalTotal').val()) * vat
-            var vatable_sales = parseFloat(vat_price) - parseFloat(vat_amount)
+            var original_Price = 0    
+            for(var i = 0; i<original_price.length;i++){
+              original_Price = parseFloat(original_Price) + parseFloat(original_price[i])
+            }
+            var vat_amount = parseFloat(original_Price) * vat
+            var vatable_sales = parseFloat(original_price) - parseFloat(vat_amount)
+            var vatable = {text: 'Original Price: ₱'+original_Price, fontSize: 13, bold: true}
           } else if(vat_exempt_custHidden == 0){
             var vat = parseInt(scriptSession.utilities[0].vat) / 100 
             var total_price = parseFloat($('.totalPrice').val())
@@ -1725,6 +1786,7 @@ html(lang='en')
                       {text: company_name, fontSize: 20, bold: true, alignment: 'center'},
                       {text: company_address, fontSize: 14, bold: false,alignment: 'center'},
                       {text: '- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - ', fontSize: 14, bold: false, margin: [0, 0, 0, 0]},
+                      {text: "Official Receipt No:"+or_no, fontSize: 12, bold: false,},
                       {text: "Date: "+date_time, fontSize: 12, bold: false,},
                       {text: name, fontSize: 12, bold: false,},
                       {text: $('#Room').text()+'                  '+$('#RoomRate').text(), fontSize: 12, bold: false,},
@@ -1741,7 +1803,7 @@ html(lang='en')
                         layout: 'lightHorizontalLines'
                       },
                       {text: '- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - ', fontSize: 14, bold: false, margin: [0, 0, 0, 0]},
-                      {text: 'Amount Due: ₱'+(total_price).toFixed(2), fontSize: 17, bold: true},
+                      {text: 'Amount Due: ₱'+total_price, fontSize: 17, bold: true},
                       {text: 'Paid using: '+payment_type, fontSize: 12, bold: false},
                       {text: 'Cash Received: ₱'+amount_received, fontSize: 12, bold: false},
                       {text: 'Change: ₱'+change, fontSize: 12, bold: false},
@@ -2053,7 +2115,7 @@ html(lang='en')
                   $('.selectpickerGc').val(0);
                   $('.selectpickerGc').selectpicker("refresh");
                   $('.amountReceived').val(' ')
-                  $('.change').val(0)
+                  $('.change').val(parseFloat(0).toFixed(2))
                   $('.checkboxGC').prop('checked',false)
                 })
             }
@@ -2072,7 +2134,7 @@ html(lang='en')
             else
             {
               $('.amountReceived').val(' ')
-              $('.change').val(' ')
+              $('.change').val(parseFloat(0).toFixed(2))
               $('.selectpickerGc').removeAttr('disabled')
               $('.selectpickerGc').selectpicker("refresh");
 
@@ -2080,7 +2142,7 @@ html(lang='en')
               $('.selectpickerGc').on('change',function(){
 
                   $('.amountReceived').val(' ')
-                  $('.change').val(0)
+                  $('.change').val(parseFloat(0).toFixed(2))
                   var total_value =0
                   var selected = $('option:selected',this)
                   var giftcerts =[]
@@ -2344,7 +2406,7 @@ script.
                 icon: 'info'
               }).then(function(){
                 $('.amountReceived').val(' ')
-                $('.change').val(0)
+                $('.change').val(parseFloat(0).toFixed(2))
                 $('#checkboxPoints').prop('checked',false)
               })
           }
@@ -2396,7 +2458,7 @@ script.
             else
             {
               $('.amountReceived').val(' ')
-              $('.change').val(' ')
+              $('.change').val(parseFloat(0).toFixed(2))
               $('.checkboxPayment').css('display','block')
             }
 
@@ -2614,3 +2676,77 @@ script.
  $(document).ready(function(){
     $("#id_label_multiple").select2();
  })
+
+script.
+  $(document).ready(function(){
+    $('.refundButton').click(function(){
+      var walkin_id = this.value
+      var scriptSession = !{JSON.stringify(reqSession)};
+      var amenity_cancellation = scriptSession.utilities[0].amenity_cancellation
+      var dateNow = moment(new Date()).format('MMMM DD, YYYY hh:mm A')
+          console.log('DATE NOW',dateNow)
+      var date = $(`.walkin_dateHidden[id='${walkin_id}']`).val()
+      var start_time = $(`.start_time[id='${walkin_id}']`).val()
+          start_time = date+' '+start_time
+          start_time = moment(start_time).add(amenity_cancellation,'minutes').format('MMMM DD, YYYY hh:mm A')
+          console.log('START TIME',start_time)
+      var end_time = $(`.end_time[id='${walkin_id}']`).val()
+          end_time = date+' '+end_time
+          console.log('END TIME',end_time)
+      
+      if(moment(dateNow).isSameOrAfter(start_time)){
+       swal({
+              title: 'Ooops',
+              text: 'The allowance time for refund has ended. Refund no longer allowed.',
+              icon:'error'
+          })
+      } else {
+        swal({
+              title: "Are you sure to refund customer's payment?", 
+              text: "Once the refund has been done, it can't be undone.",
+              icon: 'warning',
+              buttons: ["No","Yes"]
+          }).then(function(yes){
+            if(yes){
+              swal({
+                title: 'Please enter the administrator password.',
+                icon: "warning",
+                content: "input",
+                buttons: [true,"Confirm"],
+                dangerMode: true,
+              }).then(function(confirm){
+                var admin_password = $('.swal-content__input').val()
+                if(confirm){
+                    $.post('./reservationRefund',{
+                      walkin_id,admin_password
+                    }).done(function(data){
+                      if(data.alertDesc == 3){
+                        swal({
+                          title: 'The password is incorrect!',
+                          text: 'Please double check and retry',
+                          icon: 'error'
+                        })
+                      }
+
+                      if(data.alertDesc == 0){
+                        swal({
+                          title: 'Success!',
+                          text: "The customer's payment is refunded",
+                          icon: 'success'
+                        }).then(function(){
+                          location.reload()
+                        })
+                      }
+                    })
+                }
+
+              }) 
+              $('.swal-content__input').attr('type', 'password')             
+            } else{
+
+            }
+          })
+      }
+
+    })
+  })

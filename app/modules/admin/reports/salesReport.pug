@@ -208,15 +208,7 @@ html(lang='en')
                   li.active(style="margin-left: 30px;")
                     a(href='./salesReport')
                       span.sidebar-mini 
-                      span.sidebar-normal Sales
-                  li(style="margin-left: 30px;")
-                    a(href='./packagesReport')
-                      span.sidebar-mini 
-                      span.sidebar-normal Packages
-                  li(style="margin-left: 30px;")
-                    a(href='./promosReport')
-                      span.sidebar-mini 
-                      span.sidebar-normal Promos   
+                      span.sidebar-normal Sales 
       .main-panel
         nav.navbar.navbar-default
           
@@ -226,8 +218,8 @@ html(lang='en')
                 span.icon-bar.bar1
                 span.icon-bar.bar2
                 span.icon-bar.bar3
-              a.navbar-brand(href='#Dashboard')
-                | Daily Reports
+              a.navbar-brand()
+                | Sales Report
             .collapse.navbar-collapse
               
               ul.nav.navbar-nav.navbar-right
@@ -245,19 +237,28 @@ html(lang='en')
               .col-md-12
                 .card
                   .row
-                    .col-md-6
-                      .card-content
-                        button.btn.btn-info.btn-fill.btn-wd#button-a Generate Report
+                    .card-content
+                      center
+                        h2#Name Report
                           
                   
                   .content
                     .container-fluid
                       .row
                         .col-md-2(style='float: right')
-                           select.selectpicker.selectpickerChange(name='' title='Reports'  data-style='btn-info' )
-                                option(value='0') Daily
-                                option(value='1') Weekly
-                                option(value='2') Monthly
+                          button.btn.btn-info.btn-fill.btn-wd#button-a Generate Report
+                        .col-md-2(style='float: left')
+                          
+                           select.selectpicker#report_type(name=''  data-style='btn-info' )
+                                option(value='0') All
+                                option(value='1') Loyalty
+                                option(value='2') Gift Certificate
+                                option(value='3') Amenity
+                                option(value='4') Reservation
+                        .col-md-2(style='float: left')
+                           select.selectpicker#sales_type(name='' title='Report'  data-style='btn-info' )
+                                option(value='0') Monthly
+                                option(value='1') Yearly
                         //- .col-md-3
                         //-   select.selectpicker(multiple='', title='Filter', data-style='btn-info', data-size='7' )
                         //-       option(value='Service Type') Service Type
@@ -271,18 +272,26 @@ html(lang='en')
                             .card-content
                               .toolbar
                                 .fresh-datatables
-                                table#datatables.table.table-no-bordered.table-hover(cellspacing='0', width='100%', style='width:100%')
-                                  thead
-                                    tr
-                                      th.disabled-sorting Report
-                                      th.disabled-sorting  
-                                      th.disabled-sorting  
-                                      th.disabled-sorting  
-                                      th.disabled-sorting  Total
-                                      th.disabled-sorting  
-                                      
-                                 
-                                  tbody#ReportChange
+                                  table#datatables.table.table-no-bordered.table-hover(cellspacing='0', width='100%', style='width:100%')
+                                    thead
+                                      tr
+                                        th.disabled-sorting(style='font-weight:bold; font-size: 30px')#thead 
+                                        th.disabled-sorting  
+                                        th.disabled-sorting  
+                                        th.disabled-sorting  
+                                        th.disabled-sorting(style='font-weight:bold; font-size: 30px')#Revenue
+                                        th.disabled-sorting  
+                                        
+                                  
+                                    tbody#tbody
+                                      //- each monthsNow in monthsNows
+                                      //-   tr
+                                      //-     td= monthsNow.month
+                                      //-     td
+                                      //-     td
+                                      //-     td
+                                      //-     td= (monthsNow.revenue).toFixed(2)
+                                      //-     td
                                              
                              
         footer.footer
@@ -360,40 +369,106 @@ html(lang='en')
 
   script.
     $(document).ready(function(){
-      $('.selectpickerChange').on('change',function(){
-        var report_type = $(this).val()
-        $.post('./ChangeReport',{report_type}).done(function(data){
-          console.log(data)
-          if(report_type == '0')
-          {
-            $('#Name').append('Daily Sales')
-          }
-          else if(report_type == '1')
-          {
-            $('#Name').append('Weekly Sales')
-          }
-          else if(report_type == '2')
-          {
-            $('#Name').append('Monthly Sales')
-            for(var i=0;i<data.length;i++)
+      $(document).on('change','#sales_type',function(){
+        var report_type = $('#report_type').val()
+        var sales_type = $('#sales_type').val()
+        CHANGE_REPORT(report_type,sales_type)
+      })
+      $('#report_type').on('change',function(){
+        var report_type = $('#report_type').val()
+        var sales_type = $('#sales_type').val()
+        CHANGE_REPORT(report_type,sales_type)
+      })
+
+      function CHANGE_REPORT(report_type,sales_type){
+        $('#thead').empty()
+        $('#tbody').empty()
+        $('#Revenue').empty()
+        $('#Name').empty()
+        if(report_type == 0){
+          var name = 'All Report'
+        } else if(report_type == 1){
+          var name = 'Loyalty Report'
+        } else if(report_type == 2){
+          var name = 'Gift Certificate Report'
+        } else if(report_type == 3){
+          var name = 'Amenity Report'
+        } else if(report_type == 4){
+          var name = 'Reservation Report'
+        }
+        $.post('./ChangeReport',{sales_type,report_type}).done(function(data){
+          $('#Revenue').append('Revenue')
+          $('#Name').append(name)
+          if(sales_type == 0){
+            $('#thead').append('Month')
+            for(var i=0;i<data.monthsNows.length;i++)
             {
-              $('#ReportChange').append(`<tr>
-                <td>${data[i].walkin_date}</td>
-                <td>
-                </td>
-                <td></td>
-                <td> </td>
-                <td>₱${data[i].total_amount}</td>
-                <td> </td>
-                </tr>`)
+            console.log(data.monthsNows[i].month)
+              $('#tbody').append(`
+                  <tr>
+                    <td>${data.monthsNows[i].month}</td>
+                    <td>
+                    </td>
+                    <td></td>
+                    <td> </td>
+                    <td>₱${(data.monthsNows[i].revenue).toFixed(2)}</td>
+                    <td> </td>
+                  </tr>
+              `)
             }
-            REPORTS()
+          } else if(sales_type == 1){
+            $('#thead').append('Year')
+          
+            for(var i=0;i<data.yearsNows.length;i++)
+            {
+            console.log(data.yearsNows[i].year)
+              $('#tbody').append(`
+                  <tr>
+                    <td>${data.yearsNows[i].year}</td>
+                    <td>
+                    </td>
+                    <td></td>
+                    <td> </td>
+                    <td>₱${(data.yearsNows[i].revenue).toFixed(2)}</td>
+                    <td> </td>
+                  </tr>
+              `)
+            }
           }
-    })
-    })
+          REPORTS(report_type)
+        })
+      }
     })
   script.
-    function REPORTS(){
+    $(document).ready(function(){
+    })
+
+    //- function REPORTS(){
+      //- var wb = XLSX.utils.table_to_book($('#datatables')[0], {sheet:"Sheet JS"});
+      //- var wbout = XLSX.write(wb, {bookType:'xlsx', bookSST:true, type: 'binary'});
+      //- function s2ab(s) {
+      //-   var buf = new ArrayBuffer(s.length);
+      //-   var view = new Uint8Array(buf);
+      //-   for (var i=0; i<s.length; i++) view[i] = s.charCodeAt(i) & 0xFF;
+      //-   return buf;
+      //- }
+      //- $("#button-a").click(function(){
+      //-   saveAs(new Blob([s2ab(wbout)],{type:"application/octet-stream"}), 'SalesReport.xlsx');
+      //- });
+    //- }
+
+    function REPORTS(report_type){
+      if(report_type == 0){
+        var report_type = 'TOTAL'
+      } else if(report_type == 1){
+        var report_type = 'Loyalty'
+      } else if(report_type == 2){
+        var report_type = 'GiftCertificate'
+      } else if(report_type == 3){
+        var report_type = 'Amenity'
+      } else if(report_type == 4){
+        var report_type = 'Reservation'
+      }
       var wb = XLSX.utils.table_to_book($('#datatables')[0], {sheet:"Sheet JS"});
       var wbout = XLSX.write(wb, {bookType:'xlsx', bookSST:true, type: 'binary'});
       function s2ab(s) {
@@ -403,6 +478,7 @@ html(lang='en')
         return buf;
       }
       $("#button-a").click(function(){
-        saveAs(new Blob([s2ab(wbout)],{type:"application/octet-stream"}), 'SalesReport.xlsx');
+        saveAs(new Blob([s2ab(wbout)],{type:"application/octet-stream"}), `${report_type}`+'SalesReport.xlsx');
       });
     }
+    //- })

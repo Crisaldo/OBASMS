@@ -193,14 +193,6 @@ html(lang='en')
                     a(href='./salesReport')
                       span.sidebar-mini 
                       span.sidebar-normal Sales
-                  li(style="margin-left: 30px;")
-                    a(href='./packagesReport')
-                      span.sidebar-mini 
-                      span.sidebar-normal Packages
-                  li(style="margin-left: 30px;")
-                    a(href='./promosReport')
-                      span.sidebar-mini 
-                      span.sidebar-normal Promos
       .main-panel
         nav.navbar.navbar-default
           .container-fluid
@@ -226,52 +218,94 @@ html(lang='en')
             .row
               .col-md-12
                 .card
-                  .row
-                    .col-md-6
-                      .card-content
-                        .content
-                    .container-fluid
-                      .row
-                        .col-md-12
-                          p.category  
-                          br
-                          .card
-                            .card-content
-                              .toolbar
-                                // Here you can write extra buttons/actions for the toolbar
-                              .fresh-datatables
-                                table#datatables.table.table-no-bordered.table-hover(cellspacing='0', width='100%', style='width:100%')
-                                  thead
-                                    tr
-                                      th Therapist Name
-                                      th.disabled-sorting
-                                      th.disabled-sorting
-                                      th.disabled-sorting
-                                      th.disabled-sorting
-                                      th.disabled-sorting Total Commission
-                                      th.disabled-sorting Actions
-                                      
-                                  
-                                  tbody
-                                    tr
-                                      td Gramar Lacsina
-                                      input.name(type='hidden' value='' id='')
-                                      td
-                                      td
-                                      td
-                                      td
-                                      td 500
-                                      td
-                                        .dropdown(style="right: 10px")
-                                          button.btn.btn-simple.btn-info.btn-rotate(href='#', data-toggle='dropdown')
-                                            i.ti-settings
-                                          ul.dropdown-menu
-                                            li
-                                              button.btn.btn-simple.btn-info.reserveButton(data-toggle='modal')
-                                                span.btn-label
-                                                i.ti-calendar
-                                                |  Release
-                                         
+                  .card-content
+                    .nav-tabs-navigation
+                      .nav-tabs-wrapper
+                        ul#tabs.nav.nav-tabs(data-tabs='tabs')
+                          li.active
+                            a(href='#common', data-toggle='tab') 5th
+                          li
+                            a(href='#loyalty', data-toggle='tab') 20th
+                    #my-tab-content.tab-content
+                      // COMMON TAB
+                      #common.tab-pane.active
+                        .toolbar
+                        .fresh-datatables
+                          table#datatablesCommon.table.table-no-bordered.table-hover(cellspacing='0', width='100%', style='width:100%')
+                            thead
+                              tr
+                                th Name
+                                th
+                                th Total Commission
+                                th.disabled-sorting Actions
+                            tfoot
+                              tr
+                                th Name
+                                th 
+                                th Total Commssion
+                                th Actions
+                            tbody 
+                              each fifth in fifths
+                                tr
+                                  td(style='text-transform: capitalize')= fifth.therapist_fname+' '+fifth.therapist_mname+' '+fifth.therapist_lname
+                                  input.name(type='hidden' value=`${fifth.therapist_fname} ${fifth.therapist_mname} ${fifth.therapist_lname}` id=`${fifth.therapist_id}`)
+                                  input.gender(type='hidden' value=`${fifth.therapist_gender}` id=`${fifth.therapist_id}`)
+                                  td
+                                  td= '₱'+(fifth.TOTAL).toFixed(2)
+                                  td
+                                    -if(fifth.release_comm == 0)
+                                      .dropdown(style="right: 10px")
+                                        button.btn.btn-simple.btn-info.btn-rotate(href='#', data-toggle='dropdown')
+                                          i.ti-settings
+                                        ul.dropdown-menu
+                                          li
+                                            button.btn.btn-simple.btn-info.fifthRelease(type='button' value=`${fifth.therapist_id}`)
+                                              span.btn-label
+                                              i.ti-calendar
+                                              |  Release
+                                    -else if(fifth.release_comm == 1)
+                                      button.btn.btn-simple.btn-danger.btn-icon(type='button')
+                                            span.btn-label
+                                            |  Released
+                      #loyalty.tab-pane
+                        .toolbar
+                        .fresh-datatables
+                          table#datatablesCommon.table.table-no-bordered.table-hover(cellspacing='0', width='100%', style='width:100%')
+                            thead
+                              tr
+                                th Name
+                                th
+                                th Total Commission
+                                th.disabled-sorting Actions
+                            tfoot
+                              tr
+                                th Name
+                                th 
+                                th Total Commssion
+                                th Actions
+                            tbody
+                              each bent in bents
+                                tr
+                                  td(style='text-transform: capitalize')= bent.therapist_fname+' '+bent.therapist_mname+' '+bent.therapist_lname
+                                  input.name(type='hidden' style="text-transform: capitalize" value=`${bent.therapist_fname} ${bent.therapist_mname} ${bent.therapist_lname}` id=`${bent.therapist_id}`)
+                                  input.gender(type='hidden' value=`${bent.therapist_gender}` id=`${bent.therapist_id}`)
+                                  td
+                                  td= '₱'+(bent.TOTAL).toFixed(2)
+                                  td
+                                    -if(bent.release_comm == 0)
+                                      .dropdown(style="right: 10px")
+                                        button.btn.btn-simple.btn-info.btn-rotate(href='#', data-toggle='dropdown')
+                                          i.ti-settings
+                                        ul.dropdown-menu
+                                          li
+                                            button.btn.btn-simple.btn-info.bentRelease(type='button' value=`${bent.therapist_id}`)
+                                              span.btn-label
+                                              i.ti-calendar
+                                              |  Release
+                                    -else if(bent.release_comm == 2)
+                                      button.btn.btn-simple.btn-danger.btn-icon(type='button')
+                                            span.btn-label
+                                            |  Released
                              
         footer.footer
           .container-fluid
@@ -328,6 +362,166 @@ html(lang='en')
   // Paper Dashboard PRO DEMO methods, don't include it in your project!
   script(src='/assets/paperDashboardPro/js/demo.js')
 
+  script.
+    $(document).ready(function(){
+      $('.fifthRelease').click(function(){
+        var id = $(this).val()
+        var name = $(`.name[id='${id}']`).val()
+        var gender = $(`.gender[id='${id}']`).val()
+        var release_comm = 1
+        if(gender == 'Male'){
+          gender = 'his'
+        } else if(gender == 'Female'){
+          gender = 'her'
+        }
+        swal({
+          title: 'Do you want to release '+name+" commission?",
+          text: 'Are you sure?',
+          icon: 'warning',
+          buttons: [true,'Confirm'],
+          dangerMode: true
+        }).then(function(confirm){
+          if(confirm){
+            swal({
+              title: 'Please enter the therapist password.',
+              icon: "warning",
+              content: "input",
+              buttons: [true,"Confirm"],
+              dangerMode: true,
+            }).then(function(confirm){
+              var therapist_password = $('.swal-content__input').val()
+              $.post('./validatePass',{therapist_password,id}).done(function(data){
+                if(data.validate == 0){
+                  swal({
+                    title: 'Please enter the administrator password.',
+                    icon: "warning",
+                    content: "input",
+                    buttons: [true,"Confirm"],
+                    dangerMode: true,
+                  }).then(function(confirm){
+                    var admin_password = $('.swal-content__input').val()
+                    alert(admin_password)
+                    $.post('./validateAdmin',{admin_password,id,release_comm}).done(function(data){
+                      if(data.validate == 0 ){
+                        swal({
+                          title: 'Success',
+                          text: 'The commission of '+name+' is given',
+                          icon: 'success'
+                        }).then(function(){
+                          location.reload()
+                        })
+                      } else if(data.validate == 1) {
+                        swal({
+                          title: 'The administrator password is incorrect!',
+                          text: 'Please double check and try again',
+                          icon: 'error'
+                        })
+                      } else if(data.validate == 2){
+                        swal({
+                          title: 'Error',
+                          text: 'Please try again',
+                          icon: 'error'
+                        })
+                      }
+                    })
+                  })
+                  $('.swal-content__input').attr('type', 'password')
+                } else {
+                  swal({
+                    title: 'The therapist password is incorrect!',
+                    text: 'Please double check and try again',
+                    icon: 'error'
+                  })
+                }
+              })
+            })
+            $('.swal-content__input').attr('type', 'password')
+          } else {
+
+          }
+        })
+      })
+    })
+  script.
+    $(document).ready(function(){
+      $('.bentRelease').click(function(){
+        var id = $(this).val()
+        var name = $(`.name[id='${id}']`).val()
+        var gender = $(`.gender[id='${id}']`).val()
+        var release_comm = 2
+        if(gender == 'Male'){
+          gender = 'his'
+        } else if(gender == 'Female'){
+          gender = 'her'
+        }
+        swal({
+          title: 'Do you want to release '+name+" commission?",
+          text: 'Are you sure?',
+          icon: 'warning',
+          buttons: [true,'Confirm'],
+          dangerMode: true
+        }).then(function(confirm){
+          if(confirm){
+            swal({
+              title: 'Please enter the therapist password.',
+              icon: "warning",
+              content: "input",
+              buttons: [true,"Confirm"],
+              dangerMode: true,
+            }).then(function(confirm){
+              var therapist_password = $('.swal-content__input').val()
+              $.post('./validatePass',{therapist_password,id}).done(function(data){
+                if(data.validate == 0){
+                  swal({
+                    title: 'Please enter the administrator password.',
+                    icon: "warning",
+                    content: "input",
+                    buttons: [true,"Confirm"],
+                    dangerMode: true,
+                  }).then(function(confirm){
+                    var admin_password = $('.swal-content__input').val()
+                    alert(admin_password)
+                    $.post('./validateAdmin',{admin_password,id,release_comm}).done(function(data){
+                      if(data.validate == 0 ){
+                        swal({
+                          title: 'Success',
+                          text: 'The commission of '+name+' is given',
+                          icon: 'success'
+                        }).then(function(){
+                          location.reload()
+                        })
+                      } else if(data.validate == 1) {
+                        swal({
+                          title: 'The administrator password is incorrect!',
+                          text: 'Please double check and try again',
+                          icon: 'error'
+                        })
+                      } else if(data.validate == 2){
+                        swal({
+                          title: 'Error',
+                          text: 'Please try again',
+                          icon: 'error'
+                        })
+                      }
+                    })
+                  })
+                  $('.swal-content__input').attr('type', 'password')
+                } else {
+                  swal({
+                    title: 'The therapist password is incorrect!',
+                    text: 'Please double check and try again',
+                    icon: 'error'
+                  })
+                }
+              })
+            })
+            $('.swal-content__input').attr('type', 'password')
+          } else {
+
+          }
+        })
+      })
+    })
   script.
     $(document).ready(function(){
         $('.logout').click(function(){

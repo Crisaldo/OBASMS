@@ -33,9 +33,6 @@ html(lang='en')
         cursor:pointer;
       }
 
-      .dropdown-menu {
-        margin-left: -110px !important;
-      }
       #checkout > div > div > div.modal-body > div:nth-child(5) > div:nth-child(2) > div > span > span.selection > span {
         background-color: rgb(243, 242, 238) !important;
         border: 0 !important;
@@ -384,18 +381,30 @@ html(lang='en')
                         .col-md-3
                           h5.category
                             strong Therapist
+                        .col-md-3(style="margin-left: 34%")
+                          h5.category
+                            strong Locker No.
                     .row
-                      if(restype=='single')
-                          select.selectpicker(title='Select Therapist', data-style='btn-info', data-size='7' name='selected_therapist' id='selected_therapist' required='true' aria-label='true')
-                            each thera in therapist
-                              if(thera.in_service == null || thera.in_service == 0)
+                      .col-md-10(style="width: 30%;")
+                        if(restype=='single')
+                            select.selectpicker(title='Select Therapist', data-style='btn-info', data-size='7' name='selected_therapist' id='selected_therapist' required='true' aria-label='true' )
+                              each thera in therapist
+                                if(thera.in_service == null || thera.in_service == 0)
+                                  option(value=`${thera.therapist_id}`)= thera.therapist_fname+" "+thera.therapist_mname+" "+thera.therapist_lname
+                                else if(thera.in_service == 1)
+                                  option(value=`${thera.therapist_id}` disabled style="background-color: #c5c5c5")= thera.therapist_fname+" "+thera.therapist_mname+" "+thera.therapist_lname+" - NOT AVAILABLE"
+                        else if(restype=='multiple')
+                            select.selectpicker(multiple='', title='Select Therapist', data-style='btn-info', data-size='7' name='selected_therapist' id='selected_therapist' required='true' aria-label='true')
+                              each thera in therapist
                                 option(value=`${thera.therapist_id}`)= thera.therapist_fname+" "+thera.therapist_mname+" "+thera.therapist_lname
-                              else if(thera.in_service == 1)
-                                option(value=`${thera.therapist_id}` disabled style="background-color: #c5c5c5")= thera.therapist_fname+" "+thera.therapist_mname+" "+thera.therapist_lname+" - NOT AVAILABLE"
-                      else if(restype=='multiple')
-                          select.selectpicker(multiple='', title='Select Therapist', data-style='btn-info', data-size='7' name='selected_therapist' id='selected_therapist' required='true' aria-label='true')
-                            each thera in therapist
-                              option(value=`${thera.therapist_id}`)= thera.therapist_fname+" "+thera.therapist_mname+" "+thera.therapist_lname
+                      .col-md-9(style="width: 30%;margin-left: 27%;")
+                        select.selectpicker(multiple='' title='Select Locker', data-style='btn-info', data-size='7' name='locker_num' id='locker_num' required='true' aria-label='true' )
+                          - for(var i=0;i<reqSession.utilities[0].locker_quantity;i++)
+                              if(i == 0)
+                                  option(value=i+1) Locker no. #{i+1} 
+                              else
+                                option(value=i+1) Locker no. #{i+1} 
+                
                 .row
                     .col-md-12
                       .card-content
@@ -521,7 +530,6 @@ html(lang='en')
                             span.input-group-addon 
                     .modal-footer
                       button.btn.btn-secondary.pull-right.btn.btn-success.btn-fill.btn-wd.buttonDone(type='button') Done
-                      button.btn.btn-secondary.pull-right.btn.btn-success.btn-fill.btn-wd#pdfButton(type='button') pdf
                       button.btn.btn-secondary.pull-left.btn.btn-danger.btn-fill.btn-wd(type='button', data-dismiss='modal') Cancel
             //REGISTRATION
             #RegisterModal.modal.fade(tabindex='1', role='dialog' aria-labelledby='myModalLabel')
@@ -1780,6 +1788,7 @@ html(lang='en')
               }
             
               $('.submitButton').click(function(){
+                console.log($('#locker_num').val())
                 //- var finalTotal= $('#finalTotal').text().replace(/,/g,'')
                 console.log($('#selected_therapist').val().length)
                   if($('#selected_therapist').val().length == 0 && restype =='single')
@@ -2002,6 +2011,7 @@ html(lang='en')
                                 var scriptSession = !{JSON.stringify(reqSession)};
                                 var company_name = scriptSession.utilities[0].company_name
                                 var company_address = scriptSession.utilities[0].company_address
+                                var or_no = scriptSession.utilities[0].official_receipt_num
                                 var vat_exempt_custHidden = $('.vat_exempt_custHidden').val()
                                 if(vat_exempt_custHidden == 1){
                                   var vat = parseInt(scriptSession.utilities[0].vat) / 100 
@@ -2012,7 +2022,7 @@ html(lang='en')
                                   var vatable_sales = parseFloat(vat_price) - parseFloat(vat_amount)
                                 } else if(vat_exempt_custHidden == 0){
                                   var vat = parseInt(scriptSession.utilities[0].vat) / 100 
-                                  var total_price = parseFloat($('.totalPrice').val())
+                                  var total_price = parseFloat($('.totalPrice').val()).toFixed(2)
                                   var vat_amount = parseFloat($('.totalPrice').val()) * vat
                                   var vatable_sales = parseFloat(total_price) - parseFloat(vat_amount)
                                 }
@@ -2033,6 +2043,7 @@ html(lang='en')
                                 if(cash != '' && giftCert_total == 0){
                                   var payment_type = 'CASH'
                                   var amount_received = parseFloat($('.amountReceived').val()).toFixed(2)
+                                   var change = parseFloat($('.change').val()).toFixed(2)
                                 }
                                 //- GIFT CERTIFICATE
                                 if(cash == '' && giftCert_total != 0){
@@ -2100,6 +2111,7 @@ html(lang='en')
                                             {text: company_name, fontSize: 20, bold: true, alignment: 'center'},
                                             {text: company_address, fontSize: 14, bold: false,alignment: 'center'},
                                             {text: '- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - ', fontSize: 14, bold: false, margin: [0, 0, 0, 0]},
+                                            {text: 'Official Receipt No: '+or_no, fontSize: 12, bold: false,},
                                             {text: 'Date: '+date_time, fontSize: 12, bold: false,},
                                             {text: 'Customer '+name, fontSize: 12, bold: false,},
                                             {text: $('#RoomAvailed').text()+'                  '+$('#RoomRateAvailed').text(), fontSize: 12, bold: false,},
@@ -2172,13 +2184,14 @@ html(lang='en')
                                 console.log($('#totalDuration').text())
                                 console.log('payment_type',payment_type)
                                 $.post('/payment/Early',{
+                                  locker_num : $('#locker_num').val(),
                                   payment_points,
                                   balance : $('.amountNeeded').val(),
                                   payment_type,
                                   newPoints,
                                   amount_received: $('.amountreceived').val(),
                                   restype,
-                                  gift_certs : false,
+                                  gift_certs : $('.selectpickerGc').val(),
                                   typeServ,
                                   cust_type : $('.cust_typeHidden').val(),
                                   amount: $('.totalPrice').val(),
@@ -2208,12 +2221,12 @@ html(lang='en')
                                   }).done(function(data){
                                     if(data.alertDesc==0)
                                       {
+                                        PDF()
                                         swal({
                                           title: "Success",
                                           icon: 'success'
                                         }).then(function(){
-                                          PDF()
-                                          //- location.href='/frontdesk/home'
+                                          location.href='/frontdesk/home'
                                         })
                                       }
                                     else
@@ -2401,6 +2414,7 @@ html(lang='en')
                                 timeEnd = moment(timeEnd,'hh:mm A').add(allowance_time,'minutes').format('hh:mm A')
                             //- console.log("TIME END "+timeEnd)
                             $.post('/bookreservation/addReservation',{
+                            locker_num : $('#locker_num').val(),
                             customerId :$('#customerId').val(),
                             restype,
                             typeServ,

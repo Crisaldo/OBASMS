@@ -39,18 +39,15 @@ router.post("/receptionist/logout", (req, res) => {
 
 // [QUEUE - VIEW]
 router.get('/home',(req, res) => {
-      var fullDate = moment(new Date()).format('MM-DD-YYYY')
+      var fullDate = moment(new Date()).format('YYYY-MM-DD')
       console.log(fullDate)
-  const query = `SELECT *
-  FROM walkin_queue_tbl 
-  JOIN walkin_services_tbl on walkin_queue_tbl.walkin_id = walkin_services_tbl.walkin_id 
-  JOIN customer_tbl on customer_tbl.cust_id = walkin_queue_tbl.cust_id 
-  JOIN services_tbl on services_tbl.service_id = walkin_services_tbl.service_id
+  const query = `SELECT * FROM walkin_queue_tbl
   JOIN room_in_service_tbl ON walkin_queue_tbl.walkin_id = room_in_service_tbl.walkin_id
-  JOIN room_tbl on room_tbl.room_id = room_in_service_tbl.room_id 
-  JOIN therapist_in_service_tbl ON therapist_in_service_tbl.walkin_id = walkin_queue_tbl.walkin_id
-  JOIN therapist_tbl ON therapist_tbl.therapist_id = therapist_in_service_tbl.therapist_id
-  WHERE walkin_queue_tbl.walkin_date = CURDATE() AND walkin_indicator = 0 GROUP BY walkin_services_tbl.walkin_id;
+  JOIN customer_tbl ON walkin_queue_tbl.cust_id = customer_tbl.cust_id
+  JOIN room_tbl ON room_tbl.room_id = room_in_service_tbl.room_id
+  WHERE walkin_queue_tbl.walkin_date = CURDATE() 
+  AND walkin_queue_tbl.delete_stats = 0 
+  AND walkin_queue_tbl.walkin_indicator = 0;
   SELECT * FROM utilities_tbl`
   db.query(query,(err,out)=>{
     req.session.utilities = out[1]
@@ -166,8 +163,8 @@ router.get('/reservationList',mid.receptionistnauthed,(req, res) => {
   JOIN customer_tbl on customer_tbl.cust_id = walkin_queue_tbl.cust_id 
   JOIN room_in_service_tbl ON walkin_queue_tbl.walkin_id = room_in_service_tbl.walkin_id
   JOIN room_tbl on room_tbl.room_id = room_in_service_tbl.room_id 
-  WHERE walkin_queue_tbl.walkin_payment_status=0  || walkin_queue_tbl.walkin_payment_status=1
-  AND walkin_queue_tbl.walkin_date != CURDATE() AND walkin_queue_tbl.walkin_indicator =0;
+  WHERE walkin_queue_tbl.walkin_indicator =0
+  AND walkin_queue_tbl.walkin_date != CURDATE() ;
   SELECT * FROM utilities_tbl`
   db.query(query,(err,out)=>{
     req.session.utilities = out[1]
@@ -254,6 +251,14 @@ router.post('/ongoing/Finish',(req,res)=>{
         res.send({alertSuccess:alertSuccess})
       }
     })
+  })
+})
+
+router.post('/home/queue/CancelledReservation',(req,res)=>{
+  const query = `UPDATE walkin_queue_tbl SET delete_stats = 1 WHERE walkin_id = "${req.body.id}"`
+
+  db.query(query,(err,out)=>{
+    
   })
 })
 

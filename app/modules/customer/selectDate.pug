@@ -64,40 +64,22 @@ html(lang='en')
                     a(style="color: white")#time-part
                 
     .wrapper.wrapper-full-page
-      each customer in customers
-        if(customer.cust_gender=='Male')
-          .full-page.login-page(data-color='black', style=("background-image: url('/assets/paperDashboardPro/img/bluespa.jpg'); background-size: cover; background-repeat: no-repeat"))
-            // you can change the color of the filter page using: data-color="blue | azure | green | orange | red | purple"
-            .content
-              .container
-                .row
-                  .col-md-2.col-sm-1.col-md-offset-0.col-sm-offset-1
-                    .card(style="width: 80em; bottom: 30px; height: 80em;")
-                      .card-content
-                        input(value=`${customerId}` id="Id")
-                        input(value=`${restype}`)
-                        input(value=`Male: ${male}`)
-                        input(value=`Female: ${female}`)
-                        center  
-                          h2 Select Date
-                        #fullCalendar
-        else
-          .full-page.login-page(data-color='black', style=("background-image: url('/assets/paperDashboardPro/img/pinkspa.jpg'); background-size: cover; background-repeat: no-repeat"))
-            // you can change the color of the filter page using: data-color="blue | azure | green | orange | red | purple"
-            .content
-              .container
-                .row
-                  .col-md-2.col-sm-1.col-md-offset-0.col-sm-offset-1
-                    .card(style="width: 80em; bottom: 30px; height: 80em;")
-                      .card-content
-                        center  
-                          h2 Select Date
-                          h1= customer.cust_fname
-                        input(type='hidden' value=`${customerId}` id="Id")
-                        input(type='hidden' value=`${restype}`)
-                        input(type='hidden' value=`Male: ${male}`)
-                        input(type='hidden' value=`Female: ${female}`)
-                        #fullCalendar
+      .full-page.login-page(data-color='black', style=("background-image: url('/assets/paperDashboardPro/img/bluespa.jpg'); background-size: cover; background-repeat: no-repeat"))
+        // you can change the color of the filter page using: data-color="blue | azure | green | orange | red | purple"
+        .content
+          .container
+            .row
+              .col-md-2.col-sm-1.col-md-offset-0.col-sm-offset-1
+                .card(style="width: 80em; bottom: 30px; height: 80em;")
+                  .card-content
+                    input(type='hidden' value=`${customerId}` id="Id")
+                    input.restype(type='' value=`${restype}`)
+                    input.male(type='' value=`Male: ${male}`)
+                    input.female(type='' value=`Female: ${female}`)
+                    center  
+                      h2 Select Date
+                    #fullCalendar
+       
 
 
         footer.footer.footer-transparent
@@ -154,37 +136,80 @@ html(lang='en')
   script(src='/assets/paperDashboardPro/js/jquery.sharrre.js')
   // Paper Dashboard PRO DEMO methods, don't include it in your project!
   script(src='/assets/paperDashboardPro/js/demo.js')
-  script.
+  script(type='text/javascript').
     $(document).ready(function(){
         var customerId= $('#Id').val()
         console.log(customerId)
-      $('#fullCalendar').fullCalendar({
-        dayClick: function(date, jsEvent, view) {
-          var now = moment().format('MM-DD-YYYY')
-          var clicked = date.format('MM-DD-YYYY')
-          if(moment(clicked).isAfter(now)){
-              swal({
-                title: "You Clicked " + date.format('MMMM DD YYYY'),
-                text: "Are You Sure?",
-                icon: "info",
-                buttons: ["Cancel","Proceed"],
-                dangerMode: true
-                
-              }).then((proceed) => {
-                if(proceed)
-                {
-                  var newDate= date.format('MM-DD-YYYY')
-                  location.href= `/customer/customerTime?date=${newDate}`
-                }
-                else
-                {
+          var reservetype = !{JSON.stringify(restype)}
+          var male = !{JSON.stringify(male)}
+          var female = !{JSON.stringify(female)}
+          if(reservetype=='single')
+          {
+            $('#fullCalendar').fullCalendar({
+              dayClick: function(date, jsEvent, view) {
+                var now = moment().format('MM-DD-YYYY')
+                var clicked = date.format('MM-DD-YYYY')
+                console.log(male)
+                console.log(female)
+                console.log(reservetype)
+                if(moment(clicked).isAfter(now)){
+                    swal({
+                      title: "You clicked " + date.format('MMMM DD, YYYY'),
+                      text: "Are you sure?",
+                      icon: "info",
+                      buttons: ["Cancel","Proceed"],
+                      dangerMode: true
+                      
+                    }).then((proceed) => {
+                      if(proceed)
+                      {
+                        var newDate= date.format('MM-DD-YYYY')
+                        location.href= `./customerTime?date=${newDate}&reservetype=${reservetype}&male=${male}&female=${female}`
+                      }
+                      else
+                      {
 
+                      }
+                      });
+                //- location.href= `/selectTime?date=${newDate}`
                 }
-                });
-          //- location.href= `/selectTime?date=${newDate}`
+              }
+            })
           }
-        }
-      })
+          else if(reservetype=='multiple')
+          {
+            
+            $('#fullCalendar').fullCalendar({
+              dayClick: function(date, jsEvent, view) {
+                var now = moment().format('MM-DD-YYYY')
+                var clicked = date.format('MM-DD-YYYY')
+                console.log(male)
+                console.log(female)
+                console.log(reservetype)
+                if(moment(clicked).isSameOrAfter(now)){
+                    swal({
+                      title: "You clicked " + date.format('MMMM DD, YYYY'),
+                      text: "Are you sure?",
+                      icon: "info",
+                      buttons: ["Cancel","Proceed"],
+                      dangerMode: true
+                      
+                    }).then((proceed) => {
+                      if(proceed)
+                      {
+                        var newDate= date.format('MM-DD-YYYY')
+                        location.href= `/selectTime?date=${newDate}&reservetype=${reservetype}&male=${male}&female=${female}`
+                      }
+                      else
+                      {
+
+                      }
+                      });
+                //- location.href= `/selectTime?date=${newDate}`
+                }
+              }
+            })
+          }
     });
   script.
     $(document).ready(function() {
@@ -200,18 +225,4 @@ html(lang='en')
           clearInterval(interval);
       });
       //- $('#calendar').val('')
-      });
-  script.
-    $(document).ready(function() {
-      var interval = setInterval(function() {
-          var momentNow = moment();
-          $('#date-part').html(momentNow.format('YYYY MMMM DD') + ' '
-                              + momentNow.format('dddd')
-                              .substring(0,3).toUpperCase());
-          $('#time-part').html(momentNow.format('A hh:mm:ss'));
-      }, 100);
-      
-      $('#stop-interval').on('click', function() {
-          clearInterval(interval);
-      });
       });

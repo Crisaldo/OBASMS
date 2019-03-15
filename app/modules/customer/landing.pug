@@ -187,7 +187,7 @@ html(lang='en')
                       h6.food-name= service.service_name
                       .dots
                       .food-price
-                        span= service.service_price
+                        span= '₱'+(service.service_price).toFixed(2)
             //-         // /food-price
             //-       // /food-desc
             //-       .food-details

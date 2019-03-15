@@ -99,12 +99,10 @@ html(lang='en')
                       strong #{is_notfound || is_incorrect || is_noninput}
                     label.control-label
                       | Username
-                      star *
                     input.form-control(name='admin_username', type='text', required='true', aria-required='true' style="color:black; font-weight: bold;")
                   .form-group
                     label.control-label
                       | Password 
-                      star *
                     input#registerPassword.form-control(name='admin_password', type='password', required='true', aria-required='true' style="font-weight: bold;")
                     hr
                     button.btn.btn-info.btn-fill.btn-wd(type='submit') Login
