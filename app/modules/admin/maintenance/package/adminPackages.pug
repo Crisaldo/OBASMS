@@ -248,7 +248,7 @@ html(lang='en')
                                         td= pack.package_points
                                         td= pack.package_maxPerson
                                         td= pack.package_duration+" "+"minutes"
-                                        td= "₱"+pack.package_price
+                                        td= "₱"+(pack.package_price).toFixed(2)
                                         td
                                           if(pack.package_availability ==0)
                                             input.switch-icon(type='checkbox' checked value=`${pack.package_id}`)
@@ -306,7 +306,7 @@ html(lang='en')
                                                   label Services Included*
                                                     select.selectpicker(multiple='', title='Select Service/s', id='services_included' data-style='btn-info', data-size='7' name='package')
                                                       each service in services
-                                                        option(value=`${service.service_id}` price=`${service.service_price}` service_name=`${service.service_name}` service_duration=`${service.service_duration_desc}` service_points=`${service.service_points}` equivalent_points=`${service.service_equivalentPoints}`)= service.service_name+"("+service.service_duration_desc+" minutes) "+" ₱"+service.service_price
+                                                        option(value=`${service.service_id}` price=`${service.service_price}` service_name=`${service.service_name}` service_duration=`${service.service_duration_desc}` service_points=`${service.service_points}` equivalent_points=`${service.service_equivalentPoints}`)= service.service_name+"("+service.service_duration_desc+" minutes) "+" ₱"+(service.service_price).toFixed(2)
                                               .form-group.has-default.bmd-form-group
                                                 center
                                                   label Room Included*
@@ -468,6 +468,12 @@ html(lang='en')
           .replace(/(\..*)\./g, '$1')         // decimal can't exist more than once
           .replace(/(\.[\d]{4})./g, '$1');    // not more than 4 digits after decimal
       });
+      $(document).on('input', '#package_duration',  function() {
+        this.value = this.value
+          .replace(/[^\d.]/g, '')             // numbers and decimals only
+          .replace(/(\..*)\./g, '$1')         // decimal can't exist more than once
+          .replace(/(\.[\d]{4})./g, '$1');    // not more than 4 digits after decimal
+      });
       $(document).on('input', '#package_Equivalentpoints',  function() {
         this.value = this.value
           .replace(/[^\d.]/g, '')             // numbers and decimals only
@@ -525,7 +531,7 @@ html(lang='en')
             totalPoints = totalPoints + price_perService[i].points
             totalEquivalentPoints = totalEquivalentPoints + price_perService[i].equivalent_points
           $('#suggestedDuration').text('Suggested Duration is '+totalDuration+' minutes')
-          $('#suggestedPrice').text("Suggested Price is ₱"+total)
+          $('#suggestedPrice').text("Suggested Price is ₱"+(total).toFixed(2))
           $('#suggestedPoints').text("Suggested Points is "+totalPoints+" points")
           $('#suggestedEquivalentPoints').text("Suggested Equivalent Points is "+totalEquivalentPoints+" points")
         }
@@ -545,7 +551,7 @@ html(lang='en')
         var equivalent_points = $('#package_Equivalentpoints').val()
         var package_maxPerson = $('#package_maxPerson').val()
         var room_included = $('#room_included').val()
-        if(package_name == 0 && package_price == 0 && package_points == 0 && equivalent_points == 0  && package_maxPerson ==0 || package_name == 0 || package_price == 0 || services_included == 0 || package_duration==0 || package_amenity_usage ==0 || package_points==0 || equivalent_points == 0  || package_maxPerson ==0)
+        if(package_name == 0 && package_price == 0 && package_points == 0 && equivalent_points == 0  && package_maxPerson ==0 || package_name == 0 || package_price == 0 || services_included == 0 || package_duration==0 || package_amenity_usage ==0 || package_points==0 || equivalent_points == 0  || package_maxPerson ==0 || room_included == 0)
         {
             swal({
               title: 'Please double check the fields.',

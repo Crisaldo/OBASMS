@@ -239,8 +239,8 @@ html(lang='en')
                                         td= gc.gc_refCode 
                                         td= gc.gc_name
                                           input.name(type='hidden' value=`${gc.gc_name} Ref.Code(${gc.gc_refCode})` id=`${gc.gc_id}`)
-                                        td= "₱"+gc.gc_value
-                                        td= "₱"+gc.gc_price
+                                        td= "₱"+(gc.gc_value).toFixed(2)
+                                        td= "₱"+(gc.gc_price).toFixed(2)
                                         td
                                           if(gc.release_stats==0)
                                             p Not Release

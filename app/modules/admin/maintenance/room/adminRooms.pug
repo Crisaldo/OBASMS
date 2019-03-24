@@ -265,7 +265,7 @@ html(lang='en')
                                         td= room.room_name
                                         input.name(type='hidden' id=`${room.room_id}` value=`${room.room_name}`)
                                         td= room.bed_qty
-                                        td= '₱'+room.room_rate
+                                        td= '₱'+(room.room_rate).toFixed(2)
                                         td
                                           if(room.room_availability==0)
                                             input.switch-icon(type='checkbox' checked value=`${room.room_id}`)

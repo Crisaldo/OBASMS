@@ -22,7 +22,7 @@ router.get('/admin', (req, res) => {
 // [LOGIN]
 router.post("/admin/login",(req, res) => {
 	const query = `
-		select * from admin_tbl where admin_username = "${req.body.admin_username}" and admin_desc="front_desk"`
+		select * from admin_tbl where admin_username = "${req.body.admin_username}" and admin_desc="main_admin"`
 
 		db.query(query, (err, out) => {
  		if(!out[0])
@@ -55,13 +55,17 @@ router.post("/admin/logout", (req, res) => {
 router.get('/admindashboard',mid.adminnauthed,(req, res) => {
 
   const query =`SELECT * FROM utilities_tbl;
-  SELECT COUNT(*) as total_therapist FROM therapist_tbl WHERE delete_stats =0 AND therapist_availability =0`
+  SELECT COUNT(*) as total_therapist FROM therapist_tbl WHERE delete_stats =0 AND therapist_availability =0;
+  SELECT SUM(number_ofGuest) AS amenity FROM amenities_reservation_tbl WHERE paid_status = 1 AND date_only = CURDATE();
+  SELECT COUNT(*) AS TOTAL FROM walkin_queue_tbl WHERE delete_stats != 1`
 
   db.query(query,(err,out)=>{
     req.session.utilities = out[0]
     res.render('admin/dashboard/admindashboard',{
       reqSession: req.session,
-      therapist_counts: out[1]
+      therapist_counts: out[1],
+      amenitys : out[2],
+      reservs: out[3]
     })
   })
 })
@@ -202,6 +206,7 @@ router.post('/adminPackages',(req,res)=>{
       VALUE("${req.body.package_name}","${req.body.package_price}","${req.body.package_duration}","${req.body.package_points}",${req.body.package_maxPerson},"${req.body.package_equivalentPoints}",0,0,"${req.body.room_included}")`
     
       db.query(query, (err,out)=>{
+        console.log(query)
         aydi= out.insertId;
         if(err)
         {
@@ -1129,6 +1134,25 @@ router.get('/adminTherapist',mid.adminnauthed,(req, res) => {
     })
   })
 })
+
+router.post('/adminTherapist/account_check',(req,res)=>{
+  const query = `SELECT * FROM therapist_account_tbl WHERE therapist_username = "${req.body.username}"`
+
+  db.query(query,(err,out)=>{
+    console.log(query)
+    console.log(out)
+    if(out == undefined || out == 0)
+    {
+      var available = 0
+      res.send({availability:available})
+    }
+    else if(out != undefined)
+    {
+      var available = 1
+      res.send({availability:available})
+    }
+  })
+})
 //          > C R E A T E (ADD)
 router.post('/adminTherapist',(req, res) => {
   var aydi;
@@ -1147,7 +1171,7 @@ router.post('/adminTherapist',(req, res) => {
     therapist_shift,
     therapist_licenseExpiration,
     therapist_availability,
-    delete_stats)
+    delete_stats,release_comm)
     value
     ("${req.body.therapist_fname}", 
     "${req.body.therapist_mname}", 
@@ -1160,7 +1184,7 @@ router.post('/adminTherapist',(req, res) => {
     "${req.body.year}",
     "${req.body.therapist_shift}",
     "${req.body.therapist_licenseExpiration}",
-    0,0)`
+    0,0,0)`
     db.query(query, (err, out) => {
       var alertSuccess = 1 ;
       var notSuccess= 0;
@@ -1187,6 +1211,17 @@ router.post('/adminTherapist',(req, res) => {
         VALUE(${aydi},0)`
 
         db.query(query3,(err,out)=>{
+        })
+
+        const query4 = `INSERT INTO therapist_account_tbl(therapist_id,therapist_username,therapist_password,delete_stats)
+        VALUE("${aydi}","${req.body.username}","${req.body.password}",0)`
+        console.log(query4)
+        db.query(query4,(err,out)=>{     
+          if(err)
+          {
+            console.log("error sa account")
+            console.log(err)
+          }     
         })
       })
     })
@@ -1850,14 +1885,14 @@ router.get('/commission', (req, res) => {
     var therapist_commission = parseFloat(out[0][0].therapist_commission) / 100
     for(var i= 0; i<out[1].length;i++){
       // console.log(parseFloat(out[1][i].TOTAL) - parseFloat(out[1][i].TOTAL))
-      var total = parseFloat(out[1][i].TOTAL) * therapist_commission
-      out[1][i].TOTAL = parseFloat(out[1][i].TOTAL) - parseFloat(total)
+      out[1][i].TOTAL = parseFloat(out[1][i].TOTAL) * therapist_commission
+      // out[1][i].TOTAL = parseFloat(out[1][i].TOTAL) - parseFloat(total)
     }
 
     for(var i= 0; i<out[2].length;i++){
       // console.log(parseFloat(out[2][i].TOTAL) - parseFloat(out[2][i].TOTAL))
-      var total = parseFloat(out[2][i].TOTAL) * therapist_commission
-      out[2][i].TOTAL = parseFloat(out[2][i].TOTAL) - parseFloat(total)
+      out[2][i].TOTAL = parseFloat(out[2][i].TOTAL) * therapist_commission
+      // out[2][i].TOTAL = parseFloat(out[2][i].TOTAL) - parseFloat(total)
     }
 
     res.render('admin/commission/comm',{

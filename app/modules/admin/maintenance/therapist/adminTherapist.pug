@@ -226,7 +226,7 @@ html(lang='en')
                   .row
                     .col-md-6
                       .card-content
-                        button.btn.btn-info.btn-fill.btn-wd(data-toggle='modal', data-target='#addNewTher') Add New Therapist
+                        button.btn.btn-info.btn-fill.btn-wd(data-toggle='modal', data-target='#addNewService') Add New Therapist
                   .content
                     .container-fluid
                       .row
@@ -251,7 +251,7 @@ html(lang='en')
                                   tbody
                                     each thera in theras
                                       tr
-                                        td
+                                        td(style='text-transform: capitalize')
                                           a.viewDetails(style='color: black; cursor: pointer' rel='tooltip' title='Click to view details' therapist_id=`${thera.therapist_id}`)= thera.therapist_fname+" "+thera.therapist_mname+" "+thera.therapist_lname
                                         input.name(type='hidden' value=`${thera.therapist_fname} ${thera.therapist_mname} ${thera.therapist_lname}` id=`${thera.therapist_id}`)
                                         
@@ -295,83 +295,126 @@ html(lang='en')
 
 
                     // ADD
-                  #addNewTher.modal.fade(tabindex='-1', role='dialog')
+                  #addNewService.modal.fade(tabindex='-1', role='dialog')
                     .modal-dialog.modal-lg(role='document')
                       .modal-content
                         .modal-header
-                          h5.modal-title
-                            center Add New Therapist 
-                          button.close(type='button', data-dismiss='modal', aria-label='Close')
-                        form#allInputsFormValidation(method='' action='')
-                          .modal-body
-                            
-                            .row
-                              .col-md-4
-                                .form-group.has-default.bmd-form-group
-                                  label Last Name
-                                  star *
-                                  input.form-control(type='text', placeholder='Last Name' name='therapist_lname' id='therapist_lname' required='true' aria-label='true')
-                              .col-md-4
-                                .form-group.has-default.bmd-form-group
-                                  label First Name
-                                  star *
-                                  input.form-control(type='text', placeholder='First Name' name='therapist_fname' id='therapist_fname' required='true' aria-label='true') 
-                              .col-md-4
-                                .form-group.has-default.bmd-form-group
-                                  label Middle Name
-                                  input.form-control(type='text', placeholder='Middle Name' name='therapist_mname' id='therapist_mname' aria-label='true')     
-
-                            
-                            .row
-                              .col-md-3
-                                .form-group.has-default.bmd-form-group
-                                  label Gender
-                                  star *
-                                  select.selectpicker(name='therapist_gender' id='therapist_gender'  data-style='btn-info' required='true' aria-label='true')
-                                    option(value='Male') Male
-                                    option(value='Female') Female
-                              .col-md-1
-                              .col-md-3
-                                .form-group.has-default.bmd-form-group
-                                  label Birthday
-                                  star *
-                                input.form-control.datepicker(type='text' name='therapist_birthday' id="calendar" style='margin-top: -15px')
-                              .col-md-1
-                              .col-md-3
-                                .form-group.has-default.bmd-form-group
-                                  label Shift
-                                  star *
-                                  select.selectpicker(name='therapist_shift' title='Select Shift' id='therapist_shift'  data-style='btn-info' required='true' aria-label='true')
-                                    option(value='First') First
-                                    option(value='Second') Second
-                            .row
-                              .col-md-6
-                                .form-group.has-default.bmd-form-group
-                                  label Address
-                                  star *
-                                  input.form-control(type='text', placeholder='Address' id='therapist_address' name='therapist_address' required='true' aria-label='true')
-                              .col-md-3
-                                .form-group.has-default.bmd-form-group
-                                  label Mobile Number
-                                  star *
-                                  input.form-control(type='number', placeholder='Mobile Number' id='therapist_contact_no' name='therapist_contact_no' required='true' aria-label='true'  minlength='11' maxlength='11')
-                            .row
-                              .col-md-4
-                                .form-group.has-default.bmd-form-group
-                                  label Skills
-                                  star *
-                                    select.selectpicker(multiple='', title='Select Skill/s', data-style='btn-info', data-size='7' name='therapist_specialty' id='therapist_specialty' required='true' aria-label='true')
-                                      each specialty in specialtys
-                                        option(value=`${specialty.specialty_id}`)= specialty.specialty_desc
-                              .col-md-1
-                              .col-md-4
-                                .form-group.has-default.bmd-form-group
-                                  label License Valid Until
-                                  star *  
-                                input.form-control.datepickerLicense(type='text' name='therapist_license' id="license" style='margin-top: -15px')           
-                          .modal-footer
-                            button.btn.btn-secondary.pull-right.btn.btn-info.btn-fill.btn-wd.submitButton(type='button') Add Therapist
-                            button.btn.btn-secondary.pull-left.btn.btn-danger.btn-fill.btn-wd(type='button', data-dismiss='modal') Cancel
+                          h3.modal-title
+                            center New Therapist
+                          button.close(type='button', data-dismiss='modal', aria-label='Close') X
+                        .modal-body
+                          #wizardCard.card-wizard
+                            form#wizardForm(method='POST', action='')
+                              .card-content
+                                ul.nav
+                                  li
+                                    a(href='#tab1', data-toggle='tab') Personal Information
+                                  li
+                                    a(href='#tab2', data-toggle='tab') Account Information
+                                .tab-content
+                                  #tab1.tab-pane
+                                    .row
+                                      .col-md-4
+                                        .form-group
+                                          p.control-label
+                                            strong
+                                              | Last Name
+                                              star *
+                                          input.form-control(type='text', placeholder='Last Name' name='therapist_lname' id='therapist_lname' required='true' aria-label='true')
+                                      .col-md-4
+                                        .form-group
+                                          p.control-label
+                                            strong
+                                              | First Name
+                                              star *
+                                          input.form-control(type='text', placeholder='First Name' name='therapist_fname' id='therapist_fname' required='true' aria-label='true') 
+                                      .col-md-4
+                                        .form-group
+                                          p.control-label
+                                            strong
+                                              | Middle Name
+                                          input.form-control(type='text', placeholder='Middle Name' name='therapist_mname' id='therapist_mname' aria-label='true')     
+                                    .row
+                                      .col-md-3
+                                        .form-group.has-default.bmd-form-group
+                                          label Sex
+                                          star *
+                                          select.selectpicker(name='therapist_gender' id='therapist_gender'  data-style='btn-info' required='true' aria-label='true')
+                                            option(value='Male') Male
+                                            option(value='Female') Female
+                                      .col-md-1
+                                      .col-md-3
+                                        .form-group.has-default.bmd-form-group
+                                          label Birthday
+                                          star *
+                                        input.form-control.datepicker(type='text' name='therapist_birthday' id="calendar" style='margin-top: -15px')
+                                      .col-md-1
+                                      .col-md-3
+                                        .form-group.has-default.bmd-form-group
+                                          label Shift
+                                          star *
+                                          select.selectpicker(name='therapist_shift' title='Select Shift' id='therapist_shift'  data-style='btn-info' required='true' aria-label='true')
+                                            option(value='First') First
+                                            option(value='Second') Second
+                                            br
+                                            .row
+                                              .col-md-7
+                                                .form-group
+                                                  h3.control-label
+                                                    strong
+                                                      | Contact Details
+                                    .row
+                                      .col-md-6
+                                        .form-group.has-default.bmd-form-group
+                                          label Address
+                                          star *
+                                          input.form-control(type='text', placeholder='Address' id='therapist_address' name='therapist_address' required='true' aria-label='true')
+                                      .col-md-3
+                                        .form-group.has-default.bmd-form-group
+                                          label Mobile Number
+                                          star *
+                                          input.form-control(type='number', placeholder='Mobile Number' id='therapist_contact_no' name='therapist_contact_no' required='true' aria-label='true'  minlength='11' maxlength='11')
+                                    .row
+                                      .col-md-4
+                                        .form-group.has-default.bmd-form-group
+                                          label Skills
+                                          star *
+                                            select.selectpicker(multiple='', title='Select Skill/s', data-style='btn-info', data-size='7' name='therapist_specialty' id='therapist_specialty' required='true' aria-label='true')
+                                              each specialty in specialtys
+                                                option(value=`${specialty.specialty_id}`)= specialty.specialty_desc
+                                      .col-md-1
+                                      .col-md-4
+                                        .form-group.has-default.bmd-form-group
+                                          label License Valid Until
+                                          star *  
+                                        input.form-control.datepickerLicense(type='text' name='therapist_license' id="license" style='margin-top: -15px')           
+                                  #tab2.tab-pane
+                                    
+                                    .form-group
+                                      .col-md-2
+                                      .row
+                                        .col-md-4
+                                          .form-group
+                                            label.control-label Username
+                                            star *
+                                            input.form-control(type='text', name='username', id="username" placeholder='Username' minlength='5' maxlength='15')
+                                      .col-md-2
+                                      .row
+                                        .col-md-4
+                                          .form-group
+                                            label.control-label Password
+                                            star *
+                                            input.form-control(type='password', name='username', id="password" placeholder='Password' minlength='8' maxlength='15')
+                                        .col-md-4
+                                          .form-group
+                                            label.control-label Re-enter Password
+                                            star *
+                                            input.form-control(type='password', name='username', id="password2" placeholder='Confirm Password' minlength='8' maxlength='15')
+                              .card-footer
+                                button.btn.btn-default.btn-fill.btn-wd.btn-back.pull-left(type='button') Back
+                                button.btn.btn-info.btn-fill.btn-wd.btn-next.pull-right(type='button') Next
+                                button.btn.btn-info.btn-fill.btn-wd.btn-finish.pull-right.submitButton(type='button') Finish
+                                .clearfix
 
 
                   //UPDATE
@@ -481,6 +524,10 @@ html(lang='en')
   script(src='/assets/paperDashboardPro/js/jquery.sharrre.js')
   // Paper Dashboard PRO DEMO methods, don't include it in your project!
   script(src='/assets/paperDashboardPro/js/demo.js')
+  script(type='text/javascript').
+    $(document).ready(function(){
+    demo.initWizard();
+    });
   script.
     $(document).ready(function(){
       var ages = $('.age')
@@ -539,59 +586,95 @@ html(lang='en')
   script.
     $(document).ready(function(){
       $('.submitButton').click(function(){
-        if($('#therapist_fname').val()==0 && $('#therapist_lname').val()==0 || $('#therapist_address').val()==0 || $('#calendar').val()==0 || $('#therapist_fname').val()==0 || $('#therapist_lname').val()==0)
+        var username = $("#username").val()
+        var password = $("#password").val()
+        var password2 = $("#password2").val()
+
+        if(username === "" || username === null)
         {
-            swal({
-              title: 'Please double check the fields',
-              text: 'Make sure all required fields have value', 
-              icon: 'warning'
-            })
+          swal({
+            title: 'Error',
+            text: "Username cannot be blank",
+            icon: 'error'
+          })
         }
-        else
+        else if(password != password2)
         {
-        var license = $('#license').val()
-            license = moment(license).format('YYYY-MM-DD')
-        var newDate= $('#calendar').val()
-            newDate = moment(newDate).format('MM-DD-YYYY')
-          var vals = newDate.split('-');
-          var year = vals[2];
-          var month = vals[0];
-          var date = vals[1];
-          console.log($('#therapist_specialty').val())
-          $.post('/admin/adminTherapist',{
-            therapist_fname:$('#therapist_fname').val(),
-            therapist_mname:$('#therapist_mname').val(),
-            therapist_lname:$('#therapist_lname').val(),
-            therapist_address:$('#therapist_address').val(),
-            therapist_contact_no:$('#therapist_contact_no').val(),
-            therapist_gender:$('#therapist_gender').val(),
-            therapist_specialty: $('#therapist_specialty').val(),
-            therapist_shift: $('#therapist_shift').val(),
-            therapist_licenseExpiration: license,
-            newDate, year, month, date
+          swal({
+            title: 'Error',
+            text: "The password is not match",
+            icon: 'error'
+          })
+        }
+        else if(password == "" || password === null)
+        {
+          swal({
+            title: 'Error',
+            text: "Password cannot be blank",
+            icon: 'error'
+          })
+        }
+        else 
+        {
+          $.post('/admin/adminTherapist/account_check',{
+            username, password
           }).done(function(data){
-          if(data.alertDesc == 1)
-          {
-            swal({
-              title:'Success', 
-              text:'New therapist added.', 
-              icon:'success'
-              }).then(function(){
-                location.reload()
-              })
-          }
-          else
+            if(data.availability === 0 )
+            {
+              var license = $('#license').val()
+              license = moment(license).format('YYYY-MM-DD')
+              var newDate= $('#calendar').val()
+                newDate = moment(newDate).format('MM-DD-YYYY')
+              var vals = newDate.split('-');
+              var year = vals[2];
+              var month = vals[0];
+              var date = vals[1];
+              console.log($('#therapist_specialty').val())
+              $.post('/admin/adminTherapist',{
+                therapist_fname:$('#therapist_fname').val(),
+                therapist_mname:$('#therapist_mname').val(),
+                therapist_lname:$('#therapist_lname').val(),
+                therapist_address:$('#therapist_address').val(),
+                therapist_contact_no:$('#therapist_contact_no').val(),
+                therapist_gender:$('#therapist_gender').val(),
+                therapist_specialty: $('#therapist_specialty').val(),
+                therapist_shift: $('#therapist_shift').val(),
+                therapist_licenseExpiration: license,
+                newDate, year, month, date, username,password
+              }).done(function(data){
+              if(data.alertDesc == 1)
+              {
+                swal({
+                  title:'Success', 
+                  text:'New therapist added.', 
+                  icon:'success'
+                  }).then(function(){
+                    location.reload()
+                  })
+              }
+              else
+                {
+                  swal({
+                    title:'Not Success', 
+                    text:'', 
+                    icon:'warning'
+                    })
+                }
+            })
+
+
+            }
+            else
             {
               swal({
-                title:'Not Success', 
-                text:'', 
-                icon:'warning'
-                })
+                title: 'Error',
+                text: username+" is already exist",
+                icon: 'error'
+              })
             }
-        })
+          })
         }
-
-
+       
       })
     })
   script.

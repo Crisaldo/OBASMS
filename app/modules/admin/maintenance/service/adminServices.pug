@@ -255,7 +255,7 @@ html(lang='en')
                                         td= service.service_name
                                         input.name(type='hidden' value=`${service.service_name}` id=`${service.service_id}`)
                                         td= service.service_duration_desc+" "+"minutes"
-                                        td= "₱"+service.service_price.toLocaleString()
+                                        td= "₱"+(service.service_price).toFixed(2)
                                         td= service.service_points
                                         td= service.service_equivalentPoints
                                         td
@@ -465,6 +465,9 @@ html(lang='en')
           }
           else
           {
+            var price = $('#service_price').val()
+            var points = $('#service_points').val()
+            var eq_points = $('#equivalent_points').val()
 
             if(isNaN(price)==true || isNaN(points)== true || isNaN(eq_points)== true) {
               alert("invalid input")

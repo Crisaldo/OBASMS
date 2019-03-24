@@ -258,7 +258,7 @@ html(lang='en')
                                         td
                                           button.btn.btn-fill.btn-info.viewButton(data-toggle='modal', value=`${promo.promobundle_id}`) View Services
                                         td= promo.promobundle_duration+" "+"minutes"
-                                        td= "₱"+promo.promobundle_price
+                                        td= "₱"+(promo.promobundle_price).toFixed(2)
                                         td= promo.promobundle_points
                                         td= promo.promobundle_maxPerson
                                         td= promo.promobundle_valid_from+" to "+promo.promobundle_valid_until
@@ -311,7 +311,7 @@ html(lang='en')
                                 label Services Included*
                                   select.selectpicker(multiple='', title='Select Service/s', data-style='btn-info', data-size='7' id='services_included' name='promos')
                                     each service in services
-                                      option(value=`${service.service_id}` price=`${service.service_price}` service_name=`${service.service_name}` service_duration=`${service.service_duration_desc}` service_points=`${service.service_points}` equivalent_points=`${service.service_equivalentPoints}`)= service.service_name+"("+service.service_duration_desc+" minutes)"+" ₱"+service.service_price
+                                      option(value=`${service.service_id}` price=`${service.service_price}` service_name=`${service.service_name}` service_duration=`${service.service_duration_desc}` service_points=`${service.service_points}` equivalent_points=`${service.service_equivalentPoints}`)= service.service_name+"("+service.service_duration_desc+" minutes)"+" ₱"+(service.service_price).toFixed(2)
                               
                             .form-group.has-default.bmd-form-group
                               center
@@ -499,6 +499,12 @@ html(lang='en')
           .replace(/(\..*)\./g, '$1')         // decimal can't exist more than once
           .replace(/(\.[\d]{4})./g, '$1');    // not more than 4 digits after decimal
       });
+      $(document).on('input', '#duration',  function() {
+        this.value = this.value
+          .replace(/[^\d.]/g, '')             // numbers and decimals only
+          .replace(/(\..*)\./g, '$1')         // decimal can't exist more than once
+          .replace(/(\.[\d]{4})./g, '$1');    // not more than 4 digits after decimal
+      });
       $(document).on('input', '#points',  function() {
         this.value = this.value
           .replace(/[^\d.]/g, '')             // numbers and decimals only
@@ -562,7 +568,7 @@ html(lang='en')
             totalPoints = totalPoints + price_perService[i].points
             totalEquivalentPoints = totalEquivalentPoints + price_perService[i].equivalent_points
             $('#suggestedDuration').text("Suggested Duration is "+totalDuration+" minutes")
-            $('#suggestedPrice').text("Suggested Price is ₱"+total)
+            $('#suggestedPrice').text("Suggested Price is ₱"+(total).toFixed(2))
             $('#suggestedPoints').text('Suggested Points is '+totalPoints+' points')
             $('#suggestedEquivalentPoints').text('Suggested Equivalent Points is '+totalEquivalentPoints+' points')
         }
@@ -602,7 +608,7 @@ html(lang='en')
         if(promobundle_name==0 && promobundle_price ==0 && services_included ==0 && promobundle_duration ==0 && promobundle_person_count ==0
           && promobundle_valid_from ==0 && promobundle_valid_until==0 && promobundle_points==0 && equivalent_points ==0 && promobundle_maxPerson==0
           || promobundle_name==0 || promobundle_price ==0 || services_included ==0 || promobundle_duration ==0 || promobundle_person_count ==0
-          || promobundle_valid_from ==0 || promobundle_valid_until==0 || promobundle_points==0  || equivalent_points ==0 || promobundle_maxPerson==0)
+          || promobundle_valid_from ==0 || promobundle_valid_until==0 || promobundle_points==0  || equivalent_points ==0 || promobundle_maxPerson==0 || promobundle_roomIncluded == 0)
         {
            swal({
               title: 'Please double check the fields.',

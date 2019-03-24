@@ -292,7 +292,7 @@ html(lang='en')
                                   td
                                   td= '₱'+(bent.TOTAL).toFixed(2)
                                   td
-                                    -if(bent.release_comm == 0)
+                                    -if(bent.release_comm == 0 || bent.release_comm == 1)
                                       .dropdown(style="right: 10px")
                                         button.btn.btn-simple.btn-info.btn-rotate(href='#', data-toggle='dropdown')
                                           i.ti-settings
@@ -400,7 +400,7 @@ html(lang='en')
                     dangerMode: true,
                   }).then(function(confirm){
                     var admin_password = $('.swal-content__input').val()
-                    alert(admin_password)
+                    //- alert(admin_password)
                     $.post('./validateAdmin',{admin_password,id,release_comm}).done(function(data){
                       if(data.validate == 0 ){
                         swal({
@@ -480,7 +480,7 @@ html(lang='en')
                     dangerMode: true,
                   }).then(function(confirm){
                     var admin_password = $('.swal-content__input').val()
-                    alert(admin_password)
+                    //- alert(admin_password)
                     $.post('./validateAdmin',{admin_password,id,release_comm}).done(function(data){
                       if(data.validate == 0 ){
                         swal({

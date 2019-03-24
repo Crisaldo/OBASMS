@@ -229,8 +229,9 @@ html(lang='en')
                           i.ti-user
                       .col-xs-7
                         .numbers
-                          p Total Guests Today
-                          | 30 Guests
+                          each reserv in reservs 
+                            p Total Guests Today
+                            | #{reserv.TOTAL}
                   .card-footer
                     hr
                     .stats
@@ -259,8 +260,12 @@ html(lang='en')
                           i.ti-home
                       .col-xs-8
                         .numbers
-                          p Amenity Users
-                          |23
+                          each amenity in amenitys
+                            p Amenity Users
+                            -if(amenity.amenity == null)
+                              | 0
+                            -else if(amenity.amenity != null)
+                              | #{amenity.amenity}
                   .card-footer
                     hr
                     .stats
@@ -348,35 +353,35 @@ html(lang='en')
             //-         .pull-right
             //-           button.btn.btn-success.btn-fill.btn-icon.btn-sm
             //-             i.ti-info
-            .row
-              .col-lg-3.col-sm-6
-                .card.card-circle-chart(data-background-color='blue')
-                  .card-header.text-center
-                    h5.card-title Dashboard
-                    p.description Monthly sales target
-                  .card-content
-                    #chartDashboard.chart-circle(data-percent='70') 70%
-              .col-lg-3.col-sm-6
-                .card.card-circle-chart(data-background-color='green')
-                  .card-header.text-center
-                    h5.card-title Orders
-                    p.description Completed
-                  .card-content
-                    #chartOrders.chart-circle(data-percent='34') 34%
-              .col-lg-3.col-sm-6
-                .card.card-circle-chart(data-background-color='orange')
-                  .card-header.text-center
-                    h5.card-title New Visitors
-                    p.description Out of total number
-                  .card-content
-                    #chartNewVisitors.chart-circle(data-percent='62') 62%
-              .col-lg-3.col-sm-6
-                .card.card-circle-chart(data-background-color='brown')
-                  .card-header.text-center
-                    h5.card-title Subscriptions
-                    p.description Monthly newsletter
-                  .card-content
-                    #chartSubscriptions.chart-circle(data-percent='10') 10%
+            //- .row
+            //-   .col-lg-3.col-sm-6
+            //-     .card.card-circle-chart(data-background-color='blue')
+            //-       .card-header.text-center
+            //-         h5.card-title Dashboard
+            //-         p.description Monthly sales target
+            //-       .card-content
+            //-         #chartDashboard.chart-circle(data-percent='70') 70%
+            //-   .col-lg-3.col-sm-6
+            //-     .card.card-circle-chart(data-background-color='green')
+            //-       .card-header.text-center
+            //-         h5.card-title Orders
+            //-         p.description Completed
+            //-       .card-content
+            //-         #chartOrders.chart-circle(data-percent='34') 34%
+            //-   .col-lg-3.col-sm-6
+            //-     .card.card-circle-chart(data-background-color='orange')
+            //-       .card-header.text-center
+            //-         h5.card-title New Visitors
+            //-         p.description Out of total number
+            //-       .card-content
+            //-         #chartNewVisitors.chart-circle(data-percent='62') 62%
+            //-   .col-lg-3.col-sm-6
+            //-     .card.card-circle-chart(data-background-color='brown')
+            //-       .card-header.text-center
+            //-         h5.card-title Subscriptions
+            //-         p.description Monthly newsletter
+            //-       .card-content
+            //-         #chartSubscriptions.chart-circle(data-percent='10') 10%
         footer.footer
           .container-fluid
             nav.pull-left

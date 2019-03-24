@@ -1020,9 +1020,8 @@ html(lang='en')
                 title: "Pay now or pay later?",
                 icon: 'info',
                 buttons: {
-                  cancel: true,
                   payLater: {
-                    text:'Pay Later',
+                    text:'Cancel',
                     value:'PayLater'
                   },
                   payNow: {
@@ -1096,32 +1095,30 @@ html(lang='en')
                   })
                 }
                 else if(value == 'PayLater'){
-                  if(exempt_cust == 0){
-                    entrance_fee_total = entrance_fee_total
-                  } else {
-                    entrance_fee_total = entrance_fee_vat
-                  }
-                  $.post('./AmenityPayLater',{
-                    cust_id: id,
-                    guest_quantity,
-                    entrance_fee_total
-                    }).done(function(data){
-                      if(data.alertDesc==0){
-                        swal({
-                          title: "Success",
-                          icon: 'success'
-                        }).then(function(){
-                          location.reload();
-                        })
-                      } else {
-                        swal({
-                          title: "ERROR",
-                          icon: 'error'
-                        })
-                      }
-                  })
-                } else if(value == null){
-
+                  //- if(exempt_cust == 0){
+                  //-   entrance_fee_total = entrance_fee_total
+                  //- } else {
+                  //-   entrance_fee_total = entrance_fee_vat
+                  //- }
+                  //- $.post('./AmenityPayLater',{
+                  //-   cust_id: id,
+                  //-   guest_quantity,
+                  //-   entrance_fee_total
+                  //-   }).done(function(data){
+                  //-     if(data.alertDesc==0){
+                  //-       swal({
+                  //-         title: "Success",
+                  //-         icon: 'success'
+                  //-       }).then(function(){
+                  //-         location.reload();
+                  //-       })
+                  //-     } else {
+                  //-       swal({
+                  //-         title: "ERROR",
+                  //-         icon: 'error'
+                  //-       })
+                  //-     }
+                  //- })
                 }
               })
             } else {
@@ -1656,13 +1653,13 @@ html(lang='en')
         if(valueCurrent >= minValue) {
             $(".btn-numberMale[data-type='minus'][data-field='"+name+"']").removeAttr('disabled')
         } else {
-            alert('Sorry, the minimum value was reached');
+            //- alert('Sorry, the minimum value was reached');
             $(this).val($(this).data('oldValue'));
         }
         if(valueCurrent <= maxValue) {
             $(".btn-numberMale[data-type='plus'][data-field='"+name+"']").removeAttr('disabled')
         } else {
-            alert('Sorry, the maximum value was reached');
+            //- alert('Sorry, the maximum value was reached');
             $(this).val($(this).data('oldValue'));
         }
         
@@ -1732,13 +1729,13 @@ html(lang='en')
         if(valueCurrent >= minValue) {
             $(".btn-number[data-type='minus'][data-field='"+name+"']").removeAttr('disabled')
         } else {
-            alert('Sorry, the minimum value was reached');
+            //- alert('Sorry, the minimum value was reached');
             $(this).val($(this).data('oldValue'));
         }
         if(valueCurrent <= maxValue) {
             $(".btn-number[data-type='plus'][data-field='"+name+"']").removeAttr('disabled')
         } else {
-            alert('Sorry, the maximum value was reached');
+            //- alert('Sorry, the maximum value was reached');
             $(this).val($(this).data('oldValue'));
         }
         
