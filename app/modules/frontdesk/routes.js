@@ -3,6 +3,9 @@ var router = express.Router()
 var db = require('../../lib/database')();
 var mid = require("../../middlewares")
 var moment = require ('moment')
+var multer = require('multer')
+const path = require('path');
+const fs = require('fs');
 
 
 // [FRONT DESK - LOGIN PAGE] 
@@ -139,33 +142,83 @@ router.post('/Customer/viewCustomerLoyaltyDetails',(req,res)=>{
 //   })
 // })
 
+// FILE UPLOAD using MULTER (IMAGE)
+var storage = multer.diskStorage({
+  destination: function (req, file, cb){
+    cb(null, './public/customerPicture')
+  },
+  filename: function (req, file, cb){
+    cb(null, 'customer'+ '-'+Date.now()+path.extname(file.originalname))
+  }
+})
+
+
+var upload = multer({ storage: storage})
 // [ADD NEW CUSTOMER]
-router.post('/frontdesk/home/newCustomer',(req, res) => {
-  const query= `select * from customer_tbl where cust_fname LIKE "%${req.body.firstname}%" and cust_lname LIKE "%${req.body.lastname}%" 
-  and cust_birthMonth LIKE "%${req.body.month}%" and cust_birthDate LIKE "%${req.body.date}%" and cust_birthYear LIKE "%${req.body.year}%" and cust_address LIKE "%${req.body.address}%"`
+router.post('/frontdesk/home/newCustomer',upload.single('cust_pic'),(req, res) => {
+  console.log(req.body)
+  
+  var cust_pic = req.file.filename
+  console.log(cust_pic)
+  const query= `select * from customer_tbl where cust_fname LIKE "%${req.body.firstname}%" and cust_lname LIKE "%${req.body.lastname}%" `
+  // const query= `select * from customer_tbl where cust_fname LIKE "%${req.body.firstname}%" and cust_lname LIKE "%${req.body.lastname}%" 
+  // and cust_birthMonth LIKE "%${req.body.month}%" and cust_birthDate LIKE "%${req.body.date}%" and cust_birthYear LIKE "%${req.body.year}%" and cust_address LIKE "%${req.body.address}%"`
   
   db.query(query, (err, out) => {
+    console.log(query)
     if(out== undefined || out == 0)
     {
     var alertSuccess = 1 ;
     var notSuccess = 0
     const query = `
     insert into 
-    customer_tbl(cust_fname,cust_mname, cust_lname, cust_birthMonth, cust_birthDate, cust_birthYear, cust_address,cust_contact_no, cust_gender, medical_history, delete_stats, cust_type, vat_exempt_id,vat_exempt_id_no) 
+    customer_tbl(cust_fname,cust_mname, cust_lname, cust_birthMonth, cust_birthDate, cust_birthYear, cust_address,cust_contact_no, cust_gender, medical_history, delete_stats, cust_type, vat_exempt_id,vat_exempt_id_no,cust_pic) 
     values("${req.body.firstname}","${req.body.middlename}","${req.body.lastname}", "${req.body.month}","${req.body.date}","${req.body.year}", 
-    "${req.body.address}","${req.body.contact_no}", "${req.body.gender}", "${req.body.medical_history}",0,0,${req.body.vat_type_id},"${req.body.vat_id_no}")
+    "${req.body.address}","${req.body.contact_no}", "${req.body.gender}", "${req.body.medical_history}",0,0,${req.body.vat_type_id},"${req.body.vat_id_no}","${cust_pic}")
     `
 
     db.query(query, (err, out) => {
-      console.log("----------------------------")
-      console.log("CUSTOMER NOT EXIST")
-      console.log("----------------------------")
-      console.log("NAGINSERT CHECK MO PA SA DB")
-      console.log("----------------------------")
-      console.log(query)
-      console.log(alertSuccess)
-      // return res.redirect("/frontdesk/home#success")
-      res.send({alertSuccess:alertSuccess})
+      cust_id= out.insertId;
+      if(req.body.loyalty == 0 ){
+        const query = `select * from loyalty_tbl where member_username = "${req.body.username}"`
+        db.query(query, (err,out)=>{
+          if(out== undefined || out ==0)
+          {
+              const query1 =`insert into loyalty_tbl(cust_id,member_username, member_password, member_points, membership_validity,paid_status,member_card_id) 
+              value("${cust_id}","${req.body.username}","${req.body.password}",0,"${req.body.membershipDate}",0,"${req.body.card_id}")`
+              db.query(query1, (err,out)=>{
+                console.log(query1)
+                console.log(err)
+                if(err){
+
+                } else {
+                  const query = `UPDATE customer_tbl SET cust_type = 1 WHERE cust_id = ${cust_id}`
+
+                  db.query(query, (err,out)=>{
+                    res.send({alertSuccess: alertSuccess})
+                  })
+                }
+              })
+  
+          }
+          else if(out != undefined)
+          {
+            db.query(query, (err, out) => {
+              res.send({alertSuccess: notSuccess})
+            })
+          }
+        })
+      }else if(req.body.loyalty == 1) {
+        console.log("----------------------------")
+        console.log("CUSTOMER NOT EXIST")
+        console.log("----------------------------")
+        console.log("NAGINSERT CHECK MO PA SA DB")
+        console.log("----------------------------")
+        console.log(query)
+        console.log(alertSuccess)
+        // return res.redirect("/frontdesk/home#success")
+        res.send({alertSuccess:alertSuccess})
+      }
     })
     }
     else if(out != undefined) 
@@ -184,57 +237,57 @@ router.post('/frontdesk/home/newCustomer',(req, res) => {
   })
 })
 
-//[ADD NEW CUSTOMER - LOYALTY]
-router.post('/frontdesk/home/newCustomer/Loyalty',(req, res) => {
-  var cust_id;
-  var alertSuccess =0
-  var notSuccess=1
-  const query= `select * from customer_tbl where cust_fname LIKE "%${req.body.firstname}%" and cust_lname LIKE "%${req.body.lastname}%" 
-  and cust_birthMonth LIKE "%${req.body.month}%" and cust_birthDate LIKE "%${req.body.date}%" and cust_birthYear LIKE "%${req.body.year}%" and cust_address LIKE "%${req.body.address}%"`
-  db.query(query, (err, out) => {
-    if(out== undefined || out == 0)
-    {
-      const query = `select * from loyalty_tbl where member_username = "${req.body.username}"`
-      db.query(query, (err,out)=>{
-        if(out== undefined || out ==0)
-        {
-          var alertSuccess = 1 ;
-          var notSuccess= 0;
-          const query = `
-          insert into 
-          customer_tbl(cust_fname,cust_mname, cust_lname, cust_birthMonth, cust_birthDate, cust_birthYear, cust_address,cust_contact_no, cust_gender, medical_history, delete_stats,cust_type) 
-          values("${req.body.firstname}","${req.body.middlename}","${req.body.lastname}", "${req.body.month}","${req.body.date}","${req.body.year}", 
-          "${req.body.address}","${req.body.contact_no}", "${req.body.gender}", "${req.body.medical_history}",0,1)
-          `
+// //[ADD NEW CUSTOMER - LOYALTY]
+// router.post('/frontdesk/home/newCustomer/Loyalty',(req, res) => {
+//   var cust_id;
+//   var alertSuccess =0
+//   var notSuccess=1
+//   const query= `select * from customer_tbl where cust_fname LIKE "%${req.body.firstname}%" and cust_lname LIKE "%${req.body.lastname}%" 
+//   and cust_birthMonth LIKE "%${req.body.month}%" and cust_birthDate LIKE "%${req.body.date}%" and cust_birthYear LIKE "%${req.body.year}%" and cust_address LIKE "%${req.body.address}%"`
+//   db.query(query, (err, out) => {
+//     if(out== undefined || out == 0)
+//     {
+//       const query = `select * from loyalty_tbl where member_username = "${req.body.username}"`
+//       db.query(query, (err,out)=>{
+//         if(out== undefined || out ==0)
+//         {
+//           var alertSuccess = 1 ;
+//           var notSuccess= 0;
+//           const query = `
+//           insert into 
+//           customer_tbl(cust_fname,cust_mname, cust_lname, cust_birthMonth, cust_birthDate, cust_birthYear, cust_address,cust_contact_no, cust_gender, medical_history, delete_stats,cust_type) 
+//           values("${req.body.firstname}","${req.body.middlename}","${req.body.lastname}", "${req.body.month}","${req.body.date}","${req.body.year}", 
+//           "${req.body.address}","${req.body.contact_no}", "${req.body.gender}", "${req.body.medical_history}",0,1)
+//           `
       
-          db.query(query, (err, out) => {
-            cust_id= out.insertId;
-            const query1 =`insert into loyalty_tbl(cust_id,member_username, member_password, member_points, membership_validity,paid_status) 
-            value("${cust_id}","${req.body.username}","${req.body.password}",0,"${req.body.membershipDate}",0)`
-            db.query(query1, (err,out)=>{
-              console.log(query1)
-              console.log(err)
-              res.send({alertSuccess: alertSuccess})
-            })
+//           db.query(query, (err, out) => {
+//             cust_id= out.insertId;
+//             const query1 =`insert into loyalty_tbl(cust_id,member_username, member_password, member_points, membership_validity,paid_status) 
+//             value("${cust_id}","${req.body.username}","${req.body.password}",0,"${req.body.membershipDate}",0)`
+//             db.query(query1, (err,out)=>{
+//               console.log(query1)
+//               console.log(err)
+//               res.send({alertSuccess: alertSuccess})
+//             })
 
-          })
-        }
-        else if(out != undefined)
-        {
-          db.query(query, (err, out) => {
-            res.send({alertSuccess: notSuccess})
-          })
-        }
-      })
-    }
-    else if(out != undefined) 
-    {
-      db.query(query, (err, out) => {
-        res.send({alertSuccess:notSuccess})
-      })
-    }
-  })
-})
+//           })
+//         }
+//         else if(out != undefined)
+//         {
+//           db.query(query, (err, out) => {
+//             res.send({alertSuccess: notSuccess})
+//           })
+//         }
+//       })
+//     }
+//     else if(out != undefined) 
+//     {
+//       db.query(query, (err, out) => {
+//         res.send({alertSuccess:notSuccess})
+//       })
+//     }
+//   })
+// })
 
 
 // REGISTRATION FOR LOYALTY PAY LATER
@@ -2394,4 +2447,25 @@ router.post('/reservationRefund',(req,res)=>{
     }
   })
 })
+
+router.post('/tap',(req,res)=>{
+  const query = `SELECT * FROM customer_tbl JOIN loyalty_tbl ON
+  customer_tbl.cust_id = loyalty_tbl.cust_id 
+  WHERE member_card_id = "${req.body.card_id}"`
+
+  db.query(query,(err,out)=>{
+    if(out == undefined || out==''){
+      var alertDesc = 0
+      res.send({alertDesc:alertDesc})
+    } else if(out != undefined || out != ''){
+      var alertDesc = 1
+      res.send({
+        alertDesc: alertDesc,
+        out
+      })
+    }
+  })
+})
+
+
 exports.frontdesk = router;

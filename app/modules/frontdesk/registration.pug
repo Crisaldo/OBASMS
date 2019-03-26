@@ -81,6 +81,7 @@ html(lang='en')
                 span.icon-bar.bar3
               a.navbar-brand(href='#Dashboard')
                 | Registration
+              input.tap_id(onFocus)
             .collapse.navbar-collapse
               ul.nav.navbar-nav.navbar-right
                 li
@@ -112,7 +113,7 @@ html(lang='en')
                           button.close(type='button', data-dismiss='modal', aria-label='Close') X
                         .modal-body
                           #wizardCard.card-wizard
-                            form#wizardForm(method='POST', action='')
+                            form#wizardForm(method='', action='')
                               .card-content
                                 ul.nav
                                   li
@@ -121,6 +122,19 @@ html(lang='en')
                                     a(href='#tab2', data-toggle='tab') Account Information
                                 .tab-content
                                   #tab1.tab-pane
+                                    .row
+                                      .col-md-4
+                                        .form-group
+                                          p.control-label
+                                              strong
+                                                | Upload Customer's Picture
+                                                star *
+                                          input.form-control(type='file' accept='image/*' id='cust_pic' name='cust_pic')
+                                    .row
+                                        div#preview_picture(style='width: 50%;margin-left: 36%;margin-top: -4%;')
+                                          img.card(src=`` id="viewImage" style='margin-left: -54%;margin-top: 8%;width: 31%;')
+                                       
+                                    br
                                     .row
                                       .col-md-4
                                         .form-group
@@ -190,28 +204,6 @@ html(lang='en')
                                               star *
                                           input.form-control(type='text', name='vat_id_no', id='vat_id_no'  placeholder='ID No.' required='')
                                           p.appendResults
-                                    br
-                                    .row
-                                      .col-md-7
-                                        .form-group
-                                          h3.control-label
-                                            strong
-                                              | Contact Details
-                                    .row
-                                      .col-md-8
-                                        .form-group
-                                          p.control-label
-                                            strong
-                                              | Address
-                                              star *
-                                          input.form-control(type='text', name='address', id='address' placeholder='Address')
-                                      .col-md-4
-                                        .form-group
-                                          p.control-label
-                                            strong
-                                              | Contact Number
-                                              star *
-                                          input.form-control(type='number', name='contact_no', id="contact_no" placeholder='e.g 09xxxxxxxxxx')
                                     .row
                                       .col-md-12
                                         .form-group
@@ -220,12 +212,24 @@ html(lang='en')
                                               | Medical History
                                           input.form-control(type='textfield', name='medical_history', id="medical_history" placeholder='ex: asthma')
                                   #tab2.tab-pane
-                                    
-                                    .form-group
-                                      .checkbox
-                                        input#checkbox1(type='checkbox')
-                                        label(for='checkbox1')
-                                          | Loyalty Member
+                                    .row
+                                      .form-group
+                                        .col-md-15
+                                          .panel-info
+                                            .panel-heading 
+                                              .checkbox
+                                                input#checkbox1(type='checkbox')
+                                                label(for='checkbox1')
+                                                  | Check this if the customer wants to be a Loyalty Member.
+                                                br
+                                                center
+                                                  h4 The Loyalty Member Fee: ₱#{(reqSession.utilities[0].membership_fee).toFixed(2)}
+                                    .row
+                                      .col-md-7
+                                        .form-group
+                                          h3.control-label
+                                            strong
+                                              | Account Details
                                     .row
                                       .col-md-4
                                         .form-group
@@ -246,16 +250,37 @@ html(lang='en')
                                           input.form-control(type='password', name='username', id="password2" placeholder='confim password\
                                           ' disabled)
                                     .row
+                                      .col-md-4
+                                        .form-group
+                                          p.control-label
+                                            strong
+                                              | Card ID
+                                              star *
+                                          input.form-control(type='text', name='card_id', id='card_id' placeholder='Card' disabled)
                                     .row
-                                      .col-md-5
+                                    br
+                                    .row
+                                      .col-md-7
                                         .form-group
                                           h3.control-label
-                                            | Fee: ₱#{reqSession.utilities[0].membership_fee}.00
-                                    //- .row
-                                    //-   .col-md-5
-                                    //-     .form-group
-                                    //-       h3.control-label
-                                    //-         | Perks: freebies
+                                            strong
+                                              | Contact Details
+                                    .row
+                                      .col-md-8
+                                        .form-group
+                                          p.control-label
+                                            strong
+                                              | Address
+                                              star *
+                                          input.form-control(type='text', name='address', id='address' placeholder='Address' disabled)
+                                      .col-md-4
+                                        .form-group
+                                          p.control-label
+                                            strong
+                                              | Contact Number
+                                              star *
+                                          input.form-control(type='number', name='contact_no', id="contact_no" placeholder='e.g 09xxxxxxxxxx' disabled)
+                                   
                               .card-footer
                                 button.btn.btn-default.btn-fill.btn-wd.btn-back.pull-left(type='button') Back
                                 button.btn.btn-info.btn-fill.btn-wd.btn-next.pull-right(type='button') Next
@@ -267,6 +292,7 @@ html(lang='en')
                         .col-md-12
                           p.category  
                           br
+                          
                           .card
                             .card-content
                               .nav-tabs-navigation
@@ -704,6 +730,440 @@ html(lang='en')
   script(src='/assets/paperDashboardPro/js/demo.js')
   script(src='/assets/pdfmake/pdfmake.js')
   script(src='/assets/pdfmake/vfs_fonts.js')
+  script(src='/assets/webcam/webcam.min.js')
+  script.
+    $(document).ready(function(){
+      $('.tap_id').focus()
+      $('.tap_id').css('color','white').css('opacity','0')
+
+      $('.tap_id').on('change',function(){
+         $.post('./tap',{
+           card_id: this.value
+         }).done(data=>{
+           if(data.alertDesc == 0){
+             $('.tap_id').val('')
+             swal({
+               title: 'ERROR',
+               text: 'Please try again or do manual reservation',
+               icon: 'error'
+             }).then(function(){
+               $('.tap_id').focus()
+             })
+           } else if(data.alertDesc == 1){
+              $('.tap_id').val('')
+              $('.tap_id').focus()
+              swal({
+                title: data.out[0].cust_fname+' '+data.out[0].cust_mname+' '+data.out[0].cust_lname,
+                text: 'Points: '+(data.out[0].member_points).toFixed(2),
+                buttons: {
+                  cancel: true,
+                  amenity: {
+                    text: 'Amenity Only',
+                    value: 0,
+                  },
+                  reservation: {
+                    text: 'New Reservation',
+                    value: 1
+                  }
+                }
+    
+              }).then(function(value){
+                var id = data.out[0].cust_id
+                var name = data.out[0].cust_fname+' '+data.out[0].cust_mname+' '+data.out[0].cust_lname
+                var exempt_cust = data.out[0].vat_exempt_id
+                if(exempt_cust == null){
+                  exempt_cust = 0
+                } else {
+                  exempt_cust = 1
+                }
+                $('.tap_id').focus()
+
+                if(value == 0){
+                  amenityModal(id,name,exempt_cust)
+
+                } else if(value ==1){
+                
+
+                  reserveModal(id,name)
+                }
+              })
+              var scriptSession = !{JSON.stringify(reqSession)};
+              var image = data.out[0].cust_pic
+              $('.swal-text').append(`
+              <div style='width: 50%'>
+              <img class="card" src="/customerPicture/${image}" id="" style="margin-left:25px; width: 15em;" />
+              </div>`)
+           }
+         })
+      })
+
+
+      function amenityModal(id,name,exempt_cust){
+        $('#amenityOnly').modal('show')
+        $('#custName').append(`${name}`)
+        // PROCEED
+        $('.proceedButton').click(function(){
+          var guest_quantity = $('.quantityGuest').val()
+          var scriptSession = !{JSON.stringify(reqSession)};
+          var vat = parseFloat(scriptSession.utilities[0].vat) / 100
+          console.log('VAT',vat)
+          var entrance_fee = scriptSession.utilities[0].entrance_fee
+              entrance_fee_total = parseInt(guest_quantity) * parseFloat(entrance_fee)
+          var entrance_fee_vat = parseFloat(entrance_fee_total) * vat
+              entrance_fee_vat = parseFloat(entrance_fee_total) - parseFloat(entrance_fee_vat)
+          if(guest_quantity != 0){
+          swal({
+            title: guest_quantity+' Guest?',
+            text: ' Are you sure?',
+            icon: 'info',
+            buttons: ['No','Yes'],
+          }).then(function(Yes){
+            if(Yes){
+                  $('#paynowAmenity').modal('show')
+                  $('#Name').append(`${name}`)
+                  $('#numberOfGuest').append(`${guest_quantity} x `)
+                  $('#EntranceFee').append(`₱${parseFloat(entrance_fee).toFixed(2)}`)
+                  if(exempt_cust == 0){
+                    $('.totalAmenityPrice').val(entrance_fee_total)
+                    $('#TotalAmenityPrice').append(`Total Price: ₱${(entrance_fee_total).toFixed(2)}`)
+                  } else {
+                    $('#cust_type').append('This customer is VAT exempted')
+                    $('#TotalAmenityPrice').append(`Total Price: ₱${(entrance_fee_vat).toFixed(2)}`)
+                    $('.totalAmenityPrice').val(entrance_fee_vat)
+                    $('#TotalAmenityPriceVat').append(`Original Price: ₱${(entrance_fee_total).toFixed(2)}`)
+                  }
+                  // BUTTON AMENITY DONE
+                  $('.buttonAmenityDone').click(function(){
+                    var amount_received = $('.amountAmenityReceived').val()
+                    var total_price = $('.totalAmenityPrice').val()
+                    if(amount_received == 0){
+                      swal({
+                        title: "Amount received is 0.",
+                        icon: 'warning'
+                      })
+                    }
+                    else if(parseFloat(amount_received) < parseFloat(total_price)){
+                      swal({
+                        title: "The amount received is insuficient.",
+                        icon: 'warning'
+                      })
+                    }
+                    else if(parseFloat(amount_received) >= parseFloat(total_price)){
+                      swal({
+                        title: "Are you sure?",
+                        icon: 'warning',
+                        buttons: ['Cancel','Confirm']
+                      }).then(function(sure){
+                        if(sure){
+                          $.post('./AmenityPayNow',{
+                            cust_id: id,
+                            guest_quantity,
+                            entrance_fee_total: $('.totalAmenityPrice').val()
+                          }).done(function(data){
+                            if(data.alertDesc==0){
+                              PDF(exempt_cust,name,guest_quantity,entrance_fee_total,entrance_fee_vat)
+                              swal({
+                                title: "Success",
+                                icon: 'success'
+                              }).then(function(){
+                                location.reload();
+                              })
+                            }
+                            else{
+                              swal({
+                                title: "ERROR",
+                                icon: 'error'
+                              })
+                            }
+                          })
+                        } else {
+                        }
+                      })
+                    }
+                  })
+            }
+          })
+          $('#paynowAmenity').on('hidden.bs.modal', function (){
+            $('#cust_type').empty()
+            $('#Name').empty()
+            $('#numberOfGuest').empty()
+            $('#EntranceFee').empty()
+            $('#TotalAmenityPrice').empty()
+            $('#TotalAmenityPriceVat').empty()
+            $('.tap_id').focus()
+          })
+          }
+        })
+        $('#amenityOnly').on('hidden.bs.modal', function (){
+          $('.tap_id').focus()
+          $('#custName').empty()       
+        });
+
+        function PDF(exempt_cust,name,guest_quantity,entrance_fee_total,entrance_fee_vat){
+        var scriptSession = !{JSON.stringify(reqSession)};
+        var company_name = scriptSession.utilities[0].company_name
+        var company_address = scriptSession.utilities[0].company_address
+        var or_no = scriptSession.utilities[0].official_receipt_num
+        var entrance = scriptSession.utilities[0].entrance_fee
+        var vat = scriptSession.utilities[0].vat / 100
+        var amountReceived = $('.amountAmenityReceived').val()
+        var date_time = moment(new Date()).format('MMMM DD, YYYY')
+        if(exempt_cust == 0){
+          var total_price = (entrance_fee_total).toFixed(2)
+          var vatable_sales = parseFloat(total_price) * vat
+              vatable_sales = total_price - vatable_sales
+          var vat_amount = total_price - vatable_sales
+        } else {
+          var total_price = (entrance_fee_vat).toFixed(2)
+           var vatable_sales = parseFloat(total_price) * vat
+              vatable_sales = total_price - vatable_sales
+          var vat_amount = total_price - vatable_sales
+          var vatable = {text: 'Original Price: ₱'+(entrance_fee_total).toFixed(2), fontSize: 13, bold: true}
+        }
+        var docDefinition = {
+            content: [
+                {text: company_name, fontSize: 20, bold: true, alignment: 'center'},
+                {text: company_address, fontSize: 14, bold: false,alignment: 'center'},
+                {text: '- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - ', fontSize: 14, bold: false, margin: [0, 0, 0, 0]},
+                {text: 'Official Receipt No: '+or_no, fontSize: 12, bold: false,},
+                {text: 'Date: '+date_time, fontSize: 12, bold: false,},
+                {text: 'Customer '+name, fontSize: 12, bold: false,},
+                {text: '- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - ', fontSize: 14, bold: false, margin: [0, 0, 0, 0]},
+                {text: 'Amenity Only', fontSize:15, bold: true},
+                {text: 'Entrance fee: ₱'+parseFloat(entrance).toFixed(2), fontSize:12, bold:false},
+                {text: 'Total Guest: '+guest_quantity, fontSize:12, bold:false},
+                
+                {text: '- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - ', fontSize: 14, bold: false, margin: [0, 0, 0, 0]},
+                {text: 'Amount Due: ₱'+total_price, fontSize: 17, bold: true},
+                {text: 'Cash Received: ₱'+parseFloat(amountReceived).toFixed(2), fontSize: 12, bold: false},
+                {text: 'Change: ₱'+$('.changeAmenity').val(), fontSize: 12, bold: false},
+                vatable,
+                {text: 'Vatable Sales: ₱'+(vatable_sales).toFixed(2), fontSize: 12, bold: false},
+                {text: 'VAT amount'+'('+eval(vat*100)+'%): ₱'+(vat_amount).toFixed(2), fontSize: 12, bold: false},
+            ],
+
+              styles: {
+              header: {
+                fontSize: 18,
+                bold: true,
+                margin: [0, 0, 0, 10]
+              },
+              subheader: {
+                fontSize: 16,
+                bold: true,
+                margin: [0, 10, 0, 5]
+              },
+              tableExample: {
+                margin: [0, 5, 0, 15]
+              },
+              tableHeader: {
+                bold: true,
+                fontSize: 13,
+                color: 'black'
+              }
+              }
+            };
+            pdfMake.createPdf(docDefinition).open(); 
+    }
+      }
+
+
+      function reserveModal(id,name){
+            $('#hello').append(`(${name})`)
+            $('#ReservationModal').on('hidden.bs.modal', function (){
+              $('#hello').empty()
+              $('.tap_id').focus()
+            });
+            $('#ReservationModal').modal('show')
+            $('input[type="radio"]').click(function(e){
+            if(e.target.checked)
+            {
+            $('#reservationFooter').empty()
+              if($(this).val() == "single")
+              {
+                $('#Multiple').css('display','none')
+                $('#reservationFooter').empty()
+              //-  alert("single")
+                $('.buttonAdd').attr('disabled', true)
+                //- $('#reservationFooter').append(`
+                //- <a class="btn btn-secondary btn-info btn-fill" href="selectDate?id=${id}&reservetype=single" stlye="margin-right: 15px">Next</a>
+                //- <button class="btn btn-secondary pull-left btn btn-danger btn-fill btn-wd" type="button" data-dismiss="modal">Cancel</button>`)
+              }
+              else if($(this).val()=="multiple")
+              {
+                $('#Multiple').css('display','block')
+                $('button[id="add"]').click(function(){
+                $('#reservationFooter').empty()
+                var male=$('.male[name="quantMale"]').val()
+                var female=$('.female[name="quantFemale"]').val()
+                total = parseInt(male) + parseInt(female)
+                $('#reservationFooter').append(`
+                <button class="btn btn-secondary btn-info btn-fill total" stlye="margin-right: 15px">Next</a>
+                <button class="btn btn-secondary pull-left btn btn-danger btn-fill btn-wd" type="button" data-dismiss="modal">Cancel</button>`)
+                $(document).on('click', '.total', function(){
+                  $('#reservationFooter').empty()
+                  var scriptSession = !{JSON.stringify(reqSession)};
+                  var max_guest =  scriptSession.utilities.max_guest
+                  if(total > max_guest)
+                  {
+                    swal({
+                      title: "Not allowed.",
+                      icon: 'warning'
+                    }).then(function(){
+                    $('#reservationFooter').append(`
+                <button class="btn btn-secondary btn-info btn-fill total" stlye="margin-right: 15px">Next</a>
+                <button class="btn btn-secondary pull-left btn btn-danger btn-fill btn-wd" type="button" data-dismiss="modal">Cancel</button>`)
+
+                    })
+                  }
+                  else
+                  {
+                    swal({
+                      title: "Confirmation",
+                      text: male+" Male & "+female+" Female",
+                      icon: "warning",
+                      buttons: [true,"Confirm"]
+                      }).then(function(confirm){
+                        if(confirm)
+                        {
+                          location.href=`selectDate?id=${id}&reservetype=multiple&male=${male}&female=${female}`
+                        }
+                        else
+                        {
+                        $('.male').val('0')
+                        $('.female').val('0')
+                        $('#reservationFooter').append(`
+                        <a class="btn btn-secondary btn-info btn-fill" href="selectDate?id=${id}&reservetype=single&male=0&female=0" stlye="margin-right: 15px">Next</a>
+                        <button class="btn btn-secondary pull-left btn btn-danger btn-fill btn-wd" type="button" data-dismiss="modal">Cancel</button>`)
+                        }
+                      })
+                  }
+                
+                })  
+                
+                })
+                $('.buttonAdd').attr('disabled',false)
+              }
+            }
+            $('#reservationFooter').append(`
+            <a class="btn btn-secondary btn-info btn-fill" href="selectDate?id=${id}&reservetype=single&male=0&female=0" stlye="margin-right: 15px">Next</a>
+            <button class="btn btn-secondary pull-left btn btn-danger btn-fill btn-wd" type="button" data-dismiss="modal">Cancel</button>`)
+            })
+            $('#reservationFooter').append(`
+            <a class="btn btn-secondary btn-info btn-fill" href="selectDate?id=${id}&reservetype=single&male=0&female=0" stlye="margin-right: 15px">Next</a>
+            <button class="btn btn-secondary pull-left btn btn-danger btn-fill btn-wd" type="button" data-dismiss="modal">Cancel</button>`)
+            $('#ReservationModal').on('hidden.bs.modal', function (){
+              $('#reservationFooter').empty()
+            })
+      }
+    })
+  script.
+    $(document).ready(function(){
+      $('#card_id').on('change',function(){
+
+      })
+    })
+  script.
+    $(document).ready(function(){
+              function readURL(input) {
+          if (input.files && input.files[0]) {
+              var reader = new FileReader();
+              
+              reader.onload = function (e) {
+                  $('#viewImage').attr('src', e.target.result);
+              }
+              
+              reader.readAsDataURL(input.files[0]);
+          }
+          }
+          $("#cust_pic").change(function(){
+            readURL(this);
+          });
+    })
+  //- script.
+  //-   $(document).ready(function(){
+  //-     $(".cust_pic").click(function(){
+  //-     retake()
+  //-     })
+  //-       function retake(){
+  //-         swal({
+  //-           title: 'Please take a picture',  
+  //-           text: ' ',
+  //-           buttons: {
+  //-             cancel: true,
+  //-             capture: {
+  //-               text: 'Capture',
+  //-               value: 'capture'
+  //-             }
+  //-           }
+  //-         }).then(function(value){
+  //-           if(value == 'capture'){
+  //-             take_snapshot()
+  //-           } else if(value == null){
+
+  //-           }
+
+  //-         })
+
+  //-         $('.swal-text').append(`
+  //-         <br>
+  //-         <div id='my_camera'></div`)
+  //-         Webcam.set({
+  //-         width: 320,
+  //-         height: 240,
+  //-         image_format: 'jpeg',
+  //-         jpeg_quality: 90
+  //-         });
+  //-         Webcam.attach( '#my_camera' )
+  //-       }
+  //-       function take_snapshot() {
+  //-       // take snapshot and get image data
+  //-       Webcam.snap(function(data_uri) {
+  //-         swal({
+  //-           text: ' ',
+  //-           buttons: {
+  //-             retake: {
+  //-               text: 'Retake',
+  //-               value: '0'
+  //-             },
+  //-             confirm:{
+  //-               text: 'Confirm',
+  //-               value: '1'
+  //-             }
+  //-           }
+  //-         }).then(function(value){
+  //-           if(value == 0){
+  //-             retake()
+  //-           } else if(value == 1){
+  //-             //- console.log(data_uri)
+  //-             //- $('#picture_value').val(data_uri)
+  //-             document.getElementById('preview_picture').innerHTML = 
+  //-             "<h4>Customer's Picture</h2>" + 
+  //-             '<img id="cust_pic" style="width: 50%; border-radius: 3%;" src="'+data_uri+'"/>';
+  //-           }
+
+  //-         })
+
+  //-         $('.swal-text').append(`
+  //-         <div id='results'></div>`)
+  //-         //- alert(data_uri)
+  //-         // display results in page
+  //-         document.getElementById('results').innerHTML = 
+  //-           '<h2>Here is your image</h2>' + 
+  //-           '<img src="'+data_uri+'"/>';
+  //-       });
+  //-     }
+  //-   })
+  script.
+    $(document).ready(function(){
+      //-   Webcam.set({
+      //-   width: 320,
+      //-   height: 240,
+      //-   image_format: 'jpeg',
+      //-   jpeg_quality: 90
+      //- });
+      //- Webcam.attach( '#my_camera' )
+    })
   script.
     $(document).ready(function(){
       $('#vat_id_no').on('keyup',function(){
@@ -1394,19 +1854,25 @@ html(lang='en')
             $("#username").prop('disabled', true);
             $("#password").prop('disabled', true);
             $("#password2").prop('disabled', true);
+            $("#address").prop('disabled', true);
+            $("#contact_no").prop('disabled',true);
+            $("#card_id").prop('disabled', true);
           }
           else if(e.target.checked==true)
           {
             $("#username").prop('disabled', false);
             $("#password").prop('disabled', false);
             $("#password2").prop('disabled', false);
+            $("#address").prop('disabled', false);
+            $("#contact_no").prop('disabled',false);
+            $("#card_id").prop('disabled', false);
           }
         });
     })
   script.
     $(document).ready(function(){
       $('.logout').click(function(){
-            swal({
+      swal({
         title: "Are you sure?",
         text: "Do you want to log out?",
         icon: "warning",
@@ -1423,52 +1889,22 @@ html(lang='en')
 
 
       $('.submitButton').click(function(){
-        if($("#checkbox1").is(':checked'))
-        {
-        //- var newDate= $('#calendar').val()
-        //- var vals = newDate.split('-');
-        //- var year = vals[2];
-        //- var month = vals[0];
-        //- var date = vals[1];
-        //- var dateNow = new Date()
-        //- var scriptSession = !{JSON.stringify(reqSession)};
-        //- var membership_validity= scriptSession.utilities.membership_validity
-        //- console.log(scriptSession)
-        //- var membershipDate = moment(dateNow).add(membership_validity,'months').format('MMMM DD, YYYY')
-        //- $.post('/frontdesk/Home/newCustomer/Loyalty',{
-        //-   firstname:$('#firstname').val(),
-        //-   lastname:$('#lastname').val(),
-        //-   middlename:$('#middlename').val(),
-        //-   gender:$("input[name='gender']:checked").val(),
-        //-   contact_no:$('#contact_no').val(),
-        //-   address:$('#address').val(),
-        //-   medical_history:$('#medical_history').val(),
-        //-   username:$('#username').val(),
-        //-   password:$('#password').val(),
-        //-   newDate, year, month, date, membershipDate
-        //- }).done(function(data){
-        //-   if(data.alertSuccess == 1)
-        //-   {
-        //-     swal({
-        //-       title:'Success', 
-        //-       text:'New guest added.', 
-        //-       icon:'success'
-        //-       }).then(function(){
-        //-         location.reload()
-        //-       })
-        //-   }
-        //-   else
-        //-     {
-        //-       swal({
-        //-         title:'Not Success', 
-        //-         text:'Customer already exist.', 
-        //-         icon:'warning'
-        //-         })
-        //-     }
-        //- })
+        if($("#checkbox1").is(':checked')){
+          var loyalty = 0
+        } else {
+          var loyalty = 1
         }
-        else
-        {
+        var newDate= $('#calendar').val()
+        var vals = newDate.split('-');
+        var year = vals[2];
+        var month = vals[0];
+        var date = vals[1];
+        var dateNow = new Date()
+        var scriptSession = !{JSON.stringify(reqSession)};
+        var membership_validity= scriptSession.utilities.membership_validity
+        console.log(scriptSession)
+        var membershipDate = moment(dateNow).add(membership_validity,'months').format('MMMM DD, YYYY')
+
           if($('#vatExempt').is(':checked')){
            var vat_type_id = $('#person_exempt').val()
            var vat_id_no = $('#vat_id_no').val()
@@ -1477,21 +1913,35 @@ html(lang='en')
             var vat_type_id = "NULL"
             var vat_id_no = ""
           }
-          var newDate= $('#calendar').val()
-          var vals = newDate.split('-');
-          var year = vals[2];
-          var month = vals[0];
-          var date = vals[1];
-          $.post('/frontdesk/Home/newCustomer',{
-            firstname:$('#firstname').val(),
-            lastname:$('#lastname').val(),
-            middlename:$('#middlename').val(),
-            gender:$("input[name='gender']:checked").val(),
-            contact_no:$('#contact_no').val(),
-            address:$('#address').val(),
-            medical_history:$('#medical_history').val(),
-            newDate, year, month, date, vat_type_id, vat_id_no
-          }).done(function(data){
+
+          var formData = new FormData();
+          formData.append('firstname',$('#firstname').val())
+          formData.append('lastname',$('#lastname').val())
+          formData.append('middlename',$('#middlename').val())
+          formData.append('gender',$("input[name='gender']:checked").val())
+          formData.append('medical_history',$('#medical_history').val())
+          formData.append('newDate',newDate)
+          formData.append('year',year)
+          formData.append('month',month)
+          formData.append('date',date)
+          formData.append('vat_type_id',vat_type_id)
+          formData.append('vat_id_no',vat_id_no)
+          formData.append('cust_pic', $('#cust_pic')[0].files[0])
+          formData.append('address',$('#address').val())
+          formData.append('username',$('#username').val())
+          formData.append('password',$('#password').val())
+          formData.append('contact_no',$('#contact_no').val())
+          formData.append('card_id',$('#card_id').val())
+          formData.append('membershipData',membershipDate)
+          formData.append('loyalty',loyalty)
+          console.log($('#cust_pic')[0].files[0])
+          $.ajax({
+            type:"POST",
+            url: "/frontdesk/Home/newCustomer",
+            data: formData,
+            processData: false,
+            contentType: false,
+        }).done(function(data){
             if(data.alertSuccess==1)
             {
               swal({
@@ -1511,7 +1961,6 @@ html(lang='en')
                 })
             }
           })
-        }
       })
     })
 
@@ -1768,11 +2217,16 @@ html(lang='en')
           
           
           var birthday =data[0].cust_birthMonth+'-'+data[0].cust_birthDate+'-'+data[0].cust_birthYear
-          console.log(birthday)
+          console.log(birthday == 'Invalid date')
+          if(birthday == 'Invalid date'){
+            birthday = ' '
+          } else {
+            birthday = birthday
+          }
+          //- console.log(birthday)
             birthday = moment(birthday).format('MMMM DD, YYYY')
-          $('#Details').append(`<p>Address: ${data[0].cust_address}
-          <p>Birthday: ${birthday} 
-          <p>Contact No: ${data[0].cust_contact_no}`)
+          $('#Details').append(`
+          <img class="card" src="/customerPicture/${data[0].cust_pic}" id="" style="margin-left:33%; width: 15em;" />`)
         })
       $('#viewCustomerDetails').on('hidden.bs.modal', function (){
           $('#titleName').empty(),

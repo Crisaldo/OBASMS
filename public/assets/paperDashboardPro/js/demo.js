@@ -754,9 +754,6 @@ demo = {
         		    required: false,
         		    minlength: 4
             },
-            birthday: {
-              required: true
-            },
             gender: {
               required: true
             },
