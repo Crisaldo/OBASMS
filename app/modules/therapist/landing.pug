@@ -45,7 +45,7 @@ html(lang='en')
 								| View your things by navigating using these buttons.
 							br
 							a.btn.btn-outline-primary.btn-round(style='margin:5px;color:white' data-toggle='modal' data-target='#scheduleModal') Schedule
-							//- a.btn.btn-outline-danger.btn-round(style='margin:5px;color:white' data-toggle='modal' data-target='#commissionModal') Commission
+							a#commission.btn.btn-outline-danger.btn-round(style='margin:5px;color:white' data-toggle='modal' data-target='#commissionModal') Commission
 		#loginModal.modal.fade.show(tabindex='-1', role='dialog')
 			.modal-dialog.modal-register
 				.modal-content
@@ -74,7 +74,7 @@ html(lang='en')
 					.modal-body
 						#scheduleCalendar
 					.modal-footer.no-border-footer
-		//- #commissionModal.modal.fade.show(tabindex='-1', role='dialog')
+		#commissionModal.modal.fade.show(tabindex='-1', role='dialog')
 			.modal-dialog.modal-register.modal-lg
 				.modal-content
 					.modal-header.no-border-header.text-center
@@ -86,27 +86,9 @@ html(lang='en')
 						table.table
 							thead
 								tr
-									th.text-center #
-									th Name
-									th Job Position
-									th Since
-									th.text-right Salary
-									th.text-right Actions
-							tbody
-								tr
-									td.text-center 1
-									td Andrew Mike
-									td Develop
-									td 2013
-									td.text-right € 99,225
-									td.td-actions.text-right
-										button.btn.btn-info.btn-sm.btn-icon(type='button', rel='tooltip')
-											i.fa.fa-user
-										button.btn.btn-success.btn-sm.btn-icon(type='button', rel='tooltip')
-											i.fa.fa-edit
-										button.btn.btn-danger.btn-sm.btn-icon(type='button', rel='tooltip')
-											i.fa.fa-times
-					.modal-footer.no-border-footer
+									th 5th
+									th 20th
+							tbody#monthly
 		input#toggle(type='hidden' value=0)
 		// Core JS Files
 		script(src='/assets/paperkit/assets/js/jquery-3.2.1.js', type='text/javascript')
@@ -151,6 +133,13 @@ html(lang='en')
 					slotDuration: "00:20:00",
 					minTime: "12:00",
 					maxTime: "25:40",
+					eventClick: function(event){
+						swal({
+							icon: 'info',
+							title: 'Customer Information',
+							text: `Customer Name: ${event.custName}\nMedical History:\n${event.medHistory}`
+						})
+					}
 				})
 				$('#scheduleModal').on('show.bs.modal', function(){
 					if($('#toggle').val() == 0){
@@ -165,6 +154,19 @@ html(lang='en')
 			})
 	script.
 		$(document).ready(function(){
+			$('#commission').click(function(){
+				$.post('/therapist/commission').done(function(data){
+					$('#monthly').append(`
+					<tr>
+						<td>${data.fifth[0].TOTAL == null ? 'N/A' : `Php ${data.fifth[0].TOTAL.toFixed(2)}`}</td>
+						<td>${data.twentieth[0].TOTAL == null ? 'N/A' : `Php ${data.twentieth[0].TOTAL.toFixed(2)}`}</td>
+					</tr>
+					`)
+					console.log(data)
+				})
+			})
+
+			
 			var therapist_id = $('.therapist_id').val()
 
 			$.post('therapist/schedule',{
@@ -186,7 +188,9 @@ html(lang='en')
 						description: 'aaa',
 						start: start,
 						end: end,
-						textColor: 'white'
+						textColor: 'white',
+						custName: `${data.out[i].cust_fname} ${data.out[i].cust_lname}`,
+						medHistory: `${data.out[i].medical_history == '' ? 'N/A': `${data.out[i].medical_history}`}`
 					},true)
 				}
 			})

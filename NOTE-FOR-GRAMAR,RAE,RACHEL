@@ -1,9 +1,17 @@
 First of all thank you.
 
--Viewing ng medical history sa therapist portal. Alam ni Rachel yon,
+-Viewing ng medical history sa therapist portal. Alam ni Rachel yon, * /
 -Cancelation Fee kapag di pumunta yung customer sa reservation nya.
 -Change password, Change Picture, Cancel reservation, sa customer portal.
 -change password sa therapist,
+-Point distribution *
+- Display commission therapist portal * /
+- Reservation details customer portal
+- After allowance time kung nadedelete na yung reservation
+- Place two decimal places on price * /bookReservation /
+- Remove kemekeme sa customer portal* /
+- Customer portal reservation *
+- INSERT loyalty member bug (undefined yung walid until, should be ${utilities} months after today)
 
 tho di naman need iba ata dyan.
 Ask rachel about sa mga need ipakita by friday. 

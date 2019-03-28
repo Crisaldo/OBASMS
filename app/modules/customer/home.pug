@@ -60,39 +60,6 @@ html(lang='en')
         h3.title Reservation/s
       center
         p *Reservation details*
-    
-    .section
-      .container
-        .row
-          .col-md-10.ml-auto.col-xl-6.mr-auto
-            // Nav tabs
-            div
-              div
-                ul.nav.nav-tabs.justify-content-center(role='tablist')
-                  li.nav-item
-                    a.nav-link.active(data-toggle='tab', href='#homes', role='tab')
-                      i.now-ui-icons.ui-2_favourite-28
-                      |  Services
-                  li.nav-item
-                    a.nav-link(data-toggle='tab', href='#profiles', role='tab')
-                      i.now-ui-icons.shopping_cart-simple
-                      |  Promos
-                  li.nav-item
-                    a.nav-link(data-toggle='tab', href='#messagess', role='tab')
-                      i.now-ui-icons.shopping_shop
-                      |  Room Rates
-              div
-                // Tab panes
-                .tab-content.text-center
-                  #homes.tab-pane.active(role='tabpanel')
-                    p Shiatsu Massage
-                    p Sweden Massage 
-                    p Thai Massage
-                  #profiles.tab-pane(role='tabpanel')
-                    p Rainy Days Promo
-                    p Ber Month Promo
-                  #messagess.tab-pane(role='tabpanel')
-                    p Hexa Room: 500.00
 
 
     #ReservationModal.modal.fade(tabindex='-1', role='dialog')
