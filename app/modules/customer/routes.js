@@ -86,10 +86,30 @@ router.get('/home',mid.guestistnauthed,(req,res)=>{
 	WHERE customer_tbl.cust_id=${req.session.user.cust_id}`
 
 	db.query(query,(err,out)=>{
-		res.render('customer/home',{
-			customers: out,
-			id: req.session.user.cust_id
-		})
+    if (err) console.log(err)
+    console.log(out)
+    var queryString = `SELECT * FROM customer_tbl
+    JOIN walkin_queue_tbl ON walkin_queue_tbl.cust_id = customer_tbl.cust_id
+    JOIN therapist_in_service_tbl ON therapist_in_service_tbl.walkin_id = walkin_queue_tbl.walkin_id
+    JOIN therapist_tbl ON therapist_tbl.therapist_id = therapist_in_service_tbl.therapist_id
+    JOIN walkin_services_tbl ON walkin_services_tbl.walkin_id = walkin_queue_tbl.walkin_id
+    JOIN room_tbl ON walkin_services_tbl.room_id = room_tbl.room_id 
+    JOIN services_tbl ON services_tbl.service_id = walkin_services_tbl.service_id
+    JOIN service_type_tbl ON service_type_tbl.service_type_id = services_tbl.service_type_id
+    WHERE customer_tbl.cust_id=${req.session.user.cust_id}
+      GROUP BY walkin_queue_tbl.walkin_id`
+      db.query(queryString,(err,out2)=>{
+        for(i=0;i<out2.length;i++){
+          out2[i].walkin_date = moment(out2[i].walkin_date).format('MM/DD/YYYY')
+        }
+        if(err) console.log(err)
+        res.render('customer/home',{
+          customers: out,
+          id: req.session.user.cust_id,
+          reservations: out2
+        })
+      })
+    
 	})
 })
 // SELECT DATE
@@ -286,6 +306,7 @@ router.get('/bookreservation', mid.frontdesknauthed,(req, res) => {
           const query=`SELECT therapist_tbl.*, therapist_attendance_tbl.* 
           FROM therapist_tbl JOIN therapist_attendance_tbl
           ON therapist_tbl.therapist_id = therapist_attendance_tbl.therapist_id
+
           WHERE therapist_attendance_tbl.availability =1 AND therapist_tbl.therapist_shift='First'
           ORDER BY therapist_attendance_tbl.therapist_datetime_in ASC`
       

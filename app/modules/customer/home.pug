@@ -58,8 +58,22 @@ html(lang='en')
         .button-container
           button.btn.btn-info.btn-round.btn-lg.buttonReservation(type='button' value=`${id}`) Book Reservation
         h3.title Reservation/s
-      center
-        p *Reservation details*
+            center
+              .fresh-datatables
+                table#datatables.table.table-no-bordered.table-hover(cellspacing='0', width='100%', style='width:100%' )
+                  thead
+                      tr.text-center
+                        th Service
+                        th Date & Time
+                        th Therapist
+                        th Room Name
+                  tbody
+                    each reservation in reservations
+                      tr(style="font-weight:100").text-center
+                        td=`${reservation.service_type_desc}`
+                        td=`${reservation.walkin_date} ${reservation.walkin_start_time}`
+                        td=`${reservation.therapist_fname} ${reservation.therapist_lname}`
+                        td=`${reservation.room_name}`
 
 
     #ReservationModal.modal.fade(tabindex='-1', role='dialog')
