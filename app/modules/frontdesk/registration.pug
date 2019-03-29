@@ -1901,9 +1901,9 @@ html(lang='en')
         var date = vals[1];
         var dateNow = new Date()
         var scriptSession = !{JSON.stringify(reqSession)};
-        var membership_validity= scriptSession.utilities.membership_validity
+        var membership_validity= scriptSession.utilities[0].membership_validity
         console.log(scriptSession)
-        var membershipDate = moment(dateNow).add(membership_validity,'months').format('MMMM DD, YYYY')
+        var membershipDate = moment().add(membership_validity,'months').format('MMMM DD, YYYY')
 
           if($('#vatExempt').is(':checked')){
            var vat_type_id = $('#person_exempt').val()
@@ -1932,7 +1932,7 @@ html(lang='en')
           formData.append('password',$('#password').val())
           formData.append('contact_no',$('#contact_no').val())
           formData.append('card_id',$('#card_id').val())
-          formData.append('membershipData',membershipDate)
+          formData.append('membershipDate',membershipDate)
           formData.append('loyalty',loyalty)
           console.log($('#cust_pic')[0].files[0])
           $.ajax({

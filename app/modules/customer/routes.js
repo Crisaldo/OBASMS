@@ -186,7 +186,7 @@ router.post('/customerTime/addResource', mid.guestistnauthed,(req,res)=>{
   walkin_queue_tbl.*, room_in_service_tbl.* , room_tbl.*
   FROM walkin_queue_tbl JOIN room_in_service_tbl ON walkin_queue_tbl.walkin_id = room_in_service_tbl.walkin_id
   JOIN room_tbl ON room_tbl.room_id = room_in_service_tbl.room_id
-  WHERE walkin_queue_tbl.walkin_date = '${req.bodu.datePicked}' AND room_tbl.room_id= ?
+  WHERE walkin_queue_tbl.walkin_date = '${req.body.datePicked}' AND room_tbl.room_id= ?
   AND walkin_queue_tbl.delete_stats= 0 
   AND walkin_queue_tbl.walkin_indicator != 2
   GROUP BY walkin_queue_tbl.walkin_start_time , room_tbl.room_name
@@ -473,7 +473,7 @@ router.post('/CheckRoomDetails',(req,res)=>{
   }
   else
   {
-    const query = `SELECT * FROM room_tbl WHERE room_id =${req.body.room_id}`
+    const query = `SELECT * FROM room_tbl WHERE room_id ="${req.body.room_id}"`
   
     db.query(query,(err,out)=>{
       res.send(out[0])
