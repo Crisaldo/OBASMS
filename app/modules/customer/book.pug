@@ -592,6 +592,7 @@ html(lang='en')
     })
   script.
     $(document).ready(function(){
+      $('input[type=""]').prop('type', 'hidden')
       var room_id = $('#roomId').val()
       var restype = !{JSON.stringify(reservetype)}
 
